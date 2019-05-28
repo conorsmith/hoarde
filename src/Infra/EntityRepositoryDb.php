@@ -113,7 +113,7 @@ final class EntityRepositoryDb implements EntityRepository
 
         } else {
             $this->db->update("entities", [
-                'intact' => $entity->isIntact(),
+                'intact' => $entity->isIntact() ? "1" : "0",
             ], [
                 'id' => strval($entity->getId()),
             ]);
