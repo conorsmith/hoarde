@@ -1,0 +1,12 @@
+{
+    "require": {
+        "symfony/var-dumper": "^4.2",
+        "doctrine/dbal": "^2.9",
+        "ramsey/uuid": "^3.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "ConorSmith\\Hoarde\\": "src"
+        }
+    }
+}
