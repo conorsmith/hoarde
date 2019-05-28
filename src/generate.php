@@ -16,9 +16,9 @@
 
     <div class="jumbotron jumbotron-fluid">
         <div class="container" style="text-align: center;">
-            <h1 class="display-1">HOARDE</h1>
+            <h1 class="display-4" style="font-weight: 900;">HOARDE</h1>
             <form method="POST">
-                <button type="submit" class="btn btn-primary btn-lg">begin</button>
+                <button type="submit" class="btn btn-primary btn-lg" style="font-weight: 100;">begin</button>
             </form>
         </div>
     </div>
