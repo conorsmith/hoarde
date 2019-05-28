@@ -2,7 +2,11 @@
     "require": {
         "symfony/var-dumper": "^4.2",
         "doctrine/dbal": "^2.9",
-        "ramsey/uuid": "^3.8"
+        "ramsey/uuid": "^3.8",
+        "paragonie/random_compat": "2.*",
+        "paragonie/random-lib": "^2.0",
+        "aura/session": "^2.1",
+        "vlucas/phpdotenv": "^3.3"
     },
     "autoload": {
         "psr-4": {

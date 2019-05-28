@@ -3,105 +3,141 @@ declare(strict_types=1);
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
+Dotenv\Dotenv::create(__DIR__ . "/..")->load();
+
+$session = (new Aura\Session\SessionFactory)->newInstance($_COOKIE);
+$sessionSegment = $session->getSegment("ConorSmith\\Hoarde");
+
 $db = Doctrine\DBAL\DriverManager::getConnection([
-    'dbname'   => "hoarde",
-    'user'     => "hoarde",
-    'password' => "password",
-    'host'     => "localhost",
+    'dbname'   => getenv('DB_NAME'),
+    'user'     => getenv('DB_USER'),
+    'password' => getenv('DB_PASSWORD'),
+    'host'     => getenv('DB_HOST'),
     'driver'   => "pdo_mysql",
 ]);
 
 $gameRepo = new ConorSmith\Hoarde\Infra\GameRepositoryDb($db);
+$itemRepo = new ConorSmith\Hoarde\Infra\ItemRepositoryConfig;
+$entityRepo = new ConorSmith\Hoarde\Infra\EntityRepositoryDb($db, $itemRepo);
+$resourceRepo = new ConorSmith\Hoarde\Infra\ResourceRepositoryConfig;
 
-$gameId = Ramsey\Uuid\Uuid::fromString("e23df13a-c3da-40d7-862c-50011d5d216a");
-$entityId = Ramsey\Uuid\Uuid::fromString("a8e61eeb-91d5-409d-ad9e-3a5fd51fb072");
-$resourceId = Ramsey\Uuid\Uuid::fromString("9972c015-842a-4601-8fb2-c900e1a54177");
+if ($_SERVER['REQUEST_URI'] === "/") {
+    if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        $newGame = new ConorSmith\Hoarde\Domain\Game(
+            $id = Ramsey\Uuid\Uuid::uuid4(),
+            0
+        );
+        $gameRepo->save($newGame);
+
+        $newEntity = new \ConorSmith\Hoarde\Domain\Entity(
+            Ramsey\Uuid\Uuid::uuid4(),
+            $id,
+            true,
+            [],
+            []
+        );
+        $newEntity->reset($itemRepo);
+        $entityRepo->save($newEntity);
+
+        header("Location: /{$id}");
+    }
+
+    include __DIR__ . "/../src/generate.php";
+    return;
+}
+
+$gameId = Ramsey\Uuid\Uuid::fromString(substr($_SERVER['REQUEST_URI'], 1));
 
 $game = $gameRepo->find($gameId);
-
-$row = $db->fetchAssoc("SELECT * FROM entity_resources WHERE entity_id = ? AND resource_id = ?", [
-    strval($entityId),
-    strval($resourceId),
-]);
-
-$resourceLevel = new ConorSmith\Hoarde\Domain\ResourceLevel($resourceId, intval($row['level']));
-$entity = new ConorSmith\Hoarde\Domain\Entity($entityId, [$resourceLevel]);
+$entityIds = $gameRepo->findEntityIds($gameId);
+$entity = $entityRepo->find($entityIds[0]);
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     if ($_POST['action'] === "restart") {
+        $entity->reset($itemRepo);
+        $entityRepo->save($entity);
+
         $game->restart();
-
-        $db->update("games", [
-            'turn_index' => $game->getTurnIndex(),
-        ], [
-            'id' => $game->getId(),
-        ]);
-
-        foreach ($entity->getResourceLevels() as $resourceLevel) {
-            $resourceLevel = new ConorSmith\Hoarde\Domain\ResourceLevel(
-                $resourceLevel->getResourceId(),
-                3
-            );
-
-            $db->update("entity_resources", [
-                'level' => $resourceLevel->getValue(),
-            ], [
-                'entity_id'   => strval($entity->getId()),
-                'resource_id' => strval($resourceLevel->getResourceId()),
-            ]);
-        }
+        $gameRepo->save($game);
 
     } elseif ($_POST['action'] === "wait") {
+        $entity->wait();
+        $entityRepo->save($entity);
+
         $game->proceedToNextTurn();
+        $gameRepo->save($game);
 
-        $db->update("games", [
-            'turn_index' => $game->getTurnIndex(),
-        ], [
-            'id' => $game->getId(),
-        ]);
-
-        foreach ($entity->getResourceLevels() as $resourceLevel) {
-            $resourceLevel = $resourceLevel->consume();
-
-            $db->update("entity_resources", [
-                'level' => $resourceLevel->getValue(),
-            ], [
-                'entity_id'   => strval($entity->getId()),
-                'resource_id' => strval($resourceLevel->getResourceId()),
-            ]);
+        if (!$entity->isIntact()) {
+            $sessionSegment->setFlash("danger", "Entity has expired");
         }
 
-    } elseif ($_POST['action'] === "gather") {
+    } elseif ($_POST['action'] === "use") {
+        $itemId = Ramsey\Uuid\Uuid::fromString($_POST['item']);
+        $usedItem = $entity->useItem($itemId);
+        $entityRepo->save($entity);
+
         $game->proceedToNextTurn();
+        $gameRepo->save($game);
 
-        $db->update("games", [
-            'turn_index' => $game->getTurnIndex(),
-        ], [
-            'id' => $game->getId(),
-        ]);
+        $sessionSegment->setFlash("info", "Entity consumed {$usedItem->getLabel()}");
 
-        foreach ($entity->getResourceLevels() as $resourceLevel) {
-            $resourceLevel = $resourceLevel->replenish();
+        if (!$entity->isIntact()) {
+            $sessionSegment->setFlash("danger", "Entity has expired");
+        }
 
-            $db->update("entity_resources", [
-                'level' => $resourceLevel->getValue(),
-            ], [
-                'entity_id'   => strval($entity->getId()),
-                'resource_id' => strval($resourceLevel->getResourceId()),
-            ]);
+    } elseif ($_POST['action'] === "scavenge") {
+        $scavengedItem = $entity->scavenge($itemRepo);
+        $entityRepo->save($entity);
+
+        $game->proceedToNextTurn();
+        $gameRepo->save($game);
+
+        if (is_null($scavengedItem)) {
+            $sessionSegment->setFlash(
+                "warning",
+                "Entity failed to scavenge anything"
+            );
+        } else {
+            $sessionSegment->setFlash(
+                "success",
+                "Entity scavenged {$scavengedItem->getLabel()} ({$scavengedItem->getQuantity()})"
+            );
+        }
+
+        if (!$entity->isIntact()) {
+            $sessionSegment->setFlash("danger", "Entity has expired");
         }
     }
 
-    header("Location: /");
+    header("Location: /{$gameId}");
 }
+
+$danger = $sessionSegment->getFlash("danger");
+$warning = $sessionSegment->getFlash("warning");
+$success = $sessionSegment->getFlash("success");
+$info = $sessionSegment->getflash("info");
 
 $turnIndex = $game->getTurnIndex();
-$level = $resourceLevel->getValue();
 
-$resourceLevels = [];
+$resources = [];
 foreach ($entity->getResourceLevels() as $resourceLevel) {
-    $resourceLevels[] = $resourceLevel->getValue();
+    $resources[] = [
+        'label'        => $resourceRepo->find($resourceLevel->getResourceId())->getLabel(),
+        'level'        => $resourceLevel->getValue(),
+        'segmentWidth' => 100 / $resourceLevel->getMaximumValue(),
+    ];
 }
+
+$inventory = [];
+foreach ($entity->getInventory() as $item) {
+    $inventory[] = [
+        'id'       => $item->getId(),
+        'label'    => $item->getLabel(),
+        'quantity' => $item->getQuantity(),
+    ];
+}
+
+$isIntact = $entity->isIntact();
 
 include __DIR__ . "/../src/index.php";
