@@ -81,6 +81,27 @@ final class Entity
         return $this->inventory;
     }
 
+    public function getInventoryWeight(): int
+    {
+        $weight = 0;
+
+        foreach ($this->inventory as $item) {
+            $weight += $item->getWeight();
+        }
+
+        return $weight;
+    }
+
+    public function getInventoryCapacity(): int
+    {
+        return 10000;
+    }
+
+    public function isOverencumbered(): bool
+    {
+        return $this->getInventoryWeight() >= $this->getInventoryCapacity();
+    }
+
     private function beforeAction(): void
     {
         $this->consumeResources();
@@ -136,7 +157,7 @@ final class Entity
         return $item;
     }
 
-    public function scavenge(VarietyRepository $varietyRepository): ?Item
+    public function scavenge(VarietyRepository $varietyRepository): ScavengingHaul
     {
         $this->beforeAction();
 
@@ -188,13 +209,21 @@ final class Entity
             }
         }
 
-        if (!is_null($scavengedItem)) {
+        if (is_null($scavengedItem)) {
+            $isRetrievable = false;
+        } else {
+            $isRetrievable = $this->getInventoryWeight() + $scavengedItem->getWeight() <= $this->getInventoryCapacity();
+        }
+
+        if (!is_null($scavengedItem) && $isRetrievable) {
             $this->addToInventory($scavengedItem);
         }
 
+        $haul = new ScavengingHaul($scavengedItem, $isRetrievable);
+
         $this->afterAction();
 
-        return $scavengedItem;
+        return $haul;
     }
 
     public function wait(): void

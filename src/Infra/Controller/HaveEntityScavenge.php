@@ -46,21 +46,31 @@ final class HaveEntityScavenge
         $entityIds = $this->gameRepo->findEntityIds($gameId);
         $entity = $this->entityRepo->find($entityIds[0]);
 
-        $scavengedItem = $entity->scavenge($this->varietyRepo);
+        $haul = $entity->scavenge($this->varietyRepo);
         $this->entityRepo->save($entity);
 
         $game->proceedToNextTurn();
         $this->gameRepo->save($game);
 
-        if (is_null($scavengedItem)) {
+        if ($haul->hasItem()) {
+
+            $label = $haul->getItem()->getVariety()->getLabel();
+
+            if ($haul->isRetrievable()) {
+                $this->session->setFlash(
+                    "success",
+                    "Entity scavenged {$label} ({$haul->getItem()->getQuantity()})"
+                );
+            } else {
+                $this->session->setFlash(
+                    "danger",
+                    "Entity could not add {$label} ({$haul->getItem()->getQuantity()}) to inventory"
+                );
+            }
+        } else {
             $this->session->setFlash(
                 "warning",
                 "Entity failed to scavenge anything"
-            );
-        } else {
-            $this->session->setFlash(
-                "success",
-                "Entity scavenged {$scavengedItem->getVariety()->getLabel()} ({$scavengedItem->getQuantity()})"
             );
         }
 

@@ -16,11 +16,15 @@ final class Variety
     /** @var Resource */
     private $resource;
 
-    public function __construct(UuidInterface $id, string $label, Resource $resource)
+    /** @var int */
+    private $weight;
+
+    public function __construct(UuidInterface $id, string $label, Resource $resource, int $weight)
     {
         $this->id = $id;
         $this->label = $label;
         $this->resource = $resource;
+        $this->weight = $weight;
     }
 
     public function getId(): UuidInterface
@@ -36,6 +40,11 @@ final class Variety
     public function getResource(): Resource
     {
         return $this->resource;
+    }
+
+    public function getWeight(): int
+    {
+        return $this->weight;
     }
 
     public function createItemWithQuantity(int $quantity): Item

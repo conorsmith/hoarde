@@ -34,6 +34,11 @@ final class Item
         return $this->quantity;
     }
 
+    public function getWeight(): int
+    {
+        return $this->quantity * $this->variety->getWeight();
+    }
+
     public function moreThanOne(): bool
     {
         return $this->quantity > 1;

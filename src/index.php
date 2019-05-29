@@ -107,6 +107,9 @@
                             </div>
                         <?php endforeach ?>
                     </div>
+                    <div class="progress" style="height: 0.5rem; margin-top: 1rem;">
+                          <div class="progress-bar <?=$entityOverencumbered ? "bg-danger" : "bg-info"?>" style="width: <?=$inventoryWeight?>%;"></div>
+                    </div>
 
                     <hr>
 

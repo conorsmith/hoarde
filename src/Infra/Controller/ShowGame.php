@@ -69,6 +69,9 @@ final class ShowGame
 
         $isIntact = $entity->isIntact();
 
+        $inventoryWeight = $entity->getInventoryWeight() / $entity->getInventoryCapacity() * 100;
+        $entityOverencumbered = $entity->isOverencumbered();
+
         ob_start();
 
         include __DIR__ . "/../../index.php";
