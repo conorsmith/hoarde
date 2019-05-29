@@ -30,15 +30,19 @@ $haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
 $showGame = new ConorSmith\Hoarde\Infra\Controller\ShowGame($gameRepo, $entityRepo, $resourceRepo, $sessionSegment);
 $showNotFoundPage = new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage;
 
-if ($_SERVER['REQUEST_URI'] === "/") {
-    if ($_SERVER['REQUEST_METHOD'] === "POST") {
-        $response = $generateNewGame();
-    } else {
-        $response = $showLandingPage();
-    }
-}
+$router = new League\Route\Router;
 
-if ($_SERVER['REQUEST_METHOD'] === "POST") {
+$router->get("/", $showLandingPage);
+$router->post("/", $generateNewGame);
+
+$router->get("/{gameId}", $showGame);
+$router->post("/{gameId}", function (Psr\Http\Message\ServerRequestInterface $request) use (
+    $restartGame,
+    $haveEntityWait,
+    $haveEntityUseItem,
+    $haveEntityScavenge,
+    $showNotFoundPage
+) {
     if ($_POST['action'] === "restart") {
         $response = $restartGame();
 
@@ -50,10 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     } elseif ($_POST['action'] === "scavenge") {
         $response = $haveEntityScavenge();
+
+    } else {
+        $response = $showNotFoundPage();
     }
-} else {
-    $response = $showGame();
+
+    return $response;
+});
+
+try {
+    $response = $router->dispatch(Zend\Diactoros\ServerRequestFactory::fromGlobals(
+        $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
+    ));
+} catch (League\Route\Http\Exception\NotFoundException $e) {
+    $response = $showNotFoundPage();
 }
 
 (new Zend\HttpHandlerRunner\Emitter\SapiEmitter)->emit($response);
-
