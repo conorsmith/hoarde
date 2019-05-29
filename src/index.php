@@ -93,7 +93,7 @@
                                     <button type="button"
                                             class="btn btn-light dropdown-toggle"
                                             data-toggle="dropdown"></button>
-                                    <div class="dropdown-menu">
+                                    <div class="dropdown-menu dropdown-menu-right">
                                         <a href="#"
                                            class="dropdown-item js-drop"
                                            data-item-id="<?=$item['id']?>"
