@@ -81,110 +81,31 @@ final class Entity
         return $this->inventory;
     }
 
+    private function beforeAction(): void
+    {
+        $this->consumeResources();
+    }
+
+    private function afterAction(): void
+    {
+        foreach ($this->resourceNeeds as $resourceNeed) {
+            if ($resourceNeed->isDepleted()) {
+                $this->isIntact = false;
+            }
+        }
+    }
+
     public function useItem(UuidInterface $id): Item
     {
-        foreach ($this->inventory as $key => $item) {
-            if ($item->getVariety()->getId()->equals($id)) {
-                $this->replenish($item->getVariety()->getResource()->getId());
-                if ($item->moreThanOne()) {
-                    $item->removeOne();
-                } else {
-                    unset($this->inventory[$key]);
-                }
-                return $item;
-            }
-        }
-    }
+        $this->beforeAction();
 
-    public function dropItem(UuidInterface $id, int $quantity): Item
-    {
         $item = $this->inventory[strval($id)];
 
-        if ($item->moreThan($quantity)) {
-            $item->remove($quantity);
-        } else {
-            unset($this->inventory[strval($id)]);
-        }
+        $resourceId = $item->getVariety()->getResource()->getId();
 
-        $this->consumeResources();
-
-        return $item;
-    }
-
-    public function scavenge(VarietyRepository $varietyRepository): ?Item
-    {
-        $generator = (new Factory)->getMediumStrengthGenerator();
-
-        $d100 = $generator->generateInt(1, 100);
-
-        if ($d100 === 100) {
-            $scavengedItem = $varietyRepository
-                ->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"))
-                ->createItemWithQuantity(1);
-            $this->addToInventory($scavengedItem);
-        } elseif ($d100 === 99) {
-            $scavengedItem = $varietyRepository
-                ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
-                ->createItemWithQuantity(1);
-            $this->addToInventory($scavengedItem);
-        } else {
-
-            $diceRoll = $generator->generateInt(1, 6);
-
-            if ($diceRoll === 4 && $this->isAddictedToHeroin()) {
-                $scavengedItem = $varietyRepository
-                    ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
-                    ->createItemWithQuantity(1);
-                $this->addToInventory($scavengedItem);
-
-            } elseif ($diceRoll === 5) {
-                $scavengedItem = $varietyRepository
-                    ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))
-                    ->createItemWithQuantity($generator->generateInt(1, 3));
-                $this->addToInventory($scavengedItem);
-
-            } elseif ($diceRoll === 6) {
-                $scavengedItem = $varietyRepository
-                    ->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"))
-                    ->createItemWithQuantity($generator->generateInt(1, 2));
-                $this->addToInventory($scavengedItem);
-
-            } else {
-                $scavengedItem = null;
-            }
-        }
-
-        $this->consumeResources();
-
-        return $scavengedItem;
-    }
-
-    private function addToInventory(Item $addedItem): void
-    {
-        if (array_key_exists(strval($addedItem->getVariety()->getId()), $this->inventory)) {
-            $this->inventory[strval($addedItem->getVariety()->getId())]->add($addedItem->getQuantity());
-        } else {
-            $this->inventory[strval($addedItem->getVariety()->getId())] = $addedItem;
-        }
-    }
-
-    public function wait(): void
-    {
-        $this->consumeResources();
-    }
-
-    private function isAddictedToHeroin(): bool
-    {
-        return array_key_exists("5234c112-05be-4b15-80df-3c2b67e88262", $this->resourceNeeds);
-    }
-
-    public function replenish(UuidInterface $resourceId): void
-    {
         if ($resourceId->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))
             && !$this->isAddictedToHeroin()
         ) {
-            $this->consumeResources();
-
             $resourceRepository = new ResourceRepositoryConfig;
 
             $this->resourceNeeds["5234c112-05be-4b15-80df-3c2b67e88262"] = new ResourceNeed(
@@ -192,33 +113,126 @@ final class Entity
                 12,
                 12
             );
-        } else {
-            foreach ($this->resourceNeeds as $key => $resourceNeed) {
-                if ($resourceNeed->getResource()->getId()->equals($resourceId)) {
-                    $this->resourceNeeds[$key] = $resourceNeed->replenish();
-                } else {
-                    $this->resourceNeeds[$key] = $this->consumeResource($resourceNeed);
-                }
+        }
+
+        $this->resourceNeeds[strval($resourceId)] = $this->resourceNeeds[strval($resourceId)]->replenish();
+
+        $this->removeQuantityFromItem(1, $item);
+
+        $this->afterAction();
+
+        return $item;
+    }
+
+    public function dropItem(UuidInterface $id, int $quantity): Item
+    {
+        $this->beforeAction();
+
+        $item = $this->inventory[strval($id)];
+        $this->removeQuantityFromItem($quantity, $item);
+
+        $this->afterAction();
+
+        return $item;
+    }
+
+    public function scavenge(VarietyRepository $varietyRepository): ?Item
+    {
+        $this->beforeAction();
+
+        $generator = (new Factory)->getMediumStrengthGenerator();
+
+        $rollTable = [
+            [
+                'rolls' => [100],
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => [99],
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(18, 34),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))
+                    ->createItemWithQuantity($generator->generateInt(1, 3)),
+            ],
+            [
+                'rolls' => range(1, 17),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"))
+                    ->createItemWithQuantity($generator->generateInt(1, 2)),
+            ],
+        ];
+
+        if ($this->isAddictedToHeroin()) {
+            $rollTable[] = [
+                'rolls' => range(35, 51),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
+                    ->createItemWithQuantity(1),
+            ];
+        }
+
+        $scavengedItem = null;
+
+        $d100 = $generator->generateInt(1, 100);
+
+        foreach ($rollTable as $rollTableEntry) {
+            if (in_array($d100, $rollTableEntry['rolls'])) {
+                $scavengedItem = $rollTableEntry['item'];
             }
         }
+
+        if (!is_null($scavengedItem)) {
+            $this->addToInventory($scavengedItem);
+        }
+
+        $this->afterAction();
+
+        return $scavengedItem;
+    }
+
+    public function wait(): void
+    {
+        $this->beforeAction();
+        $this->afterAction();
+    }
+
+    private function removeQuantityFromItem(int $quantity, Item $item): void
+    {
+        if ($item->moreThan($quantity)) {
+            $item->remove($quantity);
+        } else {
+            unset($this->inventory[strval($item->getVariety()->getId())]);
+        }
+    }
+
+    private function addToInventory(Item $addedItem): void
+    {
+        $key = strval($addedItem->getVariety()->getId());
+
+        if (array_key_exists($key, $this->inventory)) {
+            $this->inventory[$key]->add($addedItem->getQuantity());
+        } else {
+            $this->inventory[$key] = $addedItem;
+        }
+    }
+
+    private function isAddictedToHeroin(): bool
+    {
+        return array_key_exists("5234c112-05be-4b15-80df-3c2b67e88262", $this->resourceNeeds);
     }
 
     private function consumeResources(): void
     {
         foreach ($this->resourceNeeds as $key => $resourceNeed) {
-            $this->resourceNeeds[$key] = $this->consumeResource($resourceNeed);
+            $this->resourceNeeds[$key] = $resourceNeed->consume();
         }
-    }
-
-    private function consumeResource(ResourceNeed $resourceNeed): ResourceNeed
-    {
-        $resourceNeed = $resourceNeed->consume();
-
-        if ($resourceNeed->isDepleted()) {
-            $this->isIntact = false;
-        }
-
-        return $resourceNeed;
     }
 
     public function reset(VarietyRepository $varietyRepository, ResourceRepository $resourceRepository): void
