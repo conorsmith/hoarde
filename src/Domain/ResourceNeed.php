@@ -11,16 +11,16 @@ final class ResourceNeed
     private $resourceId;
 
     /** @var int */
-    private $value;
+    private $currentLevel;
 
     /** @var int */
-    private $maximumValue;
+    private $maximumLevel;
 
-    public function __construct(UuidInterface $resourceId, int $value, int $maximumValue)
+    public function __construct(UuidInterface $resourceId, int $currentLevel, int $maximumLevel)
     {
         $this->resourceId = $resourceId;
-        $this->value = $value;
-        $this->maximumValue = $maximumValue;
+        $this->currentLevel = $currentLevel;
+        $this->maximumLevel = $maximumLevel;
     }
 
     public function getResourceId(): UuidInterface
@@ -28,24 +28,24 @@ final class ResourceNeed
         return $this->resourceId;
     }
 
-    public function getValue(): int
+    public function getCurrentLevel(): int
     {
-        return $this->value;
+        return $this->currentLevel;
     }
 
-    public function getMaximumValue(): int
+    public function getMaximumLevel(): int
     {
-        return $this->maximumValue;
+        return $this->maximumLevel;
     }
 
     public function isDepleted(): bool
     {
-        return $this->value === 0;
+        return $this->currentLevel === 0;
     }
 
     public function consume(): self
     {
-        $newLevel = $this->value - 1;
+        $newLevel = $this->currentLevel - 1;
 
         if ($newLevel < 0) {
             $newLevel = 0;
@@ -54,7 +54,7 @@ final class ResourceNeed
         return new self(
             $this->resourceId,
             $newLevel,
-            $this->maximumValue
+            $this->maximumLevel
         );
     }
 
@@ -62,8 +62,8 @@ final class ResourceNeed
     {
         return new self(
             $this->resourceId,
-            $this->maximumValue,
-            $this->maximumValue
+            $this->maximumLevel,
+            $this->maximumLevel
         );
     }
 }

@@ -97,7 +97,7 @@ final class EntityRepositoryDb implements EntityRepository
                 $this->db->insert("entity_resources", [
                     'entity_id' => $entity->getId(),
                     'resource_id' => $resourceNeed->getResourceId(),
-                    'level' => $resourceNeed->getValue(),
+                    'level' => $resourceNeed->getCurrentLevel(),
                 ]);
             }
 
@@ -116,7 +116,7 @@ final class EntityRepositoryDb implements EntityRepository
                 $this->db->insert("entity_resources", [
                     'entity_id'   => $entity->getId(),
                     'resource_id' => $resourceNeed->getResourceId(),
-                    'level'       => $resourceNeed->getValue(),
+                    'level'       => $resourceNeed->getCurrentLevel(),
                 ]);
             }
         }

@@ -56,8 +56,8 @@ final class ShowGame
         foreach ($entity->getResourceNeeds() as $resourceNeed) {
             $resources[] = [
                 'label'        => $this->resourceRepo->find($resourceNeed->getResourceId())->getLabel(),
-                'level'        => $resourceNeed->getValue(),
-                'segmentWidth' => 100 / $resourceNeed->getMaximumValue(),
+                'level'        => $resourceNeed->getCurrentLevel(),
+                'segmentWidth' => 100 / $resourceNeed->getMaximumLevel(),
             ];
         }
 
