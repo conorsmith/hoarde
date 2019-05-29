@@ -7,7 +7,7 @@ use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
-use ConorSmith\Hoarde\Domain\ItemRepository;
+use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
@@ -20,14 +20,14 @@ final class GenerateNewGame
     /** @var EntityRepository */
     private $entityRepo;
 
-    /** @var ItemRepository */
-    private $itemRepo;
+    /** @var VarietyRepository */
+    private $varietyRepo;
 
-    public function __construct(GameRepository $gameRepo, EntityRepository $entityRepo, ItemRepository $itemRepo)
+    public function __construct(GameRepository $gameRepo, EntityRepository $entityRepo, VarietyRepository $varietyRepo)
     {
         $this->gameRepo = $gameRepo;
         $this->entityRepo = $entityRepo;
-        $this->itemRepo = $itemRepo;
+        $this->varietyRepo = $varietyRepo;
     }
 
     public function __invoke(): ResponseInterface
@@ -45,7 +45,7 @@ final class GenerateNewGame
             [],
             []
         );
-        $newEntity->reset($this->itemRepo);
+        $newEntity->reset($this->varietyRepo);
         $this->entityRepo->save($newEntity);
 
         $response = new Response;

@@ -5,7 +5,7 @@ namespace ConorSmith\Hoarde\Infra\Repository;
 
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
-use ConorSmith\Hoarde\Domain\ItemRepository;
+use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Domain\ResourceNeed;
 use Doctrine\DBAL\Connection;
 use Ramsey\Uuid\Uuid;
@@ -23,13 +23,13 @@ final class EntityRepositoryDb implements EntityRepository
     /** @var Connection */
     private $db;
 
-    /** @var ItemRepository */
-    private $itemRepository;
+    /** @var VarietyRepository */
+    private $varietyRepository;
 
-    public function __construct(Connection $db, ItemRepository $itemRepository)
+    public function __construct(Connection $db, VarietyRepository $varietyRepository)
     {
         $this->db = $db;
-        $this->itemRepository = $itemRepository;
+        $this->varietyRepository = $varietyRepository;
     }
 
     public function find(UuidInterface $id): ?Entity
@@ -79,8 +79,9 @@ final class EntityRepositoryDb implements EntityRepository
         $inventory = [];
 
         foreach ($itemRows as $row) {
-            $item = $this->itemRepository->find(Uuid::fromString($row['item_id']));
-            $item->add(intval($row['quantity']) - 1);
+            $item = $this->varietyRepository
+                ->find(Uuid::fromString($row['item_id']))
+                ->createItemWithQuantity(intval($row['quantity']));
             $inventory[] = $item;
         }
 
@@ -149,7 +150,7 @@ final class EntityRepositoryDb implements EntityRepository
         foreach ($entity->getInventory() as $item) {
             $this->db->insert("entity_inventory", [
                 'entity_id' => $entity->getId(),
-                'item_id'   => $item->getId(),
+                'item_id'   => $item->getVariety()->getId(),
                 'quantity'  => $item->getQuantity(),
             ]);
         }

@@ -17,16 +17,16 @@ $db = Doctrine\DBAL\DriverManager::getConnection([
 ]);
 
 $gameRepo = new ConorSmith\Hoarde\Infra\Repository\GameRepositoryDb($db);
-$itemRepo = new ConorSmith\Hoarde\Infra\Repository\ItemRepositoryConfig;
-$entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $itemRepo);
+$varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
+$entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $varietyRepo);
 $resourceRepo = new ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
 
 $showLandingPage = new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage;
-$generateNewGame = new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame($gameRepo, $entityRepo, $itemRepo);
-$restartGame = new ConorSmith\Hoarde\Infra\Controller\RestartGame($gameRepo, $entityRepo, $itemRepo);
+$generateNewGame = new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame($gameRepo, $entityRepo, $varietyRepo);
+$restartGame = new ConorSmith\Hoarde\Infra\Controller\RestartGame($gameRepo, $entityRepo, $varietyRepo);
 $haveEntityWait = new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait($gameRepo, $entityRepo, $sessionSegment);
 $haveEntityUseItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem($gameRepo, $entityRepo, $sessionSegment);
-$haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge($gameRepo, $entityRepo, $itemRepo, $sessionSegment);
+$haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
 $haveEntityDropItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem($gameRepo, $entityRepo, $sessionSegment);
 $showGame = new ConorSmith\Hoarde\Infra\Controller\ShowGame($gameRepo, $entityRepo, $resourceRepo, $sessionSegment);
 $showNotFoundPage = new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage;

@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Infra\Repository;
 
-use ConorSmith\Hoarde\Domain\Item;
-use ConorSmith\Hoarde\Domain\ItemRepository;
+use ConorSmith\Hoarde\Domain\Variety;
+use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class ItemRepositoryConfig implements ItemRepository
+final class VarietyRepositoryConfig implements VarietyRepository
 {
-    private const ITEMS = [
+    private const VARIETIES = [
         "2f555296-ff9f-4205-a4f7-d181e4455f9d" => [
             'label'      => "Water Bottle",
             'resourceId' => "9972c015-842a-4601-8fb2-c900e1a54177",
@@ -29,18 +29,16 @@ final class ItemRepositoryConfig implements ItemRepository
         ],
     ];
 
-    public function find(UuidInterface $id): ?Item
+    public function find(UuidInterface $id): ?Variety
     {
-        if (!array_key_exists(strval($id), self::ITEMS)) {
+        if (!array_key_exists(strval($id), self::VARIETIES)) {
             return null;
         }
 
-        return new Item(
+        return new Variety(
             $id,
-            self::ITEMS[strval($id)]['label'],
-            1,
-            Uuid::fromString(self::ITEMS[strval($id)]['resourceId'])
+            self::VARIETIES[strval($id)]['label'],
+            Uuid::fromString(self::VARIETIES[strval($id)]['resourceId'])
         );
-
     }
 }

@@ -8,48 +8,30 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Item
 {
-    /** @var UuidInterface */
-    private $id;
-
-    /** @var string */
-    private $label;
-
     /** @var int */
     private $quantity;
 
-    /** @var UuidInterface */
-    private $resourceId;
+    /** @var Variety */
+    private $variety;
 
-    public function __construct(UuidInterface $id, string $label, int $quantity, UuidInterface $resourceId)
+    public function __construct(Variety $variety, int $quantity)
     {
-        $this->id = $id;
-        $this->label = $label;
+        $this->variety = $variety;
         $this->quantity = $quantity;
-        $this->resourceId = $resourceId;
 
         if ($this->quantity < 1) {
             throw new DomainException;
         }
     }
 
-    public function getId(): UuidInterface
+    public function getVariety(): Variety
     {
-        return $this->id;
-    }
-
-    public function getLabel(): string
-    {
-        return $this->label;
+        return $this->variety;
     }
 
     public function getQuantity(): int
     {
         return $this->quantity;
-    }
-
-    public function getResourceId(): UuidInterface
-    {
-        return $this->resourceId;
     }
 
     public function moreThanOne(): bool

@@ -6,6 +6,7 @@ namespace ConorSmith\Hoarde\Infra\Controller;
 use Aura\Session\Segment;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\Domain\Item;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
@@ -63,11 +64,7 @@ final class ShowGame
 
         $inventory = [];
         foreach ($entity->getInventory() as $item) {
-            $inventory[] = [
-                'id'       => $item->getId(),
-                'label'    => $item->getLabel(),
-                'quantity' => $item->getQuantity(),
-            ];
+            $inventory[] = $this->presentItem($item);
         }
 
         $isIntact = $entity->isIntact();
@@ -83,5 +80,14 @@ final class ShowGame
         $response = new Response;
         $response->getBody()->write($body);
         return $response;
+    }
+
+    private function presentItem(Item $item): array
+    {
+        return [
+            'id'       => $item->getVariety()->getId(),
+            'label'    => $item->getVariety()->getLabel(),
+            'quantity' => $item->getQuantity(),
+        ];
     }
 }

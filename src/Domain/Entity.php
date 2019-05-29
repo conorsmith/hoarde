@@ -51,7 +51,7 @@ final class Entity
                 throw new DomainException;
             }
 
-            $this->inventory[strval($item->getId())] = $item;
+            $this->inventory[strval($item->getVariety()->getId())] = $item;
         }
     }
 
@@ -83,8 +83,8 @@ final class Entity
     public function useItem(UuidInterface $id): Item
     {
         foreach ($this->inventory as $key => $item) {
-            if ($item->getId()->equals($id)) {
-                $this->replenish($item->getResourceId());
+            if ($item->getVariety()->getId()->equals($id)) {
+                $this->replenish($item->getVariety()->getResourceId());
                 if ($item->moreThanOne()) {
                     $item->removeOne();
                 } else {
@@ -110,34 +110,42 @@ final class Entity
         return $item;
     }
 
-    public function scavenge(ItemRepository $itemRepository): ?Item
+    public function scavenge(VarietyRepository $varietyRepository): ?Item
     {
         $generator = (new Factory)->getMediumStrengthGenerator();
 
         $d100 = $generator->generateInt(1, 100);
 
         if ($d100 === 100) {
-            $scavengedItem = $itemRepository->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"));
+            $scavengedItem = $varietyRepository
+                ->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"))
+                ->createItemWithQuantity(1);
             $this->addToInventory($scavengedItem);
         } elseif ($d100 === 99) {
-            $scavengedItem = $itemRepository->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"));
+            $scavengedItem = $varietyRepository
+                ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
+                ->createItemWithQuantity(1);
             $this->addToInventory($scavengedItem);
         } else {
 
             $diceRoll = $generator->generateInt(1, 6);
 
             if ($diceRoll === 4 && $this->isAddictedToHeroin()) {
-                $scavengedItem = $itemRepository->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"));
+                $scavengedItem = $varietyRepository
+                    ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
+                    ->createItemWithQuantity(1);
                 $this->addToInventory($scavengedItem);
 
             } elseif ($diceRoll === 5) {
-                $scavengedItem = $itemRepository->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"));
-                $scavengedItem->add($generator->generateInt(0, 2));
+                $scavengedItem = $varietyRepository
+                    ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))
+                    ->createItemWithQuantity($generator->generateInt(1, 3));
                 $this->addToInventory($scavengedItem);
 
             } elseif ($diceRoll === 6) {
-                $scavengedItem = $itemRepository->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"));
-                $scavengedItem->add($generator->generateInt(0, 1));
+                $scavengedItem = $varietyRepository
+                    ->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"))
+                    ->createItemWithQuantity($generator->generateInt(1, 2));
                 $this->addToInventory($scavengedItem);
 
             } else {
@@ -152,10 +160,10 @@ final class Entity
 
     private function addToInventory(Item $addedItem): void
     {
-        if (array_key_exists(strval($addedItem->getId()), $this->inventory)) {
-            $this->inventory[strval($addedItem->getId())]->add($addedItem->getQuantity());
+        if (array_key_exists(strval($addedItem->getVariety()->getId()), $this->inventory)) {
+            $this->inventory[strval($addedItem->getVariety()->getId())]->add($addedItem->getQuantity());
         } else {
-            $this->inventory[strval($addedItem->getId())] = $addedItem;
+            $this->inventory[strval($addedItem->getVariety()->getId())] = $addedItem;
         }
     }
 
@@ -210,7 +218,7 @@ final class Entity
         return $resourceNeed;
     }
 
-    public function reset(ItemRepository $itemRepository): void
+    public function reset(VarietyRepository $varietyRepository): void
     {
         $this->isIntact = true;
 
@@ -228,11 +236,12 @@ final class Entity
         ];
 
         $this->inventory = [
-            $waterBottle = $itemRepository->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d")),
-            $sandwich = $itemRepository->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158")),
+            $varietyRepository
+                ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))
+                ->createItemWithQuantity(8),
+            $varietyRepository
+                ->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"))
+                ->createItemWithQuantity(3),
         ];
-
-        $waterBottle->add(7);
-        $sandwich->add(2);
     }
 }

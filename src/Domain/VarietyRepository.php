@@ -5,7 +5,7 @@ namespace ConorSmith\Hoarde\Domain;
 
 use Ramsey\Uuid\UuidInterface;
 
-interface ItemRepository
+interface VarietyRepository
 {
-    public function find(UuidInterface $id): ?Item;
+    public function find(UuidInterface $id): ?Variety;
 }

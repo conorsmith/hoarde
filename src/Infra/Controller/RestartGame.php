@@ -5,7 +5,7 @@ namespace ConorSmith\Hoarde\Infra\Controller;
 
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
-use ConorSmith\Hoarde\Domain\ItemRepository;
+use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -19,14 +19,14 @@ final class RestartGame
     /** @var EntityRepository */
     private $entityRepo;
 
-    /** @var ItemRepository */
-    private $itemRepo;
+    /** @var VarietyRepository */
+    private $varietyRepo;
 
-    public function __construct(GameRepository $gameRepo, EntityRepository $entityRepo, ItemRepository $itemRepo)
+    public function __construct(GameRepository $gameRepo, EntityRepository $entityRepo, VarietyRepository $varietyRepo)
     {
         $this->gameRepo = $gameRepo;
         $this->entityRepo = $entityRepo;
-        $this->itemRepo = $itemRepo;
+        $this->varietyRepo = $varietyRepo;
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
@@ -37,7 +37,7 @@ final class RestartGame
         $entityIds = $this->gameRepo->findEntityIds($gameId);
         $entity = $this->entityRepo->find($entityIds[0]);
 
-        $entity->reset($this->itemRepo);
+        $entity->reset($this->varietyRepo);
         $this->entityRepo->save($entity);
 
         $game->restart();

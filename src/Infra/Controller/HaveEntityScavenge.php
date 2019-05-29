@@ -6,7 +6,7 @@ namespace ConorSmith\Hoarde\Infra\Controller;
 use Aura\Session\Segment;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
-use ConorSmith\Hoarde\Domain\ItemRepository;
+use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -20,8 +20,8 @@ final class HaveEntityScavenge
     /** @var EntityRepository */
     private $entityRepo;
 
-    /** @var ItemRepository */
-    private $itemRepo;
+    /** @var VarietyRepository */
+    private $varietyRepo;
 
     /** @var Segment */
     private $session;
@@ -29,12 +29,12 @@ final class HaveEntityScavenge
     public function __construct(
         GameRepository $gameRepo,
         EntityRepository $entityRepo,
-        ItemRepository $itemRepo,
+        VarietyRepository $varietyRepo,
         Segment $session
     ) {
         $this->gameRepo = $gameRepo;
         $this->entityRepo = $entityRepo;
-        $this->itemRepo = $itemRepo;
+        $this->varietyRepo = $varietyRepo;
         $this->session = $session;
     }
 
@@ -46,7 +46,7 @@ final class HaveEntityScavenge
         $entityIds = $this->gameRepo->findEntityIds($gameId);
         $entity = $this->entityRepo->find($entityIds[0]);
 
-        $scavengedItem = $entity->scavenge($this->itemRepo);
+        $scavengedItem = $entity->scavenge($this->varietyRepo);
         $this->entityRepo->save($entity);
 
         $game->proceedToNextTurn();
@@ -60,7 +60,7 @@ final class HaveEntityScavenge
         } else {
             $this->session->setFlash(
                 "success",
-                "Entity scavenged {$scavengedItem->getLabel()} ({$scavengedItem->getQuantity()})"
+                "Entity scavenged {$scavengedItem->getVariety()->getLabel()} ({$scavengedItem->getQuantity()})"
             );
         }
 
