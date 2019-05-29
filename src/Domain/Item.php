@@ -1,5 +1,5 @@
 <?php
-declare(strict_type=1);
+declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Domain;
 
@@ -57,6 +57,11 @@ final class Item
         return $this->quantity > 1;
     }
 
+    public function moreThan(int $quantity): bool
+    {
+        return $this->quantity > $quantity;
+    }
+
     public function removeOne(): void
     {
         if ($this->quantity < 2) {
@@ -69,5 +74,10 @@ final class Item
     public function add(int $additionalQuantity): void
     {
         $this->quantity += $additionalQuantity;
+    }
+
+    public function remove(int $removedQuantity): void
+    {
+        $this->quantity -= $removedQuantity;
     }
 }

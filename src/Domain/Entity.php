@@ -95,12 +95,12 @@ final class Entity
         }
     }
 
-    public function dropItem(UuidInterface $id): Item
+    public function dropItem(UuidInterface $id, int $quantity): Item
     {
         $item = $this->inventory[strval($id)];
 
-        if ($item->moreThanOne()) {
-            $item->removeOne();
+        if ($item->moreThan($quantity)) {
+            $item->remove($quantity);
         } else {
             unset($this->inventory[strval($id)]);
         }

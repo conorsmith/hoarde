@@ -95,9 +95,13 @@
                                             data-toggle="dropdown"></button>
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a href="#"
-                                           class="dropdown-item js-drop"
+                                           class="dropdown-item"
+                                           data-toggle="modal"
+                                           data-target="#dropModal"
                                            data-item-id="<?=$item['id']?>"
-                                        >Drop 1</a>
+                                           data-item-label="<?=$item['label']?>"
+                                           data-item-quantity="<?=$item['quantity']?>"
+                                        >Drop</a>
                                     </div>
                                 </div>
                             </div>
@@ -124,6 +128,31 @@
       <button type="submit" class="btn btn-link">Restart</button>
     </form>
 
+    <div class="modal" tabindex="-1" role="dialog" id="dropModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title js-drop-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="range" id="js-drop-slider" value="0" min="0" max="0" list="js-drop-tickmarks" style="width: 100%;" />
+                    <datalist id="js-drop-tickmarks">
+                      <?php for ($i = 0; $i <= 10; $i++) : ?>
+                        <option value="<?=$i?>">
+                      <?php endfor ?>
+                    </datalist>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary js-drop-submit">Drop 0</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <input type="hidden" id="gameId" value="<?=$gameId?>" />
 
 </div>
@@ -135,7 +164,55 @@
 <script>
     var gameId = document.getElementById("gameId").value;
     var useButtons = document.getElementsByClassName("js-use");
-    var dropMenuOptions = document.getElementsByClassName("js-drop");
+
+    $("#dropModal").on("show.bs.modal", function (e) {
+        var button = e.relatedTarget;
+        e.target.dataset.itemId = button.dataset.itemId;
+        e.target.querySelector(".js-drop-title").innerHTML = "Drop " + button.dataset.itemLabel;
+        e.target.querySelector(".js-drop-submit").innerHTML = "Drop 0";
+        document.getElementById("js-drop-slider").value = 0;
+        document.getElementById("js-drop-slider").max = button.dataset.itemQuantity;
+        document.getElementById("js-drop-tickmarks").innerHTML = "";
+        for (var i = 0; i <= button.dataset.itemQuantity; i++) {
+            var tickmark = document.createElement("option");
+            tickmark.value = i;
+            document.getElementById("js-drop-tickmarks").appendChild(tickmark);
+        }
+    });
+
+    document.getElementById("js-drop-slider").addEventListener("input", function (e) {
+        var submit = document.getElementById("dropModal").querySelector(".js-drop-submit");
+        submit.innerHTML = "Drop " + e.target.value;
+        submit.dataset.itemQuantity = e.target.value;
+    });
+
+    document.getElementById("dropModal").querySelector(".js-drop-submit").onclick = function (e) {
+        e.preventDefault();
+
+        var itemId = document.getElementById("dropModal").dataset.itemId;
+        var itemQuantity = e.target.dataset.itemQuantity;
+
+        var form = document.createElement("form");
+        form.setAttribute("action", "/" + gameId + "/drop");
+        form.setAttribute("method", "POST");
+        form.setAttribute("hidden", true);
+
+        var itemInput = document.createElement("input");
+        itemInput.setAttribute("type", "hidden");
+        itemInput.setAttribute("name", "item");
+        itemInput.setAttribute("value", itemId);
+        form.appendChild(itemInput);
+
+        var itemInput = document.createElement("input");
+        itemInput.setAttribute("type", "hidden");
+        itemInput.setAttribute("name", "quantity");
+        itemInput.setAttribute("value", itemQuantity);
+        form.appendChild(itemInput);
+
+        document.body.appendChild(form);
+
+        form.submit();
+    };
 
     for (var i = 0; i < useButtons.length; i++) {
         useButtons[i].onclick = function (e) {
@@ -145,30 +222,6 @@
 
             var form = document.createElement("form");
             form.setAttribute("action", "/" + gameId + "/use");
-            form.setAttribute("method", "POST");
-            form.setAttribute("hidden", true);
-
-            var itemInput = document.createElement("input");
-            itemInput.setAttribute("type", "hidden");
-            itemInput.setAttribute("name", "item");
-            itemInput.setAttribute("value", itemId);
-
-            form.appendChild(itemInput);
-
-            document.body.appendChild(form);
-
-            form.submit();
-        }
-    }
-
-    for (var i = 0; i < dropMenuOptions.length; i++) {
-        dropMenuOptions[i].onclick = function (e) {
-            e.preventDefault();
-
-            var itemId = e.target.dataset.itemId;
-
-            var form = document.createElement("form");
-            form.setAttribute("action", "/" + gameId + "/drop");
             form.setAttribute("method", "POST");
             form.setAttribute("hidden", true);
 
