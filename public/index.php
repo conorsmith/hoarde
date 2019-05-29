@@ -19,11 +19,11 @@ $db = Doctrine\DBAL\DriverManager::getConnection([
 $gameRepo = new ConorSmith\Hoarde\Infra\Repository\GameRepositoryDb($db);
 $resourceRepo = new ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
 $varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig($resourceRepo);
-$entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $varietyRepo);
+$entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $varietyRepo, $resourceRepo);
 
 $showLandingPage = new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage;
 $generateNewGame = new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame($gameRepo, $entityRepo, $varietyRepo);
-$restartGame = new ConorSmith\Hoarde\Infra\Controller\RestartGame($gameRepo, $entityRepo, $varietyRepo);
+$restartGame = new ConorSmith\Hoarde\Infra\Controller\RestartGame($gameRepo, $entityRepo, $varietyRepo, $resourceRepo);
 $haveEntityWait = new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait($gameRepo, $entityRepo, $sessionSegment);
 $haveEntityUseItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem($gameRepo, $entityRepo, $sessionSegment);
 $haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);

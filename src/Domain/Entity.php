@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Domain;
 
+use ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
 use DomainException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -43,7 +44,7 @@ final class Entity
                 throw new DomainException;
             }
 
-            $this->resourceNeeds[strval($resourceNeed->getResourceId())] = $resourceNeed;
+            $this->resourceNeeds[strval($resourceNeed->getResource()->getId())] = $resourceNeed;
         }
 
         foreach ($inventory as $item) {
@@ -184,14 +185,16 @@ final class Entity
         ) {
             $this->consumeResources();
 
+            $resourceRepository = new ResourceRepositoryConfig;
+
             $this->resourceNeeds["5234c112-05be-4b15-80df-3c2b67e88262"] = new ResourceNeed(
-                Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"),
+                $resourceRepository->find(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262")),
                 12,
                 12
             );
         } else {
             foreach ($this->resourceNeeds as $key => $resourceNeed) {
-                if ($resourceNeed->getResourceId()->equals($resourceId)) {
+                if ($resourceNeed->getResource()->getId()->equals($resourceId)) {
                     $this->resourceNeeds[$key] = $resourceNeed->replenish();
                 } else {
                     $this->resourceNeeds[$key] = $this->consumeResource($resourceNeed);
@@ -218,18 +221,18 @@ final class Entity
         return $resourceNeed;
     }
 
-    public function reset(VarietyRepository $varietyRepository): void
+    public function reset(VarietyRepository $varietyRepository, ResourceRepository $resourceRepository): void
     {
         $this->isIntact = true;
 
         $this->resourceNeeds = [
             "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => new ResourceNeed(
-                Uuid::fromString("6f5cc44d-db25-454a-b3fb-4ab3f61ce179"),
+                $resourceRepository->find(Uuid::fromString("6f5cc44d-db25-454a-b3fb-4ab3f61ce179")),
                 3,
                 0 // Hack
             ),
             "9972c015-842a-4601-8fb2-c900e1a54177" => new ResourceNeed(
-                Uuid::fromString("9972c015-842a-4601-8fb2-c900e1a54177"),
+                $resourceRepository->find(Uuid::fromString("9972c015-842a-4601-8fb2-c900e1a54177")),
                 3,
                 0 // Hack
             )

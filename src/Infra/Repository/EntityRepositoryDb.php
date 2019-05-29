@@ -5,6 +5,7 @@ namespace ConorSmith\Hoarde\Infra\Repository;
 
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
+use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Domain\ResourceNeed;
 use Doctrine\DBAL\Connection;
@@ -26,10 +27,14 @@ final class EntityRepositoryDb implements EntityRepository
     /** @var VarietyRepository */
     private $varietyRepository;
 
-    public function __construct(Connection $db, VarietyRepository $varietyRepository)
+    /** @var ResourceRepository */
+    private $resourceRepository;
+
+    public function __construct(Connection $db, VarietyRepository $varietyRepository, ResourceRepository $resourceRepository)
     {
         $this->db = $db;
         $this->varietyRepository = $varietyRepository;
+        $this->resourceRepository = $resourceRepository;
     }
 
     public function find(UuidInterface $id): ?Entity
@@ -61,7 +66,7 @@ final class EntityRepositoryDb implements EntityRepository
 
         foreach ($rows as $row) {
             $resourceNeeds[] = new ResourceNeed(
-                Uuid::fromString($row['resource_id']),
+                $this->resourceRepository->find(Uuid::fromString($row['resource_id'])),
                 intval($row['level']),
                 self::RESOURCE_MAXIMUMS_FOR_ENTITY[$row['resource_id']]
             );
@@ -135,7 +140,7 @@ final class EntityRepositoryDb implements EntityRepository
         foreach ($entity->getResourceNeeds() as $resourceNeed) {
             $this->db->insert("entity_resources", [
                 'entity_id'   => $entity->getId(),
-                'resource_id' => $resourceNeed->getResourceId(),
+                'resource_id' => $resourceNeed->getResource()->getId(),
                 'level'       => $resourceNeed->getCurrentLevel(),
             ]);
         }

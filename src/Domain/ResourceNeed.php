@@ -7,8 +7,8 @@ use Ramsey\Uuid\UuidInterface;
 
 final class ResourceNeed
 {
-    /** @var UuidInterface */
-    private $resourceId;
+    /** @var Resource */
+    private $resource;
 
     /** @var int */
     private $currentLevel;
@@ -16,16 +16,21 @@ final class ResourceNeed
     /** @var int */
     private $maximumLevel;
 
-    public function __construct(UuidInterface $resourceId, int $currentLevel, int $maximumLevel)
+    public function __construct(Resource $resource, int $currentLevel, int $maximumLevel)
     {
-        $this->resourceId = $resourceId;
+        $this->resource = $resource;
         $this->currentLevel = $currentLevel;
         $this->maximumLevel = $maximumLevel;
     }
 
     public function getResourceId(): UuidInterface
     {
-        return $this->resourceId;
+        return $this->resource->getId();
+    }
+
+    public function getResource(): Resource
+    {
+        return $this->resource;
     }
 
     public function getCurrentLevel(): int
@@ -52,7 +57,7 @@ final class ResourceNeed
         }
 
         return new self(
-            $this->resourceId,
+            $this->resource,
             $newLevel,
             $this->maximumLevel
         );
@@ -61,7 +66,7 @@ final class ResourceNeed
     public function replenish(): self
     {
         return new self(
-            $this->resourceId,
+            $this->resource,
             $this->maximumLevel,
             $this->maximumLevel
         );
