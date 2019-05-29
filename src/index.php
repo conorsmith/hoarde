@@ -84,15 +84,15 @@
                             <div class="btn-group d-flex" role="group">
 
                                 <a href="#"
-                                   class="btn btn-light btn-block js-use"
+                                   class="btn btn-light btn-block js-use <?=($isIntact ? "" : "disabled")?>"
                                    data-item-id="<?=$item['id']?>"
-                                   <?=($isIntact ? "" : "disabled")?>
                                 ><?=$item['label']?> (<?=$item['quantity']?>)</a>
 
                                 <div class="btn-group" role="group">
                                     <button type="button"
                                             class="btn btn-light dropdown-toggle"
-                                            data-toggle="dropdown"></button>
+                                            data-toggle="dropdown"
+                                            <?=($isIntact ? "" : "disabled")?>></button>
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a href="#"
                                            class="dropdown-item"
