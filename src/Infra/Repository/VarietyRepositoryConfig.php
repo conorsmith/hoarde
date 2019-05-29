@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Infra\Repository;
 
+use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\Variety;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Ramsey\Uuid\Uuid;
@@ -29,6 +30,13 @@ final class VarietyRepositoryConfig implements VarietyRepository
         ],
     ];
 
+    private $resourceRepository;
+
+    public function __construct(ResourceRepository $resourceRepository)
+    {
+        $this->resourceRepository = $resourceRepository;
+    }
+
     public function find(UuidInterface $id): ?Variety
     {
         if (!array_key_exists(strval($id), self::VARIETIES)) {
@@ -38,7 +46,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         return new Variety(
             $id,
             self::VARIETIES[strval($id)]['label'],
-            Uuid::fromString(self::VARIETIES[strval($id)]['resourceId'])
+            $this->resourceRepository->find(Uuid::fromString(self::VARIETIES[strval($id)]['resourceId']))
         );
     }
 }

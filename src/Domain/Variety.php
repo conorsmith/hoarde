@@ -13,14 +13,14 @@ final class Variety
     /** @var string */
     private $label;
 
-    /** @var UuidInterface */
-    private $resourceId;
+    /** @var Resource */
+    private $resource;
 
-    public function __construct(UuidInterface $id, string $label, UuidInterface $resourceId)
+    public function __construct(UuidInterface $id, string $label, Resource $resource)
     {
         $this->id = $id;
         $this->label = $label;
-        $this->resourceId = $resourceId;
+        $this->resource = $resource;
     }
 
     public function getId(): UuidInterface
@@ -33,9 +33,9 @@ final class Variety
         return $this->label;
     }
 
-    public function getResourceId(): UuidInterface
+    public function getResource(): Resource
     {
-        return $this->resourceId;
+        return $this->resource;
     }
 
     public function createItemWithQuantity(int $quantity): Item

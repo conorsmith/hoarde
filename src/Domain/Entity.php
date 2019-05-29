@@ -84,7 +84,7 @@ final class Entity
     {
         foreach ($this->inventory as $key => $item) {
             if ($item->getVariety()->getId()->equals($id)) {
-                $this->replenish($item->getVariety()->getResourceId());
+                $this->replenish($item->getVariety()->getResource()->getId());
                 if ($item->moreThanOne()) {
                     $item->removeOne();
                 } else {

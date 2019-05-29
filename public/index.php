@@ -17,9 +17,9 @@ $db = Doctrine\DBAL\DriverManager::getConnection([
 ]);
 
 $gameRepo = new ConorSmith\Hoarde\Infra\Repository\GameRepositoryDb($db);
-$varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
-$entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $varietyRepo);
 $resourceRepo = new ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
+$varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig($resourceRepo);
+$entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $varietyRepo);
 
 $showLandingPage = new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage;
 $generateNewGame = new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame($gameRepo, $entityRepo, $varietyRepo);
