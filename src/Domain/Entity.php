@@ -20,7 +20,7 @@ final class Entity
     private $isIntact;
 
     /** @var array */
-    private $resourceLevels;
+    private $resourceNeeds;
 
     /** @var array */
     private $inventory;
@@ -29,21 +29,21 @@ final class Entity
         UuidInterface $id,
         UuidInterface $gameId,
         bool $isIntact,
-        iterable $resourceLevels,
+        iterable $resourceNeeds,
         iterable $inventory
     ) {
         $this->id = $id;
         $this->gameId = $gameId;
         $this->isIntact = $isIntact;
-        $this->resourceLevels = [];
+        $this->resourceNeeds = [];
         $this->inventory = [];
 
-        foreach ($resourceLevels as $resourceLevel) {
-            if (!$resourceLevel instanceof ResourceLevel) {
+        foreach ($resourceNeeds as $resourceNeed) {
+            if (!$resourceNeed instanceof ResourceNeed) {
                 throw new DomainException;
             }
 
-            $this->resourceLevels[strval($resourceLevel->getResourceId())] = $resourceLevel;
+            $this->resourceNeeds[strval($resourceNeed->getResourceId())] = $resourceNeed;
         }
 
         foreach ($inventory as $item) {
@@ -70,9 +70,9 @@ final class Entity
         return $this->isIntact;
     }
 
-    public function getResourceLevels(): iterable
+    public function getResourceNeeds(): iterable
     {
-        return $this->resourceLevels;
+        return $this->resourceNeeds;
     }
 
     public function getInventory(): iterable
@@ -166,7 +166,7 @@ final class Entity
 
     private function isAddictedToHeroin(): bool
     {
-        return array_key_exists("5234c112-05be-4b15-80df-3c2b67e88262", $this->resourceLevels);
+        return array_key_exists("5234c112-05be-4b15-80df-3c2b67e88262", $this->resourceNeeds);
     }
 
     public function replenish(UuidInterface $resourceId): void
@@ -176,17 +176,17 @@ final class Entity
         ) {
             $this->consumeResources();
 
-            $this->resourceLevels["5234c112-05be-4b15-80df-3c2b67e88262"] = new ResourceLevel(
+            $this->resourceNeeds["5234c112-05be-4b15-80df-3c2b67e88262"] = new ResourceNeed(
                 Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"),
                 12,
                 12
             );
         } else {
-            foreach ($this->resourceLevels as $key => $resourceLevel) {
-                if ($resourceLevel->getResourceId()->equals($resourceId)) {
-                    $this->resourceLevels[$key] = $resourceLevel->replenish();
+            foreach ($this->resourceNeeds as $key => $resourceNeed) {
+                if ($resourceNeed->getResourceId()->equals($resourceId)) {
+                    $this->resourceNeeds[$key] = $resourceNeed->replenish();
                 } else {
-                    $this->resourceLevels[$key] = $this->consumeResource($resourceLevel);
+                    $this->resourceNeeds[$key] = $this->consumeResource($resourceNeed);
                 }
             }
         }
@@ -194,33 +194,33 @@ final class Entity
 
     private function consumeResources(): void
     {
-        foreach ($this->resourceLevels as $key => $resourceLevel) {
-            $this->resourceLevels[$key] = $this->consumeResource($resourceLevel);
+        foreach ($this->resourceNeeds as $key => $resourceNeed) {
+            $this->resourceNeeds[$key] = $this->consumeResource($resourceNeed);
         }
     }
 
-    private function consumeResource(ResourceLevel $resourceLevel): ResourceLevel
+    private function consumeResource(ResourceNeed $resourceNeed): ResourceNeed
     {
-        $resourceLevel = $resourceLevel->consume();
+        $resourceNeed = $resourceNeed->consume();
 
-        if ($resourceLevel->isDepleted()) {
+        if ($resourceNeed->isDepleted()) {
             $this->isIntact = false;
         }
 
-        return $resourceLevel;
+        return $resourceNeed;
     }
 
     public function reset(ItemRepository $itemRepository): void
     {
         $this->isIntact = true;
 
-        $this->resourceLevels = [
-            "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => new ResourceLevel(
+        $this->resourceNeeds = [
+            "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => new ResourceNeed(
                 Uuid::fromString("6f5cc44d-db25-454a-b3fb-4ab3f61ce179"),
                 3,
                 0 // Hack
             ),
-            "9972c015-842a-4601-8fb2-c900e1a54177" => new ResourceLevel(
+            "9972c015-842a-4601-8fb2-c900e1a54177" => new ResourceNeed(
                 Uuid::fromString("9972c015-842a-4601-8fb2-c900e1a54177"),
                 3,
                 0 // Hack

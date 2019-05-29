@@ -6,7 +6,7 @@ namespace ConorSmith\Hoarde\Infra\Repository;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\ItemRepository;
-use ConorSmith\Hoarde\Domain\ResourceLevel;
+use ConorSmith\Hoarde\Domain\ResourceNeed;
 use Doctrine\DBAL\Connection;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -49,10 +49,10 @@ final class EntityRepositoryDb implements EntityRepository
             return null;
         }
 
-        $resourceLevels = [];
+        $resourceNeeds = [];
 
         foreach ($resourceRows as $resourceRow) {
-            $resourceLevels[] = new ResourceLevel(
+            $resourceNeeds[] = new ResourceNeed(
                 Uuid::fromString($resourceRow['resource_id']),
                 intval($resourceRow['level']),
                 self::RESOURCE_MAXIMUMS[$resourceRow['resource_id']]
@@ -75,7 +75,7 @@ final class EntityRepositoryDb implements EntityRepository
             $id,
             Uuid::fromString($row['game_id']),
             $row['intact'] === "1",
-            $resourceLevels,
+            $resourceNeeds,
             $inventory
         );
     }
@@ -93,11 +93,11 @@ final class EntityRepositoryDb implements EntityRepository
                 'intact'  => $entity->isIntact(),
             ]);
 
-            foreach ($entity->getResourceLevels() as $resourceLevel) {
+            foreach ($entity->getResourceNeeds() as $resourceNeed) {
                 $this->db->insert("entity_resources", [
                     'entity_id' => $entity->getId(),
-                    'resource_id' => $resourceLevel->getResourceId(),
-                    'level' => $resourceLevel->getValue(),
+                    'resource_id' => $resourceNeed->getResourceId(),
+                    'level' => $resourceNeed->getValue(),
                 ]);
             }
 
@@ -112,11 +112,11 @@ final class EntityRepositoryDb implements EntityRepository
                 'entity_id' => strval($entity->getId()),
             ]);
 
-            foreach ($entity->getResourceLevels() as $resourceLevel) {
+            foreach ($entity->getResourceNeeds() as $resourceNeed) {
                 $this->db->insert("entity_resources", [
                     'entity_id'   => $entity->getId(),
-                    'resource_id' => $resourceLevel->getResourceId(),
-                    'level'       => $resourceLevel->getValue(),
+                    'resource_id' => $resourceNeed->getResourceId(),
+                    'level'       => $resourceNeed->getValue(),
                 ]);
             }
         }

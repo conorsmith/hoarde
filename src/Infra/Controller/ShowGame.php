@@ -53,11 +53,11 @@ final class ShowGame
         $turnIndex = $game->getTurnIndex();
 
         $resources = [];
-        foreach ($entity->getResourceLevels() as $resourceLevel) {
+        foreach ($entity->getResourceNeeds() as $resourceNeed) {
             $resources[] = [
-                'label'        => $this->resourceRepo->find($resourceLevel->getResourceId())->getLabel(),
-                'level'        => $resourceLevel->getValue(),
-                'segmentWidth' => 100 / $resourceLevel->getMaximumValue(),
+                'label'        => $this->resourceRepo->find($resourceNeed->getResourceId())->getLabel(),
+                'level'        => $resourceNeed->getValue(),
+                'segmentWidth' => 100 / $resourceNeed->getMaximumValue(),
             ];
         }
 

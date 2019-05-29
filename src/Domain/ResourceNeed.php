@@ -5,7 +5,7 @@ namespace ConorSmith\Hoarde\Domain;
 
 use Ramsey\Uuid\UuidInterface;
 
-final class ResourceLevel
+final class ResourceNeed
 {
     /** @var UuidInterface */
     private $resourceId;
