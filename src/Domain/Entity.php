@@ -95,6 +95,21 @@ final class Entity
         }
     }
 
+    public function dropItem(UuidInterface $id): Item
+    {
+        $item = $this->inventory[strval($id)];
+
+        if ($item->moreThanOne()) {
+            $item->removeOne();
+        } else {
+            unset($this->inventory[strval($id)]);
+        }
+
+        $this->consumeResources();
+
+        return $item;
+    }
+
     public function scavenge(ItemRepository $itemRepository): ?Item
     {
         $generator = (new Factory)->getMediumStrengthGenerator();

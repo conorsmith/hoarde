@@ -27,6 +27,7 @@ $restartGame = new ConorSmith\Hoarde\Infra\Controller\RestartGame($gameRepo, $en
 $haveEntityWait = new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait($gameRepo, $entityRepo, $sessionSegment);
 $haveEntityUseItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem($gameRepo, $entityRepo, $sessionSegment);
 $haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge($gameRepo, $entityRepo, $itemRepo, $sessionSegment);
+$haveEntityDropItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem($gameRepo, $entityRepo, $sessionSegment);
 $showGame = new ConorSmith\Hoarde\Infra\Controller\ShowGame($gameRepo, $entityRepo, $resourceRepo, $sessionSegment);
 $showNotFoundPage = new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage;
 
@@ -40,6 +41,7 @@ $router->post("/{gameId}/restart", $restartGame);
 $router->post("/{gameId}/wait", $haveEntityWait);
 $router->post("/{gameId}/use", $haveEntityUseItem);
 $router->post("/{gameId}/scavenge", $haveEntityScavenge);
+$router->post("/{gameId}/drop", $haveEntityDropItem);
 
 try {
     $response = $router->dispatch(Zend\Diactoros\ServerRequestFactory::fromGlobals(

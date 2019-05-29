@@ -24,11 +24,13 @@
             background-color: #dc3545;
         }
 
-        .actions form button {
+        .actions form button,
+        .actions .btn-group {
             margin-bottom: 1rem;
         }
 
-        .actions form:last-child button {
+        .actions form:last-child button,
+        .actions .btn-group:last-child {
             margin-bottom: 0;
         }
     </style>
@@ -78,12 +80,28 @@
 
                     <p><strong>Inventory</strong></p>
                     <div class="actions">
-                      <?php foreach ($inventory as $item) : ?>
-                          <form method="POST" action="/<?=$gameId?>/use">
-                            <input type="hidden" name="item" value="<?=$item['id']?>" />
-                            <button type="submit" class="btn btn-light btn-block" <?=($isIntact ? "" : "disabled")?>><?=$item['label']?> (<?=$item['quantity']?>)</button>
-                          </form>
-                      <?php endforeach ?>
+                        <?php foreach ($inventory as $item) : ?>
+                            <div class="btn-group d-flex" role="group">
+
+                                <a href="#"
+                                   class="btn btn-light btn-block js-use"
+                                   data-item-id="<?=$item['id']?>"
+                                   <?=($isIntact ? "" : "disabled")?>
+                                ><?=$item['label']?> (<?=$item['quantity']?>)</a>
+
+                                <div class="btn-group" role="group">
+                                    <button type="button"
+                                            class="btn btn-light dropdown-toggle"
+                                            data-toggle="dropdown"></button>
+                                    <div class="dropdown-menu">
+                                        <a href="#"
+                                           class="dropdown-item js-drop"
+                                           data-item-id="<?=$item['id']?>"
+                                        >Drop 1</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach ?>
                     </div>
 
                     <hr>
@@ -106,10 +124,66 @@
       <button type="submit" class="btn btn-link">Restart</button>
     </form>
 
+    <input type="hidden" id="gameId" value="<?=$gameId?>" />
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<script>
+    var gameId = document.getElementById("gameId").value;
+    var useButtons = document.getElementsByClassName("js-use");
+    var dropMenuOptions = document.getElementsByClassName("js-drop");
+
+    for (var i = 0; i < useButtons.length; i++) {
+        useButtons[i].onclick = function (e) {
+            e.preventDefault();
+
+            var itemId = e.target.dataset.itemId;
+
+            var form = document.createElement("form");
+            form.setAttribute("action", "/" + gameId + "/use");
+            form.setAttribute("method", "POST");
+            form.setAttribute("hidden", true);
+
+            var itemInput = document.createElement("input");
+            itemInput.setAttribute("type", "hidden");
+            itemInput.setAttribute("name", "item");
+            itemInput.setAttribute("value", itemId);
+
+            form.appendChild(itemInput);
+
+            document.body.appendChild(form);
+
+            form.submit();
+        }
+    }
+
+    for (var i = 0; i < dropMenuOptions.length; i++) {
+        dropMenuOptions[i].onclick = function (e) {
+            e.preventDefault();
+
+            var itemId = e.target.dataset.itemId;
+
+            var form = document.createElement("form");
+            form.setAttribute("action", "/" + gameId + "/drop");
+            form.setAttribute("method", "POST");
+            form.setAttribute("hidden", true);
+
+            var itemInput = document.createElement("input");
+            itemInput.setAttribute("type", "hidden");
+            itemInput.setAttribute("name", "item");
+            itemInput.setAttribute("value", itemId);
+
+            form.appendChild(itemInput);
+
+            document.body.appendChild(form);
+
+            form.submit();
+        }
+    }
+</script>
 </body>
 </html>
