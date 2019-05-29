@@ -152,7 +152,7 @@ final class Entity
             [
                 'rolls' => [99],
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"))
+                    ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
                     ->createItemWithQuantity(1),
             ],
             [
