@@ -7,6 +7,7 @@ use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\ItemRepository;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 
@@ -28,9 +29,9 @@ final class RestartGame
         $this->itemRepo = $itemRepo;
     }
 
-    public function __invoke(): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $gameId = Uuid::fromString(substr($_SERVER['REQUEST_URI'], 1));
+        $gameId = Uuid::fromString($args['gameId']);
 
         $game = $this->gameRepo->find($gameId);
         $entityIds = $this->gameRepo->findEntityIds($gameId);

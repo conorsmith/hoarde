@@ -79,8 +79,7 @@
                     <p><strong>Inventory</strong></p>
                     <div class="actions">
                       <?php foreach ($inventory as $item) : ?>
-                          <form method="POST">
-                            <input type="hidden" name="action" value="use" />
+                          <form method="POST" action="/<?=$gameId?>/use">
                             <input type="hidden" name="item" value="<?=$item['id']?>" />
                             <button type="submit" class="btn btn-light btn-block" <?=($isIntact ? "" : "disabled")?>><?=$item['label']?> (<?=$item['quantity']?>)</button>
                           </form>
@@ -90,12 +89,10 @@
                     <hr>
 
                     <div class="actions">
-                      <form method="POST">
-                        <input type="hidden" name="action" value="scavenge" />
+                      <form method="POST" action="/<?=$gameId?>/scavenge">
                         <button type="submit" class="btn btn-light btn-block" <?=($isIntact ? "" : "disabled")?>>Scavenge</button>
                       </form>
-                      <form method="POST">
-                        <input type="hidden" name="action" value="wait" />
+                      <form method="POST" action="/<?=$gameId?>/wait">
                         <button type="submit" class="btn btn-light btn-block" <?=($isIntact ? "" : "disabled")?>>Wait</button>
                       </form>
                     </div>
@@ -105,8 +102,7 @@
         </div>
     </div>
 
-    <form method="POST" style="float: right;">
-      <input type="hidden" name="action" value="restart" />
+    <form method="POST" action="/<?=$gameId?>/restart" style="float: right;">
       <button type="submit" class="btn btn-link">Restart</button>
     </form>
 

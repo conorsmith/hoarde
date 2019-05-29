@@ -36,31 +36,10 @@ $router->get("/", $showLandingPage);
 $router->post("/", $generateNewGame);
 
 $router->get("/{gameId}", $showGame);
-$router->post("/{gameId}", function (Psr\Http\Message\ServerRequestInterface $request) use (
-    $restartGame,
-    $haveEntityWait,
-    $haveEntityUseItem,
-    $haveEntityScavenge,
-    $showNotFoundPage
-) {
-    if ($_POST['action'] === "restart") {
-        $response = $restartGame();
-
-    } elseif ($_POST['action'] === "wait") {
-        $response = $haveEntityWait();
-
-    } elseif ($_POST['action'] === "use") {
-        $response = $haveEntityUseItem();
-
-    } elseif ($_POST['action'] === "scavenge") {
-        $response = $haveEntityScavenge();
-
-    } else {
-        $response = $showNotFoundPage();
-    }
-
-    return $response;
-});
+$router->post("/{gameId}/restart", $restartGame);
+$router->post("/{gameId}/wait", $haveEntityWait);
+$router->post("/{gameId}/use", $haveEntityUseItem);
+$router->post("/{gameId}/scavenge", $haveEntityScavenge);
 
 try {
     $response = $router->dispatch(Zend\Diactoros\ServerRequestFactory::fromGlobals(
