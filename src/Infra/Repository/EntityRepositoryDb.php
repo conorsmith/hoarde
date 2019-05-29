@@ -18,17 +18,6 @@ final class EntityRepositoryDb implements EntityRepository
         "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => 10,
     ];
 
-    private const ITEMS = [
-        "2f555296-ff9f-4205-a4f7-d181e4455f9d" => [
-            'label' => "Water Bottle",
-            'resourceId' => "9972c015-842a-4601-8fb2-c900e1a54177",
-        ],
-        "9c2bb508-c40f-491b-a4ca-fc811087a158" => [
-            'label' => "Sandwich",
-            'resourceId' => "6f5cc44d-db25-454a-b3fb-4ab3f61ce179",
-        ],
-    ];
-
     /** @var Connection */
     private $db;
 

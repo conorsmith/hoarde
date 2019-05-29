@@ -99,20 +99,28 @@ final class Entity
     {
         $generator = (new Factory)->getMediumStrengthGenerator();
 
-        $diceRoll = $generator->generateInt(1, 6);
+        $d100 = $generator->generateInt(1, 100);
 
-        if ($diceRoll === 5) {
-            $scavengedItem = $itemRepository->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"));
-            $scavengedItem->add($generator->generateInt(0, 2));
+        if ($d100 === 100) {
+            $scavengedItem = $itemRepository->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"));
             $this->addToInventory($scavengedItem);
-
-        } elseif ($diceRoll === 6) {
-            $scavengedItem = $itemRepository->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"));
-            $scavengedItem->add($generator->generateInt(0, 1));
-            $this->addToInventory($scavengedItem);
-
         } else {
-            $scavengedItem = null;
+
+            $diceRoll = $generator->generateInt(1, 6);
+
+            if ($diceRoll === 5) {
+                $scavengedItem = $itemRepository->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"));
+                $scavengedItem->add($generator->generateInt(0, 2));
+                $this->addToInventory($scavengedItem);
+
+            } elseif ($diceRoll === 6) {
+                $scavengedItem = $itemRepository->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"));
+                $scavengedItem->add($generator->generateInt(0, 1));
+                $this->addToInventory($scavengedItem);
+
+            } else {
+                $scavengedItem = null;
+            }
         }
 
         $this->consumeResources();
