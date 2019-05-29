@@ -16,10 +16,10 @@ $db = Doctrine\DBAL\DriverManager::getConnection([
     'driver'   => "pdo_mysql",
 ]);
 
-$gameRepo = new ConorSmith\Hoarde\Infra\GameRepositoryDb($db);
-$itemRepo = new ConorSmith\Hoarde\Infra\ItemRepositoryConfig;
-$entityRepo = new ConorSmith\Hoarde\Infra\EntityRepositoryDb($db, $itemRepo);
-$resourceRepo = new ConorSmith\Hoarde\Infra\ResourceRepositoryConfig;
+$gameRepo = new ConorSmith\Hoarde\Infra\Repository\GameRepositoryDb($db);
+$itemRepo = new ConorSmith\Hoarde\Infra\Repository\ItemRepositoryConfig;
+$entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $itemRepo);
+$resourceRepo = new ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
 
 if ($_SERVER['REQUEST_URI'] === "/") {
     if ($_SERVER['REQUEST_METHOD'] === "POST") {

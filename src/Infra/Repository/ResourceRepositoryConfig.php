@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ConorSmith\Hoarde\Infra;
+namespace ConorSmith\Hoarde\Infra\Repository;
 
 use ConorSmith\Hoarde\Domain\Resource;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
