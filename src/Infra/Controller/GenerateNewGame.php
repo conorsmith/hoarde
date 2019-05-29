@@ -8,7 +8,9 @@ use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\ItemRepository;
+use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
+use Zend\Diactoros\Response;
 
 final class GenerateNewGame
 {
@@ -28,7 +30,7 @@ final class GenerateNewGame
         $this->itemRepo = $itemRepo;
     }
 
-    public function __invoke()
+    public function __invoke(): ResponseInterface
     {
         $newGame = new Game(
             $id = Uuid::uuid4(),
@@ -46,6 +48,8 @@ final class GenerateNewGame
         $newEntity->reset($this->itemRepo);
         $this->entityRepo->save($newEntity);
 
-        header("Location: /{$id}");
+        $response = new Response;
+        $response = $response->withHeader("Location", "/{$id}");
+        return $response;
     }
 }

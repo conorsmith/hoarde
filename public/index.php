@@ -32,34 +32,28 @@ $showNotFoundPage = new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage;
 
 if ($_SERVER['REQUEST_URI'] === "/") {
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
-        $generateNewGame();
-        return;
+        $response = $generateNewGame();
     } else {
-        $showLandingPage();
-        return;
+        $response = $showLandingPage();
     }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if ($_POST['action'] === "restart") {
-        $restartGame();
-        return;
+        $response = $restartGame();
 
     } elseif ($_POST['action'] === "wait") {
-        $haveEntityWait();
-        return;
+        $response = $haveEntityWait();
 
     } elseif ($_POST['action'] === "use") {
-        $haveEntityUseItem();
-        return;
+        $response = $haveEntityUseItem();
 
     } elseif ($_POST['action'] === "scavenge") {
-        $haveEntityScavenge();
-        return;
+        $response = $haveEntityScavenge();
     }
 } else {
-    $showGame();
-    return;
+    $response = $showGame();
 }
 
-$showNotFoundPage();
+(new Zend\HttpHandlerRunner\Emitter\SapiEmitter)->emit($response);
+

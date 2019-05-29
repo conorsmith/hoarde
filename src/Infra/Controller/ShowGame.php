@@ -7,7 +7,9 @@ use Aura\Session\Segment;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
+use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
+use Zend\Diactoros\Response;
 
 final class ShowGame
 {
@@ -35,7 +37,7 @@ final class ShowGame
         $this->session = $session;
     }
 
-    public function __invoke()
+    public function __invoke(): ResponseInterface
     {
         $gameId = Uuid::fromString(substr($_SERVER['REQUEST_URI'], 1));
 
@@ -70,6 +72,16 @@ final class ShowGame
 
         $isIntact = $entity->isIntact();
 
+        ob_start();
+
         include __DIR__ . "/../../index.php";
+
+        $body = ob_get_contents();
+
+        ob_end_clean();
+
+        $response = new Response;
+        $response->getBody()->write($body);
+        return $response;
     }
 }
