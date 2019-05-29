@@ -23,6 +23,10 @@ final class ItemRepositoryConfig implements ItemRepository
             'label'      => "Coke Zero",
             'resourceId' => "9972c015-842a-4601-8fb2-c900e1a54177",
         ],
+        "275d6f62-16ff-4f5f-8ac6-149ec4cde1e2" => [
+            'label'      => "Heroin",
+            'resourceId' => "5234c112-05be-4b15-80df-3c2b67e88262",
+        ],
     ];
 
     public function find(UuidInterface $id): ?Item

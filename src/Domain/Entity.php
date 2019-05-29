@@ -43,7 +43,7 @@ final class Entity
                 throw new DomainException;
             }
 
-            $this->resourceLevels[] = $resourceLevel;
+            $this->resourceLevels[strval($resourceLevel->getResourceId())] = $resourceLevel;
         }
 
         foreach ($inventory as $item) {
@@ -119,11 +119,18 @@ final class Entity
         if ($d100 === 100) {
             $scavengedItem = $itemRepository->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"));
             $this->addToInventory($scavengedItem);
+        } elseif ($d100 === 99) {
+            $scavengedItem = $itemRepository->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"));
+            $this->addToInventory($scavengedItem);
         } else {
 
             $diceRoll = $generator->generateInt(1, 6);
 
-            if ($diceRoll === 5) {
+            if ($diceRoll === 4 && $this->isAddictedToHeroin()) {
+                $scavengedItem = $itemRepository->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"));
+                $this->addToInventory($scavengedItem);
+
+            } elseif ($diceRoll === 5) {
                 $scavengedItem = $itemRepository->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"));
                 $scavengedItem->add($generator->generateInt(0, 2));
                 $this->addToInventory($scavengedItem);
@@ -157,13 +164,30 @@ final class Entity
         $this->consumeResources();
     }
 
+    private function isAddictedToHeroin(): bool
+    {
+        return array_key_exists("5234c112-05be-4b15-80df-3c2b67e88262", $this->resourceLevels);
+    }
+
     public function replenish(UuidInterface $resourceId): void
     {
-        foreach ($this->resourceLevels as $key => $resourceLevel) {
-            if ($resourceLevel->getResourceId()->equals($resourceId)) {
-                $this->resourceLevels[$key] = $resourceLevel->replenish();
-            } else {
-                $this->resourceLevels[$key] = $this->consumeResource($resourceLevel);
+        if ($resourceId->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))
+            && !$this->isAddictedToHeroin()
+        ) {
+            $this->consumeResources();
+
+            $this->resourceLevels["5234c112-05be-4b15-80df-3c2b67e88262"] = new ResourceLevel(
+                Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"),
+                12,
+                12
+            );
+        } else {
+            foreach ($this->resourceLevels as $key => $resourceLevel) {
+                if ($resourceLevel->getResourceId()->equals($resourceId)) {
+                    $this->resourceLevels[$key] = $resourceLevel->replenish();
+                } else {
+                    $this->resourceLevels[$key] = $this->consumeResource($resourceLevel);
+                }
             }
         }
     }
@@ -191,12 +215,12 @@ final class Entity
         $this->isIntact = true;
 
         $this->resourceLevels = [
-            new ResourceLevel(
+            "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => new ResourceLevel(
                 Uuid::fromString("6f5cc44d-db25-454a-b3fb-4ab3f61ce179"),
                 3,
                 0 // Hack
             ),
-            new ResourceLevel(
+            "9972c015-842a-4601-8fb2-c900e1a54177" => new ResourceLevel(
                 Uuid::fromString("9972c015-842a-4601-8fb2-c900e1a54177"),
                 3,
                 0 // Hack

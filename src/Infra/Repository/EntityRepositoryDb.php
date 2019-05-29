@@ -16,6 +16,7 @@ final class EntityRepositoryDb implements EntityRepository
     private const RESOURCE_MAXIMUMS = [
         "9972c015-842a-4601-8fb2-c900e1a54177" => 5,
         "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => 10,
+        "5234c112-05be-4b15-80df-3c2b67e88262" => 12,
     ];
 
     /** @var Connection */
@@ -107,12 +108,15 @@ final class EntityRepositoryDb implements EntityRepository
                 'id' => strval($entity->getId()),
             ]);
 
+            $this->db->delete("entity_resources", [
+                'entity_id' => strval($entity->getId()),
+            ]);
+
             foreach ($entity->getResourceLevels() as $resourceLevel) {
-                $this->db->update("entity_resources", [
-                    'level' => $resourceLevel->getValue(),
-                ], [
-                    'entity_id'   => strval($entity->getId()),
-                    'resource_id' => strval($resourceLevel->getResourceId()),
+                $this->db->insert("entity_resources", [
+                    'entity_id'   => $entity->getId(),
+                    'resource_id' => $resourceLevel->getResourceId(),
+                    'level'       => $resourceLevel->getValue(),
                 ]);
             }
         }
