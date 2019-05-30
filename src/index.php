@@ -344,6 +344,7 @@
     document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").onclick = function (e) {
         if (this.dataset.haulId === undefined) {
             window.location.reload();
+            return;
         }
 
         var previousAlert = document.getElementById("scavengeModal").querySelector(".js-scavenge-haul .alert");
