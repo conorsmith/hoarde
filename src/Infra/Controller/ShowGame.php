@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
+use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
+use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\Item;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
@@ -46,6 +48,22 @@ final class ShowGame
         $entityIds = $this->gameRepo->findEntityIds($gameId);
         $entity = $this->entityRepo->find($entityIds[0]);
 
+        $body = $this->renderTemplate($game, $entity, [
+            'entity' => (object) [
+                'label' => $entity->getLabel(),
+                'icon'  => $entity->getIcon(),
+            ],
+        ]);
+
+        $response = new Response;
+        $response->getBody()->write($body);
+        return $response;
+    }
+
+    private function renderTemplate(Game $game, Entity $entity, array $variables): string
+    {
+        $gameId = $game->getId();
+
         $danger = $this->session->getFlash("danger");
         $warning = $this->session->getFlash("warning");
         $success = $this->session->getFlash("success");
@@ -72,6 +90,8 @@ final class ShowGame
         $inventoryWeight = $entity->getInventoryWeight() / $entity->getInventoryCapacity() * 100;
         $entityOverencumbered = $entity->isOverencumbered();
 
+        extract($variables);
+
         ob_start();
 
         include __DIR__ . "/../../index.php";
@@ -80,9 +100,7 @@ final class ShowGame
 
         ob_end_clean();
 
-        $response = new Response;
-        $response->getBody()->write($body);
-        return $response;
+        return $body;
     }
 
     private function presentItem(Item $item): array

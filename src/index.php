@@ -51,10 +51,12 @@
                 <div class="card-body">
 
                     <h5 class="card-title">
-                      Entity
-                      <?php if (!$isIntact) : ?>
-                        <i class="fas fa-skull-crossbones"></i>
+                      <?php if ($isIntact) : ?>
+                        <i class="fas fa-fw fa-<?=$entity->icon?>"></i>
+                      <?php else : ?>
+                        <i class="fas fa-fw fa-skull-crossbones"></i>
                       <?php endif ?>
+                      <?=$entity->label?>
                     </h5>
 
                     <?php if (!is_null($danger)) : ?>

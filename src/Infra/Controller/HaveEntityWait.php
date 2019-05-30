@@ -47,7 +47,7 @@ final class HaveEntityWait
         $this->gameRepo->save($game);
 
         if (!$entity->isIntact()) {
-            $this->session->setFlash("danger", "Entity has expired");
+            $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
         }
 
         $response = new Response;

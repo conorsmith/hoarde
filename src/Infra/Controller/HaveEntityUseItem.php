@@ -47,10 +47,10 @@ final class HaveEntityUseItem
         $game->proceedToNextTurn();
         $this->gameRepo->save($game);
 
-        $this->session->setFlash("info", "Entity consumed {$usedItem->getVariety()->getLabel()}");
+        $this->session->setFlash("info", "{$entity->getLabel()} consumed {$usedItem->getVariety()->getLabel()}");
 
         if (!$entity->isIntact()) {
-            $this->session->setFlash("danger", "Entity has expired");
+            $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
         }
 
         $response = new Response;

@@ -48,10 +48,10 @@ final class HaveEntityDropItem
         $game->proceedToNextTurn();
         $this->gameRepo->save($game);
 
-        $this->session->setFlash("info", "Entity dropped {$droppedItem->getVariety()->getLabel()} ({$droppedQuantity})");
+        $this->session->setFlash("info", "{$entity->getLabel()} dropped {$droppedItem->getVariety()->getLabel()} ({$droppedQuantity})");
 
         if (!$entity->isIntact()) {
-            $this->session->setFlash("danger", "Entity has expired");
+            $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
         }
 
         $response = new Response;

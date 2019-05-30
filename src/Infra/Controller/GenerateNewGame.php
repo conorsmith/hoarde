@@ -10,6 +10,7 @@ use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 
@@ -35,7 +36,7 @@ final class GenerateNewGame
         $this->resourceRepo = $resourceRepo;
     }
 
-    public function __invoke(): ResponseInterface
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $newGame = new Game(
             $id = Uuid::uuid4(),
@@ -46,6 +47,8 @@ final class GenerateNewGame
         $newEntity = new Entity(
             Uuid::uuid4(),
             $id,
+            $request->getParsedBody()['label'],
+            $request->getParsedBody()['icon'],
             true,
             [],
             []

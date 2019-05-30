@@ -59,23 +59,23 @@ final class HaveEntityScavenge
             if ($haul->isRetrievable()) {
                 $this->session->setFlash(
                     "success",
-                    "Entity scavenged {$label} ({$haul->getItem()->getQuantity()})"
+                    "{$entity->getLabel()} scavenged {$label} ({$haul->getItem()->getQuantity()})"
                 );
             } else {
                 $this->session->setFlash(
                     "danger",
-                    "Entity could not add {$label} ({$haul->getItem()->getQuantity()}) to inventory"
+                    "{$entity->getLabel()} could not add {$label} ({$haul->getItem()->getQuantity()}) to inventory"
                 );
             }
         } else {
             $this->session->setFlash(
                 "warning",
-                "Entity failed to scavenge anything"
+                "{$entity->getLabel()} failed to scavenge anything"
             );
         }
 
         if (!$entity->isIntact()) {
-            $this->session->setFlash("danger", "Entity has expired");
+            $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
         }
 
         $response = new Response;

@@ -17,6 +17,12 @@ final class Entity
     /** @var UuidInterface */
     private $gameId;
 
+    /** @var string */
+    private $label;
+
+    /** @var string */
+    private $icon;
+
     /** @var bool */
     private $isIntact;
 
@@ -29,12 +35,16 @@ final class Entity
     public function __construct(
         UuidInterface $id,
         UuidInterface $gameId,
+        string $label,
+        string $icon,
         bool $isIntact,
         iterable $resourceNeeds,
         iterable $inventory
     ) {
         $this->id = $id;
         $this->gameId = $gameId;
+        $this->label = $label;
+        $this->icon = $icon;
         $this->isIntact = $isIntact;
         $this->resourceNeeds = [];
         $this->inventory = [];
@@ -64,6 +74,16 @@ final class Entity
     public function getGameId(): UuidInterface
     {
         return $this->gameId;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function getIcon(): string
+    {
+        return $this->icon;
     }
 
     public function isIntact(): bool

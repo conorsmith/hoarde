@@ -50,6 +50,8 @@ final class EntityRepositoryDb implements EntityRepository
         return new Entity(
             $id,
             Uuid::fromString($row['game_id']),
+            $row['label'],
+            $row['icon'],
             $row['intact'] === "1",
             $this->findResourceNeeds($id),
             $this->findInventory($id)
@@ -120,10 +122,14 @@ final class EntityRepositoryDb implements EntityRepository
             $this->db->insert("entities", [
                 'id'      => $entity->getId(),
                 'game_id' => $entity->getGameId(),
+                'label'   => $entity->getLabel(),
+                'icon'    => $entity->getIcon(),
                 'intact'  => $entity->isIntact(),
             ]);
         } else {
             $this->db->update("entities", [
+                'label'  => $entity->getLabel(),
+                'icon'   => $entity->getIcon(),
                 'intact' => $entity->isIntact() ? "1" : "0",
             ], [
                 'id' => $entity->getId(),
