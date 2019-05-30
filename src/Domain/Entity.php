@@ -219,31 +219,28 @@ final class Entity
             ];
         }
 
-        $scavengedItem = null;
+        $scavengedItems = [];
 
         $d100 = $generator->generateInt(1, 100);
 
         foreach ($rollTable as $rollTableEntry) {
             if (in_array($d100, $rollTableEntry['rolls'])) {
-                $scavengedItem = $rollTableEntry['item'];
+                $scavengedItems[] = $rollTableEntry['item'];
             }
         }
 
-        if (is_null($scavengedItem)) {
-            $isRetrievable = false;
-        } else {
-            $isRetrievable = $this->getInventoryWeight() + $scavengedItem->getWeight() <= $this->getInventoryCapacity();
-        }
-
-        if (!is_null($scavengedItem) && $isRetrievable) {
-            $this->addToInventory($scavengedItem);
-        }
-
-        $haul = new ScavengingHaul($scavengedItem, $isRetrievable);
+        $haul = new ScavengingHaul(Uuid::uuid4(), $scavengedItems);
 
         $this->afterAction();
 
         return $haul;
+    }
+
+    public function addHaulToInventory(ScavengingHaul $haul): void
+    {
+        foreach ($haul->getItems() as $item) {
+            $this->addToInventory($item);
+        }
     }
 
     public function wait(): void

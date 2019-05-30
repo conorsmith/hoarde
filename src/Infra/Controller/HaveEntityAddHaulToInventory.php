@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 
-final class HaveEntityScavenge
+class HaveEntityAddHaulToInventory
 {
     /** @var GameRepository */
     private $gameRepo;
@@ -47,41 +47,31 @@ final class HaveEntityScavenge
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $gameId = Uuid::fromString($args['gameId']);
+        $haulId = Uuid::fromString($args['haulId']);
 
-        $game = $this->gameRepo->find($gameId);
+        $selectedItems = json_decode($request->getBody()->getContents(), true)['selectedItems'];
+
         $entityIds = $this->gameRepo->findEntityIds($gameId);
         $entity = $this->entityRepo->find($entityIds[0]);
 
-        $haul = $entity->scavenge($this->varietyRepo);
+        $haul = $this->scavengedHaulRepo->find($haulId);
+
+        foreach ($selectedItems as $varietyId => $quantity) {
+            $haul->reduceItemQuantity(Uuid::fromString($varietyId), $quantity);
+        }
+
+        if (!$haul->isRetrievableBy($entity)) {
+            $response = new Response;
+            $response->getBody()->write("{$entity->getLabel()} cannot carry that much!");
+            return $response;
+        }
+
+        $entity->addHaulToInventory($haul);
+
+        $this->scavengedHaulRepo->delete($haul);
         $this->entityRepo->save($entity);
-        $this->scavengedHaulRepo->save($haul);
-
-        $game->proceedToNextTurn();
-        $this->gameRepo->save($game);
-
-        $transformedHaul = [
-            'id' => $haul->getId(),
-            'items' => [],
-        ];
-
-        if ($haul->hasItems()) {
-            foreach ($haul->getItems() as $item) {
-                $transformedHaul['items'][] = [
-                    'varietyId'     => $item->getVariety()->getId(),
-                    'label'         => $item->getVariety()->getLabel(),
-                    'quantity'      => $item->getQuantity(),
-                ];
-            }
-        }
-
-        if (!$entity->isIntact()) {
-            $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
-        }
 
         $response = new Response;
-        $response->getBody()->write(json_encode([
-            'haul' => $transformedHaul,
-        ]));
         return $response;
     }
 }

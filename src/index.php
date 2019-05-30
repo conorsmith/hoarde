@@ -118,12 +118,17 @@
                     <hr>
 
                     <div class="actions">
-                      <form method="POST" action="/<?=$gameId?>/scavenge">
-                        <button type="button" class="btn btn-light btn-block js-scavenge" <?=($isIntact ? "" : "disabled")?>>Scavenge</button>
-                      </form>
+
+                      <button type="button"
+                              class="btn btn-light btn-block js-scavenge"
+                              <?=($isIntact ? "" : "disabled")?>
+                              style="margin-bottom: 1rem;"
+                      >Scavenge</button>
+
                       <form method="POST" action="/<?=$gameId?>/wait">
                         <button type="submit" class="btn btn-light btn-block" <?=($isIntact ? "" : "disabled")?>>Wait</button>
                       </form>
+
                     </div>
 
                 </div>
@@ -158,6 +163,22 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="scavengeModal" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Scavenging Haul</h5>
+          </div>
+          <div class="modal-body">
+            <div class="js-scavenge-haul"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary js-scavenge-submit">Add to Inventory</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <input type="hidden" id="gameId" value="<?=$gameId?>" />
@@ -251,16 +272,115 @@
         scavengeButtons[i].onclick = function (e) {
             e.preventDefault();
 
-            var form = document.createElement("form");
-            form.setAttribute("action", "/" + gameId + "/scavenge");
-            form.setAttribute("method", "POST");
-            form.setAttribute("hidden", true);
+            var xhr = new XMLHttpRequest();
 
-            document.body.appendChild(form);
+            xhr.onload = function () {
+                var response = JSON.parse(this.response);
 
-            form.submit();
+                console.log(response.haul);
+
+                if (response.haul.items.length === 0) {
+                    var alert = document.createElement("div");
+                    alert.classList.add("alert");
+                    alert.classList.add("alert-warning");
+                    alert.innerHTML = "Failed to scavenge anything.";
+                    document.getElementById("scavengeModal").querySelector(".js-scavenge-haul").appendChild(alert);
+                    document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").innerHTML = "Oh well";
+                } else {
+                    document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").dataset.haulId
+                        = response.haul.id;
+
+                    for (var i = 0; i < response.haul.items.length; i++) {
+                        var item = response.haul.items[i];
+
+                        var container = document.createElement("div");
+
+                        var labelQuantity = document.createElement("span");
+                        labelQuantity.classList.add("js-scavange-quantity");
+                        labelQuantity.innerHTML = item.quantity;
+
+                        var label = document.createElement("p");
+                        label.innerHTML = item.label + " &times; ";
+                        label.appendChild(labelQuantity);
+
+                        var slider = document.createElement("input");
+                        slider.type = "range";
+                        slider.setAttribute("list", "js-scavange-tickmarks-" + item.varietyId);
+                        slider.dataset.varietyId = item.varietyId;
+                        slider.min = 0;
+                        slider.max = item.quantity;
+                        slider.value = item.quantity;
+                        slider.style.width = "100%";
+
+                        var datalist = document.createElement("datalist");
+                        datalist.id = "js-scavange-tickmarks-" + item.varietyId;
+
+                        for (var t = 0; t <= item.quantity; t++) {
+                            var tickmark = document.createElement("option");
+                            tickmark.value = t;
+                            datalist.appendChild(tickmark);
+                        }
+
+                        container.appendChild(label);
+                        container.appendChild(slider);
+                        container.appendChild(datalist);
+
+                        slider.addEventListener("input", function (e) {
+                            labelQuantity.innerHTML = e.target.value;
+                        });
+
+                        document.getElementById("scavengeModal").querySelector(".js-scavenge-haul").appendChild(container);
+                    }
+                }
+
+                $("#scavengeModal").modal('show');
+            };
+
+            xhr.open("POST", "/" + gameId + "/scavenge");
+            xhr.send();
         }
     }
+
+    document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").onclick = function (e) {
+        if (this.dataset.haulId === undefined) {
+            window.location.reload();
+        }
+
+        var previousAlert = document.getElementById("scavengeModal").querySelector(".js-scavenge-haul .alert");
+
+        if (previousAlert) {
+            previousAlert.remove();
+        }
+
+        var body = {};
+        body.selectedItems = {};
+
+        var inputs = document.getElementById("scavengeModal").querySelectorAll(".js-scavenge-haul input[type='range']");
+
+        for (var i = 0; i < inputs.length; i++) {
+            body.selectedItems[inputs[i].dataset.varietyId] = parseInt(inputs[i].value, 10);
+        }
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onload = function () {
+            if (this.response === "") {
+                window.location.reload();
+            } else {
+                var alert = document.createElement("div");
+                alert.classList.add("alert");
+                alert.classList.add("alert-danger");
+                alert.innerHTML = this.response;
+
+                document.getElementById("scavengeModal").querySelector(".js-scavenge-haul").appendChild(alert);
+            }
+        };
+
+        xhr.open("POST", "/" + gameId + "/scavenge/" + this.dataset.haulId);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(body));
+    }
+
 </script>
 </body>
 </html>

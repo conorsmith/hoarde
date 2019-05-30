@@ -67,4 +67,13 @@ final class Item
     {
         $this->quantity -= $removedQuantity;
     }
+
+    public function reduceTo(int $newQuantity): void
+    {
+        if ($newQuantity > $this->quantity) {
+            throw new DomainException;
+        }
+
+        $this->quantity = $newQuantity;
+    }
 }
