@@ -19,6 +19,7 @@ final class ShowNotFoundPage
         ob_end_clean();
 
         $response = new Response;
+        $response = $response->withStatus(404);
         $response->getBody()->write($body);
         return $response;
     }
