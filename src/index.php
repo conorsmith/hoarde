@@ -6,8 +6,10 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon">
 
-    <title>Hoarde</title>
+
+  <title>Hoarde</title>
 
     <style>
 
@@ -117,7 +119,7 @@
 
                     <div class="actions">
                       <form method="POST" action="/<?=$gameId?>/scavenge">
-                        <button type="submit" class="btn btn-light btn-block" <?=($isIntact ? "" : "disabled")?>>Scavenge</button>
+                        <button type="button" class="btn btn-light btn-block js-scavenge" <?=($isIntact ? "" : "disabled")?>>Scavenge</button>
                       </form>
                       <form method="POST" action="/<?=$gameId?>/wait">
                         <button type="submit" class="btn btn-light btn-block" <?=($isIntact ? "" : "disabled")?>>Wait</button>
@@ -236,6 +238,23 @@
             itemInput.setAttribute("value", itemId);
 
             form.appendChild(itemInput);
+
+            document.body.appendChild(form);
+
+            form.submit();
+        }
+    }
+
+    var scavengeButtons = document.getElementsByClassName("js-scavenge");
+
+    for (var i = 0; i < scavengeButtons.length; i++) {
+        scavengeButtons[i].onclick = function (e) {
+            e.preventDefault();
+
+            var form = document.createElement("form");
+            form.setAttribute("action", "/" + gameId + "/scavenge");
+            form.setAttribute("method", "POST");
+            form.setAttribute("hidden", true);
 
             document.body.appendChild(form);
 
