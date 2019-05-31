@@ -531,11 +531,19 @@
     };
 
     scavengeModal.querySelector(".js-scavenge-inventory-haul-weight").handleHaulCreated = function (e) {
-        this.innerHTML = "+" + (e.detail.weight / 1000) + " kg";
+        if (e.detail.weight < 100 && e.detail.weight > 0) {
+            this.innerHTML = "+" + (e.detail.weight) + " g";
+        } else {
+            this.innerHTML = "+" + (e.detail.weight / 1000) + " kg";
+        }
     };
 
     scavengeModal.querySelector(".js-scavenge-inventory-haul-weight").handleHaulModified = function (e) {
-        this.innerHTML = "+" + (e.detail.newWeight / 1000) + " kg";
+        if (e.detail.newWeight < 100 && e.detail.newWeight > 0) {
+            this.innerHTML = "+" + (e.detail.newWeight) + " g";
+        } else {
+            this.innerHTML = "+" + (e.detail.newWeight / 1000) + " kg";
+        }
     };
 
     scavengeModal.querySelector(".js-scavenge-inventory-haul-progress").handleHaulCreated = function (e) {
