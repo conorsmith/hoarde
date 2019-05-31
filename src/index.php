@@ -47,6 +47,30 @@
         .modal .alert {
           margin-bottom: 0;
         }
+
+        @keyframes rotating {
+          from {
+            -ms-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -webkit-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+          }
+          to {
+            -ms-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -webkit-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+          }
+        }
+        .rotating {
+          -webkit-animation: rotating 2s linear infinite;
+          -moz-animation: rotating 2s linear infinite;
+          -ms-animation: rotating 2s linear infinite;
+          -o-animation: rotating 2s linear infinite;
+          animation: rotating 2s linear infinite;
+        }
     </style>
 </head>
 <body style="margin-top: 1rem;">
@@ -282,6 +306,10 @@
           <span class="tmpl-quantity js-scavange-quantity" style="margin-left: 1rem; text-align: right;"></span>
         </div>
       </div>
+    </template>
+
+    <template id="spinner">
+      <i class="fas fa-spinner rotating"></i>
     </template>
 
 </div>
@@ -745,6 +773,12 @@
     for (var i = 0; i < scavengeButtons.length; i++) {
         scavengeButtons[i].onclick = function (e) {
             e.preventDefault();
+            const button = this;
+
+            const template = document.getElementById("spinner").content.cloneNode(true);
+            this.dataset.buttonText = this.innerText;
+            this.innerText = "";
+            this.appendChild(template);
 
             var xhr = new XMLHttpRequest();
 
@@ -758,6 +792,8 @@
                 }
 
                 $("#scavengeModal").modal('show');
+
+                button.innerText = button.dataset.buttonText;
             };
 
             xhr.open("POST", "/" + gameId + "/scavenge");
