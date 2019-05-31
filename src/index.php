@@ -242,7 +242,7 @@
                     </datalist>
                   </div>
                   <div class="align-self-center" style="width: 1rem; margin-left: 1rem;">
-                    <span class="js-scavenge-inventory-quantity" data-variety-id="<?=$item['id']?>" style="text-align: right;"><?=$item['quantity']?></span>
+                    <div class="js-scavenge-inventory-quantity" data-variety-id="<?=$item['id']?>" style="text-align: right;"><?=$item['quantity']?></div>
                   </div>
                 </div>
               <?php endforeach ?>
@@ -251,9 +251,16 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button"
-                    class="btn btn-primary btn-block js-scavenge-submit"
-            >Add to Inventory</button>
+            <div class="btn-group d-flex" style="width: 100%;">
+              <button type="button"
+                      class="btn btn-primary btn-block js-scavenge-submit"
+                      style="border-right: 1px solid #fff;"
+              >Add to Inventory</button>
+              <button type="button"
+                      class="btn btn-primary js-scavenge-discard"
+                      style="border-left: 1px solid #fff;"
+              ><i class="fas fa-trash"></i></button>
+            </div>
           </div>
 
         </div>
@@ -537,46 +544,66 @@
         }
     };
 
+    scavengeModal.querySelector(".js-scavenge-discard").onclick = function (e) {
+        e.preventDefault();
+
+        var haulInputs = scavengeModal.querySelector(".js-scavenge-haul").findInputs();
+        var inventoryInputs = scavengeModal.querySelector(".js-scavenge-inventory").findInputs();
+
+        for (var i = 0; i < haulInputs.length; i++) {
+            haulInputs[i].value = 0;
+            haul.modifyItemQuantity(haulInputs[i].dataset.varietyId, 0);
+        }
+
+        api.addHaul(scavengeModal.querySelector(".js-scavenge-submit").dataset.haulId, haulInputs, inventoryInputs);
+    };
+
     scavengeModal.querySelector(".js-scavenge-submit").onclick = function (e) {
         if (this.dataset.isEmpty === "true") {
             window.location.reload();
             return;
         }
 
-        var body = {};
-        body.selectedItems = {};
-        body.modifiedInventory = {};
-
         var haulInputs = scavengeModal.querySelector(".js-scavenge-haul").findInputs();
         var inventoryInputs = scavengeModal.querySelector(".js-scavenge-inventory").findInputs();
 
-        for (var i = 0; i < haulInputs.length; i++) {
-            body.selectedItems[haulInputs[i].dataset.varietyId] = parseInt(haulInputs[i].value, 10);
-        }
+        api.addHaul(this.dataset.haulId, haulInputs, inventoryInputs);
+    };
 
-        for (i = 0; i < inventoryInputs.length; i++) {
-            body.modifiedInventory[inventoryInputs[i].dataset.varietyId] = parseInt(inventoryInputs[i].value, 10);
-        }
+    var api = {
+        addHaul: function (haulId, haulInputs, inventoryInputs) {
+            var body = {};
+            body.selectedItems = {};
+            body.modifiedInventory = {};
 
-        var xhr = new XMLHttpRequest();
-
-        xhr.onload = function () {
-            if (this.responseText === "") {
-                window.location.reload();
-            } else {
-                scavengeModal.dispatchEvent(new CustomEvent("haul.notAdded", {
-                    detail: {
-                        message: this.responseText
-                    }
-                }));
+            for (var i = 0; i < haulInputs.length; i++) {
+                body.selectedItems[haulInputs[i].dataset.varietyId] = parseInt(haulInputs[i].value, 10);
             }
-        };
 
-        xhr.open("POST", "/" + gameId + "/scavenge/" + this.dataset.haulId);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(body));
+            for (i = 0; i < inventoryInputs.length; i++) {
+                body.modifiedInventory[inventoryInputs[i].dataset.varietyId] = parseInt(inventoryInputs[i].value, 10);
+            }
 
-        scavengeModal.dispatchEvent(new CustomEvent("haul.add"));
+            var xhr = new XMLHttpRequest();
+
+            xhr.onload = function () {
+                if (this.responseText === "") {
+                    window.location.reload();
+                } else {
+                    scavengeModal.dispatchEvent(new CustomEvent("haul.notAdded", {
+                        detail: {
+                            message: this.responseText
+                        }
+                    }));
+                }
+            };
+
+            xhr.open("POST", "/" + gameId + "/scavenge/" + haulId);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify(body));
+
+            scavengeModal.dispatchEvent(new CustomEvent("haul.add"));
+        }
     };
 
     scavengeModal.querySelector(".js-scavenge-haul").handleHaulCreated = function (e) {
