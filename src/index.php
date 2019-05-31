@@ -430,6 +430,9 @@
             },
             isOverCapacity: function () {
                 return this.inventory.weight + this.getWeight() > this.inventory.capacity;
+            },
+            isEmpty: function () {
+                return this.items.length === 0;
             }
         };
 
@@ -577,51 +580,42 @@
     };
 
     scavengeModal.querySelector(".js-scavenge-haul").handleHaulCreated = function (e) {
-        if (e.detail.isEmpty) {
-            var alert = document.createElement("div");
-            alert.classList.add("alert");
-            alert.classList.add("alert-warning");
-            alert.innerHTML = "Failed to scavenge anything.";
+        for (var i = 0; i < e.detail.items.length; i++) {
 
-            this.appendChild(alert);
-        } else {
-            for (var i = 0; i < e.detail.items.length; i++) {
+            var item = e.detail.items[i];
 
-                var item = e.detail.items[i];
+            const datalistId = "scavange-tickmarks-" + item.varietyId;
 
-                const datalistId = "scavange-tickmarks-" + item.varietyId;
+            const template = document.getElementById("scavange-item-slider").content.cloneNode(true);
 
-                const template = document.getElementById("scavange-item-slider").content.cloneNode(true);
+            template.querySelector(".tmpl-label").innerText = item.label;
 
-                template.querySelector(".tmpl-label").innerText = item.label;
-
-                template.querySelector(".tmpl-quantity").innerText = item.quantity;
-                template.querySelector(".tmpl-quantity").item = e.detail.items[i];
-                template.querySelector(".tmpl-quantity").handleHaulModified = function (haulModifiedEvent) {
-                    if (haulModifiedEvent.detail.modifiedItemVarietyId === this.item.varietyId) {
-                        this.innerHTML = haulModifiedEvent.detail.newQuantity;
-                    }
-                };
-
-                template.querySelector("input[type='range']").setAttribute("list", datalistId);
-                template.querySelector("input[type='range']").dataset.varietyId = item.varietyId;
-                template.querySelector("input[type='range']").dataset.weight = item.weight;
-                template.querySelector("input[type='range']").max = item.quantity;
-                template.querySelector("input[type='range']").value = item.quantity;
-                template.querySelector("input[type='range']").addEventListener("input", function (inputEvent) {
-                    e.detail.haul.modifyItemQuantity(inputEvent.target.dataset.varietyId, inputEvent.target.value);
-                });
-
-                template.querySelector("datalist").id = datalistId;
-
-                for (var t = 0; t <= item.quantity; t++) {
-                    var tickmark = document.createElement("option");
-                    tickmark.value = t;
-                    template.querySelector("datalist").appendChild(tickmark);
+            template.querySelector(".tmpl-quantity").innerText = item.quantity;
+            template.querySelector(".tmpl-quantity").item = e.detail.items[i];
+            template.querySelector(".tmpl-quantity").handleHaulModified = function (haulModifiedEvent) {
+                if (haulModifiedEvent.detail.modifiedItemVarietyId === this.item.varietyId) {
+                    this.innerHTML = haulModifiedEvent.detail.newQuantity;
                 }
+            };
 
-                this.appendChild(template);
+            template.querySelector("input[type='range']").setAttribute("list", datalistId);
+            template.querySelector("input[type='range']").dataset.varietyId = item.varietyId;
+            template.querySelector("input[type='range']").dataset.weight = item.weight;
+            template.querySelector("input[type='range']").max = item.quantity;
+            template.querySelector("input[type='range']").value = item.quantity;
+            template.querySelector("input[type='range']").addEventListener("input", function (inputEvent) {
+                e.detail.haul.modifyItemQuantity(inputEvent.target.dataset.varietyId, inputEvent.target.value);
+            });
+
+            template.querySelector("datalist").id = datalistId;
+
+            for (var t = 0; t <= item.quantity; t++) {
+                var tickmark = document.createElement("option");
+                tickmark.value = t;
+                template.querySelector("datalist").appendChild(tickmark);
             }
+
+            this.appendChild(template);
         }
     };
 
@@ -730,6 +724,12 @@
             xhr.onload = function () {
                 var response = JSON.parse(this.response);
                 haul = createHaul(response);
+
+                if (haul.isEmpty()) {
+                    window.location.reload();
+                    return;
+                }
+
                 $("#scavengeModal").modal('show');
             };
 
