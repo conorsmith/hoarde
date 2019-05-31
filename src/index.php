@@ -162,7 +162,7 @@
                       >Scavenge</button>
 
                       <form method="POST" action="/<?=$gameId?>/wait">
-                        <button type="submit" class="btn btn-light btn-block" <?=($isIntact ? "" : "disabled")?>>Wait</button>
+                        <button type="submit" class="btn btn-light btn-block js-wait" <?=($isIntact ? "" : "disabled")?>>Wait</button>
                       </form>
 
                     </div>
@@ -374,6 +374,10 @@
     for (var i = 0; i < useButtons.length; i++) {
         useButtons[i].onclick = function (e) {
             e.preventDefault();
+
+            const template = document.getElementById("spinner").content.cloneNode(true);
+            this.innerText = "";
+            this.appendChild(template);
 
             var itemId = e.target.dataset.itemId;
 
@@ -800,6 +804,12 @@
             xhr.send();
         }
     }
+
+    document.querySelector(".js-wait").onclick = function () {
+        const template = document.getElementById("spinner").content.cloneNode(true);
+        this.innerText = "";
+        this.appendChild(template);
+    };
 
 </script>
 </body>
