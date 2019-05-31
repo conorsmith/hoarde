@@ -177,7 +177,7 @@ final class Entity
     {
         $this->beforeAction();
 
-        $generator = (new Factory)->getMediumStrengthGenerator();
+        $generator = (new Factory)->getLowStrengthGenerator();
 
         $rollTable = [
             [
