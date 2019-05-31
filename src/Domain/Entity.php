@@ -243,6 +243,15 @@ final class Entity
         }
     }
 
+    public function reduceInventoryItemQuantity(UuidInterface $varietyId, int $newQuantity): void
+    {
+        if ($newQuantity === 0) {
+            unset($this->inventory[strval($varietyId)]);
+        } else {
+            $this->inventory[strval($varietyId)]->reduceTo($newQuantity);
+        }
+    }
+
     public function wait(): void
     {
         $this->beforeAction();

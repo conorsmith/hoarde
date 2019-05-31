@@ -49,7 +49,9 @@ class HaveEntityAddHaulToInventory
         $gameId = Uuid::fromString($args['gameId']);
         $haulId = Uuid::fromString($args['haulId']);
 
-        $selectedItems = json_decode($request->getBody()->getContents(), true)['selectedItems'];
+        $body = json_decode($request->getBody()->getContents(), true);
+        $selectedItems = $body['selectedItems'];
+        $modifiedInventory = $body['modifiedInventory'];
 
         $entityIds = $this->gameRepo->findEntityIds($gameId);
         $entity = $this->entityRepo->find($entityIds[0]);
@@ -64,6 +66,10 @@ class HaveEntityAddHaulToInventory
             $response = new Response;
             $response->getBody()->write("{$entity->getLabel()} cannot carry that much!");
             return $response;
+        }
+
+        foreach ($modifiedInventory as $varietyId => $quantity) {
+            $entity->reduceInventoryItemQuantity(Uuid::fromString($varietyId), $quantity);
         }
 
         $entity->addHaulToInventory($haul);

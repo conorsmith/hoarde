@@ -198,14 +198,18 @@
                data-inventory-weight="<?=$entity->inventory->weight?>"
                data-inventory-capacity="<?=$entity->inventory->capacity?>"
           >
-            <div style="font-size: 0.8rem; font-weight: 600;">Inventory Capacity</div>
-            <div class="d-flex" style="margin-top: 0.2rem;">
+
+            <div class="d-flex justify-content-between" style="font-size: 0.8rem;">
+              <div style="font-weight: 600;">Inventory Capacity</div>
+              <div class="align-self-end"><a href="#" class="js-scavenge-toggle-inventory" data-is-shown="0"><i class="fas fa-caret-down"></i> Discard Items</a></div>
+            </div>
+            <div class="d-flex" style="margin-top: 0.5rem;">
               <div style="margin-right: 1rem;">
                   <?=$entity->inventory->weight / 1000?> / <?=$entity->inventory->capacity / 1000?> kg
               </div>
               <div class="flex-fill align-self-center">
                 <div class="progress">
-                  <div class="progress-bar <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>"
+                  <div class="progress-bar js-scavenge-inventory-progress <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>"
                        style="width: <?=$inventoryWeight?>%;"
                   ></div>
                   <div class="progress-bar js-scavenge-inventory-haul-progress"></div>
@@ -215,6 +219,35 @@
                    style="margin-left: 1rem; width: 3.4rem; text-align: right;"
               ></div>
             </div>
+
+            <div class="js-scavenge-inventory-items" style="display: none; margin-top: 1.6rem;">
+              <?php foreach ($inventory as $item) : ?>
+                <div class="item-slider d-flex">
+                  <div class="align-self-center" style="margin-right: 1rem;">
+                    <?=$item['label']?>
+                  </div>
+                  <div class="flex-fill" style="height: 32px;">
+                    <input type="range"
+                           min="0"
+                           max="<?=$item['quantity']?>"
+                           value="<?=$item['quantity']?>"
+                           list="scavenge-tickmarks-<?=$item['id']?>"
+                           style="width: 100%"
+                           data-variety-id="<?=$item['id']?>"
+                    >
+                    <datalist id="scavenge-tickmarks-<?=$item['id']?>">
+                      <?php for ($i = 0; $i <= $item['quantity']; $i++) : ?>
+                          <option value="<?=$i?>">
+                      <?php endfor ?>
+                    </datalist>
+                  </div>
+                  <div class="align-self-center" style="width: 1rem; margin-left: 1rem;">
+                    <span class="js-scavenge-inventory-quantity" data-variety-id="<?=$item['id']?>" style="text-align: right;"><?=$item['quantity']?></span>
+                  </div>
+                </div>
+              <?php endforeach ?>
+            </div>
+
           </div>
 
           <div class="modal-footer">
@@ -330,13 +363,45 @@
     var scavengeModal = document.getElementById("scavengeModal");
     var scavengeButtons = document.getElementsByClassName("js-scavenge");
 
+    var haul;
+
+    var inventory = {
+        items: JSON.parse('<?=json_encode($inventory)?>'),
+        weight: parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryWeight, 10),
+        capacity: parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryCapacity, 10),
+        modifyItemQuantity: function (varietyId, newQuantity) {
+            for (var i = 0; i < this.items.length; i++) {
+                if (varietyId === this.items[i].id) {
+                    this.items[i].quantity = newQuantity;
+                }
+            }
+
+            this.weight = 0;
+
+            for (i = 0; i < this.items.length; i++) {
+                this.weight += this.items[i].weight * this.items[i].quantity;
+            }
+
+            scavengeModal.dispatchEvent(new CustomEvent("inventory.modify", {
+                detail: {
+                    newQuantity: newQuantity,
+                    newWeight: this.weight,
+                    isOverCapacity: this.isOverCapacity(),
+                    inventory: this,
+                    modifiedItemVarietyId: varietyId,
+                    haul: haul
+                }
+            }));
+        },
+        isOverCapacity: function () {
+            return this.weight + haul.getWeight() > this.capacity;
+        }
+    };
+
     var createHaul = function (response) {
         var haul = {
             items: response.haul.items,
-            inventory: {
-                weight: parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryWeight, 10),
-                capacity: parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryCapacity, 10)
-            },
+            inventory: inventory,
             modifyItemQuantity: function (varietyId, newQuantity) {
                 for (var i = 0; i < this.items.length; i++) {
                     if (varietyId === this.items[i].varietyId) {
@@ -383,6 +448,33 @@
         return haul;
     };
 
+    scavengeModal.querySelectorAll(".js-scavenge-inventory-items .js-scavenge-inventory-quantity").forEach(function (quantity) {
+        quantity.handleInventoryModified = function (e) {
+            if (e.detail.modifiedItemVarietyId === this.dataset.varietyId) {
+                this.innerHTML = e.detail.newQuantity;
+            }
+        };
+    })
+
+    scavengeModal.querySelectorAll(".js-scavenge-inventory-items input[type='range']").forEach(function (input) {
+        input.addEventListener("input", function (e) {
+            inventory.modifyItemQuantity(e.target.dataset.varietyId, e.target.value);
+        });
+    });
+
+    scavengeModal.querySelector(".js-scavenge-inventory").findInputs = function () {
+        return this.querySelectorAll("input[type='range']");
+    };
+
+    scavengeModal.addEventListener("inventory.modify", function (e) {
+        this.querySelector(".js-scavenge-submit").handleInventoryModified(e);
+        this.querySelector(".js-scavenge-inventory-progress").handleInventoryModified(e);
+        this.querySelector(".js-scavenge-inventory-haul-progress").handleInventoryModified(e);
+        this.querySelectorAll(".js-scavenge-inventory-quantity").forEach(function (quantity) {
+            quantity.handleInventoryModified(e);
+        })
+    });
+
     scavengeModal.addEventListener("haul.created", function (e) {
         this.querySelector(".js-scavenge-submit").handleHaulCreated(e);
         this.querySelector(".js-scavenge-haul").handleHaulCreated(e);
@@ -407,6 +499,14 @@
     scavengeModal.addEventListener("haul.notAdded", function (e) {
         this.querySelector(".js-scavenge-haul").handleHaulNotAdded(e);
     });
+
+    scavengeModal.querySelector(".js-scavenge-submit").handleInventoryModified = function (e) {
+        if (e.detail.isOverCapacity) {
+            this.setAttribute("disabled", true);
+        } else {
+            this.removeAttribute("disabled");
+        }
+    };
 
     scavengeModal.querySelector(".js-scavenge-submit").handleHaulCreated = function (e) {
         this.dataset.haulId = e.detail.id;
@@ -442,11 +542,17 @@
 
         var body = {};
         body.selectedItems = {};
+        body.modifiedInventory = {};
 
-        var inputs = scavengeModal.querySelector(".js-scavenge-haul").findInputs();
+        var haulInputs = scavengeModal.querySelector(".js-scavenge-haul").findInputs();
+        var inventoryInputs = scavengeModal.querySelector(".js-scavenge-inventory").findInputs();
 
-        for (var i = 0; i < inputs.length; i++) {
-            body.selectedItems[inputs[i].dataset.varietyId] = parseInt(inputs[i].value, 10);
+        for (var i = 0; i < haulInputs.length; i++) {
+            body.selectedItems[haulInputs[i].dataset.varietyId] = parseInt(haulInputs[i].value, 10);
+        }
+
+        for (i = 0; i < inventoryInputs.length; i++) {
+            body.modifiedInventory[inventoryInputs[i].dataset.varietyId] = parseInt(inventoryInputs[i].value, 10);
         }
 
         var xhr = new XMLHttpRequest();
@@ -562,6 +668,22 @@
         }
     };
 
+    scavengeModal.querySelector(".js-scavenge-inventory-progress").handleInventoryModified = function (e) {
+        this.style.width = (e.detail.inventory.weight / e.detail.inventory.capacity * 100) + "%";
+    };
+
+    scavengeModal.querySelector(".js-scavenge-inventory-haul-progress").handleInventoryModified = function (e) {
+        if (e.detail.isOverCapacity) {
+            this.classList.remove("bg-success");
+            this.classList.add("bg-danger");
+            this.style.width = (100 - (e.detail.inventory.weight / e.detail.inventory.capacity * 100)) + "%";
+        } else {
+            this.classList.remove("bg-danger");
+            this.classList.add("bg-success");
+            this.style.width = (e.detail.haul.getWeight() / e.detail.inventory.capacity * 100) + "%";
+        }
+    };
+
     scavengeModal.querySelector(".js-scavenge-inventory-haul-progress").handleHaulCreated = function (e) {
         if (e.detail.isOverCapacity) {
             this.classList.add("bg-danger");
@@ -584,6 +706,21 @@
         }
     };
 
+    scavengeModal.querySelector(".js-scavenge-toggle-inventory").onclick = function (e) {
+        e.preventDefault();
+        if (this.dataset.isShown === "1") {
+            scavengeModal.querySelector(".js-scavenge-inventory-items").style.display = "none";
+            this.querySelector(".fas").classList.remove("fa-caret-up");
+            this.querySelector(".fas").classList.add("fa-caret-down");
+            this.dataset.isShown = "0";
+        } else {
+            scavengeModal.querySelector(".js-scavenge-inventory-items").style.display = "block";
+            this.querySelector(".fas").classList.remove("fa-caret-down");
+            this.querySelector(".fas").classList.add("fa-caret-up");
+            this.dataset.isShown = "1";
+        }
+    };
+
     for (var i = 0; i < scavengeButtons.length; i++) {
         scavengeButtons[i].onclick = function (e) {
             e.preventDefault();
@@ -592,7 +729,7 @@
 
             xhr.onload = function () {
                 var response = JSON.parse(this.response);
-                createHaul(response);
+                haul = createHaul(response);
                 $("#scavengeModal").modal('show');
             };
 
