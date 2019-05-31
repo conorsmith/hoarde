@@ -12,7 +12,7 @@ final class ShowLandingPage
     {
         ob_start();
 
-        include __DIR__ . "/../../generate.php";
+        include __DIR__ . "/../Templates/generate.php";
 
         $body = ob_get_contents();
 

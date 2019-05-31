@@ -12,7 +12,7 @@ final class ShowNotFoundPage
     {
         ob_start();
 
-        include __DIR__ . "/../../not-found.php";
+        include __DIR__ . "/../Templates/not-found.php";
 
         $body = ob_get_contents();
 
