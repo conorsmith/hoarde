@@ -42,7 +42,7 @@ final class ScavengingHaul
         return false;
     }
 
-    public function isRetrievableBy(Entity $entity): bool
+    public function getWeight(): int
     {
         $weight = 0;
 
@@ -50,7 +50,12 @@ final class ScavengingHaul
             $weight += $item->getVariety()->getWeight() * $item->getQuantity();
         }
 
-        return $entity->getInventoryWeight() + $weight <= $entity->getInventoryCapacity();
+        return $weight;
+    }
+
+    public function isRetrievableBy(Entity $entity): bool
+    {
+        return $entity->getInventoryWeight() + $this->getWeight() <= $entity->getInventoryCapacity();
     }
 
     public function reduceItemQuantity(UuidInterface $varietyId, int $quantity): void

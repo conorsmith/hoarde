@@ -112,7 +112,7 @@
                         <?php endforeach ?>
                     </div>
                     <div class="progress" style="height: 0.5rem; margin-top: 1rem;">
-                          <div class="progress-bar <?=$entityOverencumbered ? "bg-danger" : "bg-info"?>" style="width: <?=$inventoryWeight?>%;"></div>
+                          <div class="progress-bar <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>" style="width: <?=$inventoryWeight?>%;"></div>
                     </div>
 
                     <hr>
@@ -140,6 +140,8 @@
       <button type="submit" class="btn btn-link">Restart</button>
     </form>
 
+    <?php /* DROP MODAL */ ?>
+
     <div class="modal" tabindex="-1" role="dialog" id="dropModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -165,18 +167,49 @@
         </div>
     </div>
 
+    <?php /* SCAVENGE MODAL */ ?>
+
     <div class="modal" tabindex="-1" role="dialog" id="scavengeModal" data-backdrop="static" data-keyboard="false">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
+
           <div class="modal-header">
             <h5 class="modal-title">Scavenging Haul</h5>
           </div>
+
           <div class="modal-body">
             <div class="js-scavenge-haul"></div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary js-scavenge-submit">Add to Inventory</button>
+
+          <div class="modal-body js-scavenge-inventory"
+               style="display: none; border-top: 1px solid #dee2e6;"
+               data-inventory-weight="<?=$entity->inventory->weight?>"
+               data-inventory-capacity="<?=$entity->inventory->capacity?>"
+          >
+            <div style="font-size: 0.8rem; font-weight: 600;">Inventory Capacity</div>
+            <div class="d-flex" style="margin-top: 0.2rem;">
+              <div style="margin-right: 1rem;">
+                  <?=$entity->inventory->weight / 1000?> / <?=$entity->inventory->capacity / 1000?> kg
+              </div>
+              <div class="flex-fill  align-self-center">
+                <div class="progress">
+                  <div class="progress-bar <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>"
+                       style="width: <?=$inventoryWeight?>%;"
+                  ></div>
+                </div>
+              </div>
+              <div class="js-scavenge-inventory-haul-weight"
+                   style="margin-left: 1rem; width: 3.6rem; text-align: right;"
+              ></div>
+            </div>
           </div>
+
+          <div class="modal-footer">
+            <button type="button"
+                    class="btn btn-primary btn-block js-scavenge-submit"
+            >Add to Inventory</button>
+          </div>
+
         </div>
       </div>
     </div>
@@ -287,8 +320,16 @@
                     document.getElementById("scavengeModal").querySelector(".js-scavenge-haul").appendChild(alert);
                     document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").innerHTML = "Oh well";
                 } else {
+                    var inventory = document.getElementById("scavengeModal").querySelector(".js-scavenge-inventory");
+
                     document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").dataset.haulId
                         = response.haul.id;
+
+                    var haulTooLarge = parseInt(inventory.dataset.inventoryWeight, 10) + response.haul.weight > parseInt(inventory.dataset.inventoryCapacity, 10);
+
+                    if (haulTooLarge) {
+                        document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").setAttribute("disabled", true);
+                    }
 
                     for (var i = 0; i < response.haul.items.length; i++) {
                         var item = response.haul.items[i];
@@ -307,6 +348,7 @@
                         slider.type = "range";
                         slider.setAttribute("list", "js-scavange-tickmarks-" + item.varietyId);
                         slider.dataset.varietyId = item.varietyId;
+                        slider.dataset.weight = item.weight;
                         slider.min = 0;
                         slider.max = item.quantity;
                         slider.value = item.quantity;
@@ -326,11 +368,74 @@
                         container.appendChild(datalist);
 
                         slider.addEventListener("input", function (e) {
+
                             labelQuantity.innerHTML = e.target.value;
+
+                            var sliders = document.getElementById("scavengeModal")
+                                .querySelectorAll(".js-scavenge-haul input[type='range']");
+                            var runningHaulWeight = 0;
+
+                            for (var j = 0; j < sliders.length; j++) {
+                                runningHaulWeight += sliders[j].value * sliders[j].dataset.weight;
+                            }
+
+                            haulTooLarge = parseInt(inventory.dataset.inventoryWeight, 10) + runningHaulWeight > parseInt(inventory.dataset.inventoryCapacity, 10);
+
+                            console.log(runningHaulWeight, haulTooLarge);
+
+                            if (haulTooLarge) {
+                                var haulProgress = 100 - (parseInt(inventory.dataset.inventoryWeight, 10) / inventory.dataset.inventoryCapacity * 100);
+                                inventory.querySelector(".js-scavenge-inventory-haul-progress")
+                                    .classList.remove("bg-success");
+                                inventory.querySelector(".js-scavenge-inventory-haul-progress")
+                                    .classList.add("bg-danger");
+                                document.getElementById("scavengeModal").querySelector(".js-scavenge-submit")
+                                    .setAttribute("disabled", true);
+                            } else {
+                                var haulProgress = (runningHaulWeight / inventory.dataset.inventoryCapacity * 100);
+                                inventory.querySelector(".js-scavenge-inventory-haul-progress")
+                                    .classList.remove("bg-danger");
+                                inventory.querySelector(".js-scavenge-inventory-haul-progress")
+                                    .classList.add("bg-success");
+                                document.getElementById("scavengeModal").querySelector(".js-scavenge-submit")
+                                    .removeAttribute("disabled");
+                            }
+
+                            if (runningHaulWeight === 0) {
+                                document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").innerHTML
+                                    = "Discard Haul";
+                            } else {
+                                document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").innerHTML
+                                    = "Add to Inventory";
+                            }
+
+                            inventory.querySelector(".js-scavenge-inventory-haul-progress").style.width
+                                = haulProgress + "%";
+                            inventory.querySelector(".js-scavenge-inventory-haul-weight").innerHTML
+                                = "+" + (runningHaulWeight / 1000) + " kg";
                         });
 
                         document.getElementById("scavengeModal").querySelector(".js-scavenge-haul").appendChild(container);
                     }
+
+                    var haulWeight = document.createElement("div");
+                    haulWeight.classList.add("progress-bar");
+                    haulWeight.classList.add("js-scavenge-inventory-haul-progress");
+                    if (haulTooLarge) {
+                        haulWeight.classList.add("bg-danger");
+                        haulWeight.style.width
+                            = (100 - (inventory.dataset.inventoryWeight / inventory.dataset.inventoryCapacity * 100)) + "%";
+                    } else {
+                        haulWeight.classList.add("bg-success");
+                        haulWeight.style.width = (response.haul.weight / inventory.dataset.inventoryCapacity * 100) + "%";
+                    }
+
+                    inventory.style.display = "block";
+                    inventory.querySelector(".js-scavenge-inventory-haul-weight").innerHTML
+                        = "+" + (response.haul.weight / 1000) + " kg";
+                    document.getElementById("scavengeModal")
+                        .querySelector(".js-scavenge-inventory .progress")
+                        .appendChild(haulWeight);
                 }
 
                 $("#scavengeModal").modal('show');

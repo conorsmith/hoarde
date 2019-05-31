@@ -49,9 +49,13 @@ final class ShowGame
         $entity = $this->entityRepo->find($entityIds[0]);
 
         $body = $this->renderTemplate($game, $entity, [
-            'entity' => (object) [
-                'label' => $entity->getLabel(),
-                'icon'  => $entity->getIcon(),
+            'entity' => (object)[
+                'label'     => $entity->getLabel(),
+                'icon'      => $entity->getIcon(),
+                'inventory' => (object)[
+                    'weight'   => $entity->getInventoryWeight(),
+                    'capacity' => $entity->getInventoryCapacity(),
+                ],
             ],
         ]);
 

@@ -61,6 +61,7 @@ final class HaveEntityScavenge
 
         $transformedHaul = [
             'id' => $haul->getId(),
+            'weight' => $haul->getWeight(),
             'items' => [],
         ];
 
@@ -69,6 +70,7 @@ final class HaveEntityScavenge
                 $transformedHaul['items'][] = [
                     'varietyId'     => $item->getVariety()->getId(),
                     'label'         => $item->getVariety()->getLabel(),
+                    'weight'        => $item->getVariety()->getWeight(),
                     'quantity'      => $item->getQuantity(),
                 ];
             }
