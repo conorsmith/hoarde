@@ -62,14 +62,14 @@ class HaveEntityAddHaulToInventory
             $haul->reduceItemQuantity(Uuid::fromString($varietyId), $quantity);
         }
 
+        foreach ($modifiedInventory as $varietyId => $quantity) {
+            $entity->reduceInventoryItemQuantity(Uuid::fromString($varietyId), $quantity);
+        }
+
         if (!$haul->isRetrievableBy($entity)) {
             $response = new Response;
             $response->getBody()->write("{$entity->getLabel()} cannot carry that much!");
             return $response;
-        }
-
-        foreach ($modifiedInventory as $varietyId => $quantity) {
-            $entity->reduceInventoryItemQuantity(Uuid::fromString($varietyId), $quantity);
         }
 
         $entity->addHaulToInventory($haul);
