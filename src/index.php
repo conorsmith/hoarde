@@ -35,6 +35,10 @@
         .actions .btn-group:last-child {
             margin-bottom: 0;
         }
+
+        .modal .alert {
+          margin-bottom: 0;
+        }
     </style>
 </head>
 <body style="margin-top: 1rem;">
