@@ -196,6 +196,7 @@
                   <div class="progress-bar <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>"
                        style="width: <?=$inventoryWeight?>%;"
                   ></div>
+                  <div class="progress-bar js-scavenge-inventory-haul-progress"></div>
                 </div>
               </div>
               <div class="js-scavenge-inventory-haul-weight"
@@ -299,7 +300,261 @@
         }
     }
 
+    var scavengeModal = document.getElementById("scavengeModal");
     var scavengeButtons = document.getElementsByClassName("js-scavenge");
+
+    var createHaul = function (response) {
+        var haul = {
+            items: response.haul.items,
+            inventory: {
+                weight: parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryWeight, 10),
+                capacity: parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryCapacity, 10)
+            },
+            modifyItemQuantity: function (varietyId, newQuantity) {
+                for (var i = 0; i < this.items.length; i++) {
+                    if (varietyId === this.items[i].varietyId) {
+                        this.items[i].quantity = newQuantity;
+                    }
+                }
+
+                scavengeModal.dispatchEvent(new CustomEvent("haul.modify", {
+                    detail: {
+                        newQuantity: newQuantity,
+                        newWeight: this.getWeight(),
+                        isOverCapacity: this.isOverCapacity(),
+                        inventory: this.inventory
+                    }
+                }));
+            },
+            getWeight: function () {
+                var weight = 0;
+
+                for (var i = 0; i < this.items.length; i++) {
+                    weight += this.items[i].weight * this.items[i].quantity;
+                }
+
+                return weight;
+            },
+            isOverCapacity: function () {
+                return this.inventory.weight + this.getWeight() > this.inventory.capacity;
+            }
+        };
+
+        scavengeModal.dispatchEvent(new CustomEvent("haul.created", {
+            detail: {
+                id: response.haul.id,
+                weight: haul.getWeight(),
+                isEmpty: haul.items.length === 0,
+                isOverCapacity: haul.isOverCapacity(),
+                items: haul.items,
+                inventory: haul.inventory,
+                haul: haul
+            }
+        }));
+
+        return haul;
+    };
+
+    scavengeModal.addEventListener("haul.created", function (e) {
+        this.querySelector(".js-scavenge-submit").handleHaulCreated(e);
+        this.querySelector(".js-scavenge-haul").handleHaulCreated(e);
+        this.querySelector(".js-scavenge-inventory").handelHaulCreated(e);
+        this.querySelector(".js-scavenge-inventory-haul-weight").handleHaulCreated(e);
+        this.querySelector(".js-scavenge-inventory-haul-progress").handleHaulCreated(e);
+    });
+
+    scavengeModal.addEventListener("haul.modify", function (e) {
+        this.querySelector(".js-scavenge-submit").handleHaulModified(e);
+        this.querySelector(".js-scavenge-inventory-haul-weight").handleHaulModified(e);
+        this.querySelector(".js-scavenge-inventory-haul-progress").handleHaulModified(e);
+        this.querySelectorAll(".js-scavange-quantity").forEach(function (quantity) {
+            quantity.handleHaulModified(e);
+        })
+    });
+
+    scavengeModal.addEventListener("haul.add", function (e) {
+        this.querySelector(".js-scavenge-haul").handleHaulAdd(e);
+    });
+
+    scavengeModal.addEventListener("haul.notAdded", function (e) {
+        this.querySelector(".js-scavenge-haul").handleHaulNotAdded(e);
+    });
+
+    scavengeModal.querySelector(".js-scavenge-submit").handleHaulCreated = function (e) {
+        this.dataset.haulId = e.detail.id;
+        this.dataset.isEmpty = e.detail.isEmpty;
+
+        if (e.detail.isEmpty) {
+            this.innerHTML = "Oh well...";
+
+        } else if (e.detail.isOverCapacity) {
+            this.setAttribute("disabled", true);
+        }
+    };
+
+    scavengeModal.querySelector(".js-scavenge-submit").handleHaulModified = function (e) {
+        if (e.detail.newWeight === 0) {
+            this.innerHTML = "Discard Haul";
+        } else {
+            this.innerHTML = "Add to Inventory";
+        }
+
+        if (e.detail.isOverCapacity) {
+            this.setAttribute("disabled", true);
+        } else {
+            this.removeAttribute("disabled");
+        }
+    };
+
+    scavengeModal.querySelector(".js-scavenge-submit").onclick = function (e) {
+        if (this.dataset.isEmpty === "true") {
+            window.location.reload();
+            return;
+        }
+
+        var body = {};
+        body.selectedItems = {};
+
+        var inputs = scavengeModal.querySelector(".js-scavenge-haul").findInputs();
+
+        for (var i = 0; i < inputs.length; i++) {
+            body.selectedItems[inputs[i].dataset.varietyId] = parseInt(inputs[i].value, 10);
+        }
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onload = function () {
+            if (this.responseText === "") {
+                window.location.reload();
+            } else {
+                scavengeModal.dispatchEvent(new CustomEvent("haul.notAdded", {
+                    detail: {
+                        message: this.responseText
+                    }
+                }));
+            }
+        };
+
+        xhr.open("POST", "/" + gameId + "/scavenge/" + this.dataset.haulId);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(body));
+
+        scavengeModal.dispatchEvent(new CustomEvent("haul.add"));
+    };
+
+    scavengeModal.querySelector(".js-scavenge-haul").handleHaulCreated = function (e) {
+        if (e.detail.isEmpty) {
+            var alert = document.createElement("div");
+            alert.classList.add("alert");
+            alert.classList.add("alert-warning");
+            alert.innerHTML = "Failed to scavenge anything.";
+
+            this.appendChild(alert);
+        } else {
+            for (var i = 0; i < e.detail.items.length; i++) {
+                var item = e.detail.items[i];
+
+                var container = document.createElement("div");
+
+                var labelQuantity = document.createElement("span");
+                labelQuantity.classList.add("js-scavange-quantity");
+                labelQuantity.innerHTML = item.quantity;
+                labelQuantity.handleHaulModified = function (e) {
+                    this.innerHTML = e.detail.newQuantity;
+                };
+
+                var label = document.createElement("p");
+                label.innerHTML = item.label + " &times; ";
+                label.appendChild(labelQuantity);
+
+                var slider = document.createElement("input");
+                slider.type = "range";
+                slider.setAttribute("list", "js-scavange-tickmarks-" + item.varietyId);
+                slider.dataset.varietyId = item.varietyId;
+                slider.dataset.weight = item.weight;
+                slider.min = 0;
+                slider.max = item.quantity;
+                slider.value = item.quantity;
+                slider.style.width = "100%";
+
+                var datalist = document.createElement("datalist");
+                datalist.id = "js-scavange-tickmarks-" + item.varietyId;
+
+                for (var t = 0; t <= item.quantity; t++) {
+                    var tickmark = document.createElement("option");
+                    tickmark.value = t;
+                    datalist.appendChild(tickmark);
+                }
+
+                container.appendChild(label);
+                container.appendChild(slider);
+                container.appendChild(datalist);
+
+                slider.addEventListener("input", function (inputEvent) {
+                    e.detail.haul.modifyItemQuantity(inputEvent.target.dataset.varietyId, inputEvent.target.value);
+                });
+
+                this.appendChild(container);
+            }
+        }
+    };
+
+    scavengeModal.querySelector(".js-scavenge-haul").handleHaulAdd = function (e) {
+        var previousAlert = this.querySelector(".alert");
+
+        if (previousAlert) {
+            previousAlert.remove();
+        }
+    };
+
+    scavengeModal.querySelector(".js-scavenge-haul").handleHaulNotAdded = function (e) {
+        var alert = document.createElement("div");
+        alert.classList.add("alert");
+        alert.classList.add("alert-danger");
+        alert.innerHTML = e.detail.message;
+
+        this.appendChild(alert);
+    };
+
+    scavengeModal.querySelector(".js-scavenge-haul").findInputs = function () {
+        return this.querySelectorAll("input[type='range']");
+    };
+
+    scavengeModal.querySelector(".js-scavenge-inventory").handelHaulCreated = function (e) {
+        if (!e.detail.isEmpty) {
+            this.style.display = "block";
+        }
+    };
+
+    scavengeModal.querySelector(".js-scavenge-inventory-haul-weight").handleHaulCreated = function (e) {
+        this.innerHTML = "+" + (e.detail.weight / 1000) + " kg";
+    };
+
+    scavengeModal.querySelector(".js-scavenge-inventory-haul-weight").handleHaulModified = function (e) {
+        this.innerHTML = "+" + (e.detail.newWeight / 1000) + " kg";
+    };
+
+    scavengeModal.querySelector(".js-scavenge-inventory-haul-progress").handleHaulCreated = function (e) {
+        if (e.detail.isOverCapacity) {
+            this.classList.add("bg-danger");
+            this.style.width = (100 - (e.detail.inventory.weight / e.detail.inventory.capacity * 100)) + "%";
+        } else {
+            this.classList.add("bg-success");
+            this.style.width = (e.detail.weight / e.detail.inventory.capacity * 100) + "%";
+        }
+    };
+
+    scavengeModal.querySelector(".js-scavenge-inventory-haul-progress").handleHaulModified = function (e) {
+        if (e.detail.isOverCapacity) {
+            this.classList.remove("bg-success");
+            this.classList.add("bg-danger");
+            this.style.width = (100 - (e.detail.inventory.weight / e.detail.inventory.capacity * 100)) + "%";
+        } else {
+            this.classList.remove("bg-danger");
+            this.classList.add("bg-success");
+            this.style.width = (e.detail.newWeight / e.detail.inventory.capacity * 100) + "%";
+        }
+    };
 
     for (var i = 0; i < scavengeButtons.length; i++) {
         scavengeButtons[i].onclick = function (e) {
@@ -309,182 +564,13 @@
 
             xhr.onload = function () {
                 var response = JSON.parse(this.response);
-
-                console.log(response.haul);
-
-                if (response.haul.items.length === 0) {
-                    var alert = document.createElement("div");
-                    alert.classList.add("alert");
-                    alert.classList.add("alert-warning");
-                    alert.innerHTML = "Failed to scavenge anything.";
-                    document.getElementById("scavengeModal").querySelector(".js-scavenge-haul").appendChild(alert);
-                    document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").innerHTML = "Oh well";
-                } else {
-                    var inventory = document.getElementById("scavengeModal").querySelector(".js-scavenge-inventory");
-
-                    document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").dataset.haulId
-                        = response.haul.id;
-
-                    var haulTooLarge = parseInt(inventory.dataset.inventoryWeight, 10) + response.haul.weight > parseInt(inventory.dataset.inventoryCapacity, 10);
-
-                    if (haulTooLarge) {
-                        document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").setAttribute("disabled", true);
-                    }
-
-                    for (var i = 0; i < response.haul.items.length; i++) {
-                        var item = response.haul.items[i];
-
-                        var container = document.createElement("div");
-
-                        var labelQuantity = document.createElement("span");
-                        labelQuantity.classList.add("js-scavange-quantity");
-                        labelQuantity.innerHTML = item.quantity;
-
-                        var label = document.createElement("p");
-                        label.innerHTML = item.label + " &times; ";
-                        label.appendChild(labelQuantity);
-
-                        var slider = document.createElement("input");
-                        slider.type = "range";
-                        slider.setAttribute("list", "js-scavange-tickmarks-" + item.varietyId);
-                        slider.dataset.varietyId = item.varietyId;
-                        slider.dataset.weight = item.weight;
-                        slider.min = 0;
-                        slider.max = item.quantity;
-                        slider.value = item.quantity;
-                        slider.style.width = "100%";
-
-                        var datalist = document.createElement("datalist");
-                        datalist.id = "js-scavange-tickmarks-" + item.varietyId;
-
-                        for (var t = 0; t <= item.quantity; t++) {
-                            var tickmark = document.createElement("option");
-                            tickmark.value = t;
-                            datalist.appendChild(tickmark);
-                        }
-
-                        container.appendChild(label);
-                        container.appendChild(slider);
-                        container.appendChild(datalist);
-
-                        slider.addEventListener("input", function (e) {
-
-                            labelQuantity.innerHTML = e.target.value;
-
-                            var sliders = document.getElementById("scavengeModal")
-                                .querySelectorAll(".js-scavenge-haul input[type='range']");
-                            var runningHaulWeight = 0;
-
-                            for (var j = 0; j < sliders.length; j++) {
-                                runningHaulWeight += sliders[j].value * sliders[j].dataset.weight;
-                            }
-
-                            haulTooLarge = parseInt(inventory.dataset.inventoryWeight, 10) + runningHaulWeight > parseInt(inventory.dataset.inventoryCapacity, 10);
-
-                            console.log(runningHaulWeight, haulTooLarge);
-
-                            if (haulTooLarge) {
-                                var haulProgress = 100 - (parseInt(inventory.dataset.inventoryWeight, 10) / inventory.dataset.inventoryCapacity * 100);
-                                inventory.querySelector(".js-scavenge-inventory-haul-progress")
-                                    .classList.remove("bg-success");
-                                inventory.querySelector(".js-scavenge-inventory-haul-progress")
-                                    .classList.add("bg-danger");
-                                document.getElementById("scavengeModal").querySelector(".js-scavenge-submit")
-                                    .setAttribute("disabled", true);
-                            } else {
-                                var haulProgress = (runningHaulWeight / inventory.dataset.inventoryCapacity * 100);
-                                inventory.querySelector(".js-scavenge-inventory-haul-progress")
-                                    .classList.remove("bg-danger");
-                                inventory.querySelector(".js-scavenge-inventory-haul-progress")
-                                    .classList.add("bg-success");
-                                document.getElementById("scavengeModal").querySelector(".js-scavenge-submit")
-                                    .removeAttribute("disabled");
-                            }
-
-                            if (runningHaulWeight === 0) {
-                                document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").innerHTML
-                                    = "Discard Haul";
-                            } else {
-                                document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").innerHTML
-                                    = "Add to Inventory";
-                            }
-
-                            inventory.querySelector(".js-scavenge-inventory-haul-progress").style.width
-                                = haulProgress + "%";
-                            inventory.querySelector(".js-scavenge-inventory-haul-weight").innerHTML
-                                = "+" + (runningHaulWeight / 1000) + " kg";
-                        });
-
-                        document.getElementById("scavengeModal").querySelector(".js-scavenge-haul").appendChild(container);
-                    }
-
-                    var haulWeight = document.createElement("div");
-                    haulWeight.classList.add("progress-bar");
-                    haulWeight.classList.add("js-scavenge-inventory-haul-progress");
-                    if (haulTooLarge) {
-                        haulWeight.classList.add("bg-danger");
-                        haulWeight.style.width
-                            = (100 - (inventory.dataset.inventoryWeight / inventory.dataset.inventoryCapacity * 100)) + "%";
-                    } else {
-                        haulWeight.classList.add("bg-success");
-                        haulWeight.style.width = (response.haul.weight / inventory.dataset.inventoryCapacity * 100) + "%";
-                    }
-
-                    inventory.style.display = "block";
-                    inventory.querySelector(".js-scavenge-inventory-haul-weight").innerHTML
-                        = "+" + (response.haul.weight / 1000) + " kg";
-                    document.getElementById("scavengeModal")
-                        .querySelector(".js-scavenge-inventory .progress")
-                        .appendChild(haulWeight);
-                }
-
+                createHaul(response);
                 $("#scavengeModal").modal('show');
             };
 
             xhr.open("POST", "/" + gameId + "/scavenge");
             xhr.send();
         }
-    }
-
-    document.getElementById("scavengeModal").querySelector(".js-scavenge-submit").onclick = function (e) {
-        if (this.dataset.haulId === undefined) {
-            window.location.reload();
-            return;
-        }
-
-        var previousAlert = document.getElementById("scavengeModal").querySelector(".js-scavenge-haul .alert");
-
-        if (previousAlert) {
-            previousAlert.remove();
-        }
-
-        var body = {};
-        body.selectedItems = {};
-
-        var inputs = document.getElementById("scavengeModal").querySelectorAll(".js-scavenge-haul input[type='range']");
-
-        for (var i = 0; i < inputs.length; i++) {
-            body.selectedItems[inputs[i].dataset.varietyId] = parseInt(inputs[i].value, 10);
-        }
-
-        var xhr = new XMLHttpRequest();
-
-        xhr.onload = function () {
-            if (this.response === "") {
-                window.location.reload();
-            } else {
-                var alert = document.createElement("div");
-                alert.classList.add("alert");
-                alert.classList.add("alert-danger");
-                alert.innerHTML = this.response;
-
-                document.getElementById("scavengeModal").querySelector(".js-scavenge-haul").appendChild(alert);
-            }
-        };
-
-        xhr.open("POST", "/" + gameId + "/scavenge/" + this.dataset.haulId);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(body));
     }
 
 </script>
