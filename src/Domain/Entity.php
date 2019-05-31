@@ -167,12 +167,8 @@ final class Entity
 
     public function dropItem(UuidInterface $id, int $quantity): Item
     {
-        $this->beforeAction();
-
         $item = $this->inventory[strval($id)];
         $this->removeQuantityFromItem($quantity, $item);
-
-        $this->afterAction();
 
         return $item;
     }

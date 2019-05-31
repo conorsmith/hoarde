@@ -36,7 +36,6 @@ final class HaveEntityDropItem
     {
         $gameId = Uuid::fromString($args['gameId']);
 
-        $game = $this->gameRepo->find($gameId);
         $entityIds = $this->gameRepo->findEntityIds($gameId);
         $entity = $this->entityRepo->find($entityIds[0]);
 
@@ -45,14 +44,7 @@ final class HaveEntityDropItem
         $droppedItem = $entity->dropItem($itemId, $droppedQuantity);
         $this->entityRepo->save($entity);
 
-        $game->proceedToNextTurn();
-        $this->gameRepo->save($game);
-
         $this->session->setFlash("info", "{$entity->getLabel()} dropped {$droppedItem->getVariety()->getLabel()} ({$droppedQuantity})");
-
-        if (!$entity->isIntact()) {
-            $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
-        }
 
         $response = new Response;
         $response = $response->withHeader("Location", "/{$gameId}");
