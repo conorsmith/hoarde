@@ -201,7 +201,7 @@
 
             <div class="d-flex justify-content-between" style="font-size: 0.8rem;">
               <div style="font-weight: 600;">Inventory Capacity</div>
-              <div class="align-self-end"><a href="#" class="js-scavenge-toggle-inventory" data-is-shown="0"><i class="fas fa-caret-down"></i> Discard Items</a></div>
+              <div class="align-self-end"><a href="#" class="js-scavenge-toggle-inventory" data-is-shown="0"><i class="fas fa-caret-down"></i> Manage</a></div>
             </div>
             <div class="d-flex" style="margin-top: 0.5rem;">
               <div style="margin-right: 1rem;">
