@@ -322,7 +322,8 @@
                         newQuantity: newQuantity,
                         newWeight: this.getWeight(),
                         isOverCapacity: this.isOverCapacity(),
-                        inventory: this.inventory
+                        inventory: this.inventory,
+                        modifiedItemVarietyId: varietyId
                     }
                 }));
             },
@@ -459,8 +460,11 @@
                 var labelQuantity = document.createElement("span");
                 labelQuantity.classList.add("js-scavange-quantity");
                 labelQuantity.innerHTML = item.quantity;
-                labelQuantity.handleHaulModified = function (e) {
-                    this.innerHTML = e.detail.newQuantity;
+                labelQuantity.item = e.detail.items[i];
+                labelQuantity.handleHaulModified = function (haulModifiedEvent) {
+                    if (haulModifiedEvent.detail.modifiedItemVarietyId === this.item.varietyId) {
+                        this.innerHTML = haulModifiedEvent.detail.newQuantity;
+                    }
                 };
 
                 var label = document.createElement("p");
