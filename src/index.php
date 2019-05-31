@@ -78,12 +78,20 @@
 <div class="container">
 
     <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Turn <?=$turnIndex?></li>
+      <ol class="breadcrumb d-flex justify-content-between">
+        <div class="text-muted align-self-center">Turn <?=$turnIndex?></div>
+        <div class="text-muted align-self-center" style="font-weight: 900; font-size: 0.8rem;">HOARDE</div>
+        <div>
+          <form method="POST" action="/<?=$gameId?>/restart">
+            <button type="submit" class="btn btn-link btn-sm">Restart</button>
+          </form>
+        </div>
       </ol>
     </nav>
 
-    <div class="row">
+
+
+  <div class="row">
         <div class="col-sm-4 offset-sm-4">
             <div class="card">
                 <div class="card-body">
@@ -172,10 +180,6 @@
             </div>
         </div>
     </div>
-
-    <form method="POST" action="/<?=$gameId?>/restart" style="float: right;">
-      <button type="submit" class="btn btn-link">Restart</button>
-    </form>
 
     <?php /* DROP MODAL */ ?>
 
