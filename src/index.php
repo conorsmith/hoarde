@@ -126,7 +126,8 @@
                                 <a href="#"
                                    class="btn btn-light btn-block js-use <?=($isIntact ? "" : "disabled")?>"
                                    data-item-id="<?=$item['id']?>"
-                                ><?=$item['label']?> (<?=$item['quantity']?>)</a>
+                                   style="text-align: left;"
+                                ><i class="fas fa-fw fa-<?=$item['icon']?>"></i> <?=$item['label']?> (<?=$item['quantity']?>)</a>
 
                                 <div class="btn-group" role="group">
                                     <button type="button"
@@ -248,7 +249,7 @@
               <?php foreach ($inventory as $item) : ?>
                 <div class="item-slider d-flex">
                   <div class="align-self-center" style="margin-right: 1rem;">
-                    <?=$item['label']?>
+                    <i class="fas fa-fw fa-<?=$item['icon']?>"></i> <?=$item['label']?>
                   </div>
                   <div class="flex-fill" style="height: 32px;">
                     <input type="range"
@@ -296,6 +297,7 @@
     <template id="scavange-item-slider">
       <div class="item-slider d-flex">
         <div class="align-self-center" style="margin-right: 1rem;">
+          <i class="tmpl-icon fas fa-fw"></i>
           <span class="tmpl-label"></span>
         </div>
         <div class="flex-fill" style="height: 32px;">
@@ -647,6 +649,7 @@
 
             const template = document.getElementById("scavange-item-slider").content.cloneNode(true);
 
+            template.querySelector(".tmpl-icon").classList.add("fa-" + item.icon);
             template.querySelector(".tmpl-label").innerText = item.label;
 
             template.querySelector(".tmpl-quantity").innerText = item.quantity;

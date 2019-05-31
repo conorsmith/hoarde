@@ -114,6 +114,7 @@ final class ShowGame
             'label'    => $item->getVariety()->getLabel(),
             'quantity' => $item->getQuantity(),
             'weight'   => $item->getVariety()->getWeight(),
+            'icon'     => $item->getVariety()->getIcon(),
         ];
     }
 }

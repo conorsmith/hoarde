@@ -16,21 +16,25 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'label'      => "Water Bottle",
             'resourceId' => "9972c015-842a-4601-8fb2-c900e1a54177",
             'weight'     => 500,
+            'icon'       => "tint",
         ],
         "9c2bb508-c40f-491b-a4ca-fc811087a158" => [
             'label'      => "Tinned Stew",
             'resourceId' => "6f5cc44d-db25-454a-b3fb-4ab3f61ce179",
             'weight'     => 600,
+            'icon'       => "utensils",
         ],
         "08db1181-2bc9-4408-b378-5270e8dbee4b" => [
             'label'      => "Coke Zero",
             'resourceId' => "9972c015-842a-4601-8fb2-c900e1a54177",
             'weight'     => 500,
+            'icon'       => "tint",
         ],
         "275d6f62-16ff-4f5f-8ac6-149ec4cde1e2" => [
             'label'      => "Heroin",
             'resourceId' => "5234c112-05be-4b15-80df-3c2b67e88262",
             'weight'     => 1,
+            'icon'       => "syringe",
         ],
     ];
 
@@ -51,7 +55,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
             $id,
             self::VARIETIES[strval($id)]['label'],
             $this->resourceRepository->find(Uuid::fromString(self::VARIETIES[strval($id)]['resourceId'])),
-            self::VARIETIES[strval($id)]['weight']
+            self::VARIETIES[strval($id)]['weight'],
+            self::VARIETIES[strval($id)]['icon']
         );
     }
 }
