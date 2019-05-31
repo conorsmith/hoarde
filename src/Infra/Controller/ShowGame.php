@@ -98,7 +98,7 @@ final class ShowGame
 
         ob_start();
 
-        include __DIR__ . "/../Templates/index.php";
+        include __DIR__ . "/../Templates/game.php";
 
         $body = ob_get_contents();
 
