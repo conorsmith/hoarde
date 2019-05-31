@@ -197,7 +197,7 @@ final class Entity
                     ->createItemWithQuantity(1),
             ],
             [
-                'rolls' => range(18, 34),
+                'rolls' => range(14, 30),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))
                     ->createItemWithQuantity($generator->generateInt(1, 3)),
