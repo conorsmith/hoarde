@@ -36,6 +36,14 @@
             margin-bottom: 0;
         }
 
+        .modal-body .item-slider {
+            margin-bottom: 1rem;
+        }
+
+        .modal-body .item-slider:last-child {
+            margin-bottom: 0;
+        }
+
         .modal .alert {
           margin-bottom: 0;
         }
@@ -195,7 +203,7 @@
               <div style="margin-right: 1rem;">
                   <?=$entity->inventory->weight / 1000?> / <?=$entity->inventory->capacity / 1000?> kg
               </div>
-              <div class="flex-fill  align-self-center">
+              <div class="flex-fill align-self-center">
                 <div class="progress">
                   <div class="progress-bar <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>"
                        style="width: <?=$inventoryWeight?>%;"
@@ -204,7 +212,7 @@
                 </div>
               </div>
               <div class="js-scavenge-inventory-haul-weight"
-                   style="margin-left: 1rem; width: 3.6rem; text-align: right;"
+                   style="margin-left: 1rem; width: 3.4rem; text-align: right;"
               ></div>
             </div>
           </div>
@@ -220,6 +228,21 @@
     </div>
 
     <input type="hidden" id="gameId" value="<?=$gameId?>" />
+
+    <template id="scavange-item-slider">
+      <div class="item-slider d-flex">
+        <div class="align-self-center" style="margin-right: 1rem;">
+          <span class="tmpl-label"></span>
+        </div>
+        <div class="flex-fill" style="height: 32px;">
+          <input type="range" min="0" style="width: 100%">
+          <datalist></datalist>
+        </div>
+        <div class="align-self-center">
+          <span class="tmpl-quantity js-scavange-quantity" style="margin-left: 1rem; text-align: right;"></span>
+        </div>
+      </div>
+    </template>
 
 </div>
 
@@ -457,52 +480,41 @@
             this.appendChild(alert);
         } else {
             for (var i = 0; i < e.detail.items.length; i++) {
+
                 var item = e.detail.items[i];
 
-                var container = document.createElement("div");
+                const datalistId = "scavange-tickmarks-" + item.varietyId;
 
-                var labelQuantity = document.createElement("span");
-                labelQuantity.classList.add("js-scavange-quantity");
-                labelQuantity.innerHTML = item.quantity;
-                labelQuantity.item = e.detail.items[i];
-                labelQuantity.handleHaulModified = function (haulModifiedEvent) {
+                const template = document.getElementById("scavange-item-slider").content.cloneNode(true);
+
+                template.querySelector(".tmpl-label").innerText = item.label;
+
+                template.querySelector(".tmpl-quantity").innerText = item.quantity;
+                template.querySelector(".tmpl-quantity").item = e.detail.items[i];
+                template.querySelector(".tmpl-quantity").handleHaulModified = function (haulModifiedEvent) {
                     if (haulModifiedEvent.detail.modifiedItemVarietyId === this.item.varietyId) {
                         this.innerHTML = haulModifiedEvent.detail.newQuantity;
                     }
                 };
 
-                var label = document.createElement("p");
-                label.innerHTML = item.label + " &times; ";
-                label.appendChild(labelQuantity);
+                template.querySelector("input[type='range']").setAttribute("list", datalistId);
+                template.querySelector("input[type='range']").dataset.varietyId = item.varietyId;
+                template.querySelector("input[type='range']").dataset.weight = item.weight;
+                template.querySelector("input[type='range']").max = item.quantity;
+                template.querySelector("input[type='range']").value = item.quantity;
+                template.querySelector("input[type='range']").addEventListener("input", function (inputEvent) {
+                    e.detail.haul.modifyItemQuantity(inputEvent.target.dataset.varietyId, inputEvent.target.value);
+                });
 
-                var slider = document.createElement("input");
-                slider.type = "range";
-                slider.setAttribute("list", "js-scavange-tickmarks-" + item.varietyId);
-                slider.dataset.varietyId = item.varietyId;
-                slider.dataset.weight = item.weight;
-                slider.min = 0;
-                slider.max = item.quantity;
-                slider.value = item.quantity;
-                slider.style.width = "100%";
-
-                var datalist = document.createElement("datalist");
-                datalist.id = "js-scavange-tickmarks-" + item.varietyId;
+                template.querySelector("datalist").id = datalistId;
 
                 for (var t = 0; t <= item.quantity; t++) {
                     var tickmark = document.createElement("option");
                     tickmark.value = t;
-                    datalist.appendChild(tickmark);
+                    template.querySelector("datalist").appendChild(tickmark);
                 }
 
-                container.appendChild(label);
-                container.appendChild(slider);
-                container.appendChild(datalist);
-
-                slider.addEventListener("input", function (inputEvent) {
-                    e.detail.haul.modifyItemQuantity(inputEvent.target.dataset.varietyId, inputEvent.target.value);
-                });
-
-                this.appendChild(container);
+                this.appendChild(template);
             }
         }
     };
