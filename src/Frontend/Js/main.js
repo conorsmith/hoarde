@@ -204,7 +204,6 @@ scavengeModal.addEventListener("haul.created", function (e) {
 
     scavengeSubmitButton.repaint();
     this.querySelector(".js-scavenge-haul").handleHaulCreated(e);
-    this.querySelector(".js-scavenge-inventory").handelHaulCreated(e);
     scavengeHaulWeight.repaint();
     scavengeHaulProgressBar.repaint();
 });
@@ -350,12 +349,6 @@ scavengeModal.querySelector(".js-scavenge-haul").handleHaulNotAdded = function (
 
 scavengeModal.querySelector(".js-scavenge-haul").findInputs = function () {
     return this.querySelectorAll("input[type='range']");
-};
-
-scavengeModal.querySelector(".js-scavenge-inventory").handelHaulCreated = function (e) {
-    if (!e.detail.isEmpty) {
-        this.style.display = "block";
-    }
 };
 
 scavengeModal.querySelector(".js-scavenge-toggle-inventory").onclick = function (e) {

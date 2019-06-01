@@ -11,7 +11,7 @@
             </div>
 
             <div class="modal-body bg-light js-scavenge-inventory"
-                 style="display: none; border-top: 1px solid #dee2e6;"
+                 style="border-top: 1px solid #dee2e6;"
                  data-inventory-weight="<?=$entity->inventory->weight?>"
                  data-inventory-capacity="<?=$entity->inventory->capacity?>"
             >
