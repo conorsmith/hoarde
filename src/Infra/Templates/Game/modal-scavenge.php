@@ -10,23 +10,42 @@
                 <div class="js-scavenge-haul"></div>
             </div>
 
-            <div class="modal-body js-scavenge-inventory"
+            <div class="modal-body bg-light js-scavenge-inventory"
                  style="display: none; border-top: 1px solid #dee2e6;"
                  data-inventory-weight="<?=$entity->inventory->weight?>"
                  data-inventory-capacity="<?=$entity->inventory->capacity?>"
             >
 
-                <div class="d-flex justify-content-between" style="font-size: 0.8rem;">
-                    <div style="font-weight: 600;">Inventory Capacity</div>
-                    <div class="align-self-end"><a href="#" class="js-scavenge-toggle-inventory" data-is-shown="0"><i class="fas fa-caret-down"></i> Manage</a></div>
+                <div class="d-flex justify-content-between"
+                     style="font-size: 0.8rem;"
+                >
+                    <div style="font-weight: 600;">
+                        Inventory Capacity
+                    </div>
+                    <div class="align-self-end">
+                        <a href="#"
+                           class="js-scavenge-toggle-inventory"
+                           data-is-shown="0"
+                        >
+                            <i class="fas fa-caret-down"></i> Manage
+                        </a>
+                    </div>
                 </div>
-                <div class="d-flex" style="margin-top: 0.5rem;">
+
+                <div class="d-flex"
+                     style="margin-top: 0.5rem; font-size: 0.8rem;"
+                >
                     <div style="margin-right: 1rem;">
                         <?=$entity->inventory->weight / 1000?> / <?=$entity->inventory->capacity / 1000?> kg
                     </div>
                     <div class="flex-fill align-self-center">
-                        <div class="progress">
-                            <div class="progress-bar js-scavenge-inventory-progress <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>"
+                        <div class="progress"
+                             style="height: 0.8rem;"
+                        >
+                            <div class="progress-bar
+                                        js-scavenge-inventory-progress
+                                        <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>
+                                 "
                                  style="width: <?=$inventoryWeight?>%;"
                             ></div>
                             <div class="progress-bar js-scavenge-inventory-haul-progress"></div>
@@ -70,11 +89,11 @@
             <div class="modal-footer">
                 <div class="btn-group d-flex" style="width: 100%;">
                     <button type="button"
-                            class="btn btn-primary btn-block js-scavenge-submit"
+                            class="btn btn-light btn-block js-scavenge-submit"
                             style="border-right: 1px solid #fff;"
                     >Add to Inventory</button>
                     <button type="button"
-                            class="btn btn-primary js-scavenge-discard"
+                            class="btn btn-light js-scavenge-discard"
                             style="border-left: 1px solid #fff;"
                     ><i class="fas fa-trash"></i></button>
                 </div>
