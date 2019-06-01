@@ -31,10 +31,10 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'       => "tint",
         ],
         "275d6f62-16ff-4f5f-8ac6-149ec4cde1e2" => [
-            'label'      => "Heroin",
+            'label'      => "Pringle",
             'resourceId' => "5234c112-05be-4b15-80df-3c2b67e88262",
             'weight'     => 1,
-            'icon'       => "syringe",
+            'icon'       => "moon",
         ],
     ];
 

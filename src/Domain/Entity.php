@@ -145,7 +145,7 @@ final class Entity
         $resourceId = $item->getVariety()->getResource()->getId();
 
         if ($resourceId->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))
-            && !$this->isAddictedToHeroin()
+            && !$this->needsPringles()
         ) {
             $resourceRepository = new ResourceRepositoryConfig;
 
@@ -206,7 +206,7 @@ final class Entity
             ],
         ];
 
-        if ($this->isAddictedToHeroin()) {
+        if ($this->needsPringles()) {
             $rollTable[] = [
                 'rolls' => range(35, 51),
                 'item'  => $varietyRepository
@@ -274,7 +274,7 @@ final class Entity
         }
     }
 
-    private function isAddictedToHeroin(): bool
+    private function needsPringles(): bool
     {
         return array_key_exists("5234c112-05be-4b15-80df-3c2b67e88262", $this->resourceNeeds);
     }
