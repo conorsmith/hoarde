@@ -358,6 +358,17 @@ class ScavengeHaulWeight {
     }
 }
 
+class ScavengeInventoryWeight {
+    constructor(el, inventory) {
+        this.el = el;
+        this.inventory = inventory;
+    }
+
+    repaint() {
+        this.el.innerText = this.inventory.weight / 1000;
+    }
+}
+
 class ScavengeError {
     constructor(el) {
         this.el = el;
@@ -405,6 +416,11 @@ class ScavengeModal {
 
         this.haulWeight = new ScavengeHaulWeight(
             this.el.querySelector(".js-scavenge-inventory-haul-weight")
+        );
+
+        this.inventoryWeight = new ScavengeInventoryWeight(
+            this.el.querySelector(".js-scavenge-inventory-weight"),
+            inventory
         );
 
         this.haulProgressBar = new ScavengeHaulProgressBar(
@@ -484,6 +500,7 @@ class ScavengeModal {
         this.submitButton.repaint();
         this.haulProgressBar.repaint();
         this.inventoryProgressBar.repaint();
+        this.inventoryWeight.repaint();
 
         this.inventoryItems.itemQuantities.forEach(function (quantity) {
             quantity.repaint();

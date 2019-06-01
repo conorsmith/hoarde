@@ -37,7 +37,7 @@
                      style="margin-top: 0.5rem; font-size: 0.8rem;"
                 >
                     <div style="margin-right: 1rem;">
-                        <?=$entity->inventory->weight / 1000?> / <?=$entity->inventory->capacity / 1000?> kg
+                        <span class="js-scavenge-inventory-weight"><?=$entity->inventory->weight / 1000?></span> / <?=$entity->inventory->capacity / 1000?> kg
                     </div>
                     <div class="flex-fill align-self-center">
                         <div class="progress"
