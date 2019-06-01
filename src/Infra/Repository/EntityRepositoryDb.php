@@ -50,6 +50,7 @@ final class EntityRepositoryDb implements EntityRepository
         return new Entity(
             $id,
             Uuid::fromString($row['game_id']),
+            Uuid::fromString($row['variety_id']),
             $row['label'],
             $row['icon'],
             $row['intact'] === "1",
@@ -120,11 +121,12 @@ final class EntityRepositoryDb implements EntityRepository
 
         if ($row === false) {
             $this->db->insert("entities", [
-                'id'      => $entity->getId(),
-                'game_id' => $entity->getGameId(),
-                'label'   => $entity->getLabel(),
-                'icon'    => $entity->getIcon(),
-                'intact'  => $entity->isIntact(),
+                'id'         => $entity->getId(),
+                'game_id'    => $entity->getGameId(),
+                'variety_id' => $entity->getVarietyId(),
+                'label'      => $entity->getLabel(),
+                'icon'       => $entity->getIcon(),
+                'intact'     => $entity->isIntact(),
             ]);
         } else {
             $this->db->update("entities", [
@@ -165,5 +167,43 @@ final class EntityRepositoryDb implements EntityRepository
                 'quantity'  => $item->getQuantity(),
             ]);
         }
+    }
+
+    public function delete(Entity $entity): void
+    {
+        $this->db->beginTransaction();
+
+        try {
+            $this->deleteEntity($entity);
+            $this->deleteResourceNeeds($entity);
+            $this->deleteInventory($entity);
+
+            $this->db->commit();
+
+        } catch (Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    private function deleteEntity(Entity $entity): void
+    {
+        $this->db->delete("entities", [
+            'id' => $entity->getId(),
+        ]);
+    }
+
+    private function deleteResourceNeeds(Entity $entity): void
+    {
+        $this->db->delete("entity_resources", [
+            'entity_id' => $entity->getId(),
+        ]);
+    }
+
+    private function deleteInventory(Entity $entity): void
+    {
+        $this->db->delete("entity_inventory", [
+            'entity_id' => $entity->getId(),
+        ]);
     }
 }

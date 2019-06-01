@@ -45,6 +45,11 @@ final class RestartGame
         $entity->reset($this->varietyRepo, $this->resourceRepo);
         $this->entityRepo->save($entity);
 
+        if (count($entityIds) > 1) {
+            $crate = $this->entityRepo->find($entityIds[1]);
+            $this->entityRepo->delete($crate);
+        }
+
         $game->restart();
         $this->gameRepo->save($game);
 

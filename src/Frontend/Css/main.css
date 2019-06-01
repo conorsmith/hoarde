@@ -12,12 +12,14 @@
 }
 
 .actions form button,
-.actions .btn-group {
+.inventory-actions .btn-group,
+.actions button {
     margin-bottom: 1rem;
 }
 
 .actions form:last-child button,
-.actions .btn-group:last-child {
+.inventory-actions .btn-group:last-child,
+.actions button:last-child {
     margin-bottom: 0;
 }
 

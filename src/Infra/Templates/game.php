@@ -32,8 +32,8 @@
 
 
 
-  <div class="row">
-        <div class="col-sm-4 offset-sm-4">
+  <div class="row justify-content-center">
+        <div class="col-lg-4 mb-3">
             <div class="card">
                 <div class="card-body">
 
@@ -68,7 +68,7 @@
                     <?php endforeach ?>
 
                     <p><strong>Inventory</strong></p>
-                    <div class="actions">
+                    <div class="inventory-actions">
                         <?php foreach ($inventory as $item) : ?>
                             <div class="btn-group d-flex" role="group">
 
@@ -108,18 +108,47 @@
                       <button type="button"
                               class="btn btn-light btn-block js-scavenge"
                               <?=($isIntact ? "" : "disabled")?>
-                              style="margin-bottom: 1rem;"
                       >Scavenge</button>
 
-                      <form method="POST" action="/<?=$gameId?>/wait">
-                        <button type="submit" class="btn btn-light btn-block js-wait" <?=($isIntact ? "" : "disabled")?>>Wait</button>
-                      </form>
+                      <button type="button"
+                              class="btn btn-light btn-block js-transfer"
+                          <?=($isIntact ? "" : "disabled")?>
+                      >Transfer Items</button>
 
                     </div>
 
                 </div>
             </div>
         </div>
+
+        <?php if ($crate) : ?>
+
+          <div class="col-lg-4 mb-3">
+            <div class="card">
+              <div class="card-body">
+
+                <h5 class="card-title">
+                      <i class="fas fa-fw fa-<?=$crate->icon?>"></i>
+                    <?=$crate->label?>
+                </h5>
+
+                <hr>
+
+                <div class="actions">
+
+                  <button type="button"
+                          class="btn btn-light btn-block js-transfer"
+                      <?=($isIntact ? "" : "disabled")?>
+                  >Transfer Items</button>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        <?php endif ?>
+
     </div>
 
     <?php include __DIR__ . "/Game/modal-drop.php"; ?>

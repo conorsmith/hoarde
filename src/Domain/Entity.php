@@ -17,6 +17,9 @@ final class Entity
     /** @var UuidInterface */
     private $gameId;
 
+    /** @var UuidInterface */
+    private $varietyId;
+
     /** @var string */
     private $label;
 
@@ -35,6 +38,7 @@ final class Entity
     public function __construct(
         UuidInterface $id,
         UuidInterface $gameId,
+        UuidInterface $varietyId,
         string $label,
         string $icon,
         bool $isIntact,
@@ -43,6 +47,7 @@ final class Entity
     ) {
         $this->id = $id;
         $this->gameId = $gameId;
+        $this->varietyId = $varietyId;
         $this->label = $label;
         $this->icon = $icon;
         $this->isIntact = $isIntact;
@@ -74,6 +79,11 @@ final class Entity
     public function getGameId(): UuidInterface
     {
         return $this->gameId;
+    }
+
+    public function getVarietyId(): UuidInterface
+    {
+        return $this->varietyId;
     }
 
     public function getLabel(): string
@@ -144,9 +154,28 @@ final class Entity
 
         $resourceId = $item->getVariety()->getResource()->getId();
 
-        if ($resourceId->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))
-            && !$this->needsPringles()
-        ) {
+        if ($resourceId->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))) {
+            $this->usePringles();
+
+        } elseif (array_key_exists(strval($resourceId), $this->resourceNeeds)) {
+            $this->useResourceReplenishingItem($resourceId);
+        }
+
+        $this->removeQuantityFromItem(1, $item);
+
+        $this->afterAction();
+
+        return $item;
+    }
+
+    private function useResourceReplenishingItem(UuidInterface $resourceId)
+    {
+        $this->resourceNeeds[strval($resourceId)] = $this->resourceNeeds[strval($resourceId)]->replenish();
+    }
+
+    private function usePringles()
+    {
+        if (!$this->needsPringles()) {
             $resourceRepository = new ResourceRepositoryConfig;
 
             $this->resourceNeeds["5234c112-05be-4b15-80df-3c2b67e88262"] = new ResourceNeed(
@@ -155,14 +184,6 @@ final class Entity
                 12
             );
         }
-
-        $this->resourceNeeds[strval($resourceId)] = $this->resourceNeeds[strval($resourceId)]->replenish();
-
-        $this->removeQuantityFromItem(1, $item);
-
-        $this->afterAction();
-
-        return $item;
     }
 
     public function dropItem(UuidInterface $id, int $quantity): Item
@@ -173,42 +194,54 @@ final class Entity
         return $item;
     }
 
-    public function scavenge(VarietyRepository $varietyRepository): ScavengingHaul
-    {
+    public function scavenge(
+        VarietyRepository $varietyRepository,
+        GameRepository $gameRepository,
+        EntityRepository $entityRepository
+    ): ScavengingHaul {
         $this->beforeAction();
 
         $generator = (new Factory)->getLowStrengthGenerator();
 
         $rollTable = [
             [
-                'rolls' => [100],
+                'rolls' => range(990, 999),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"))
                     ->createItemWithQuantity(1),
             ],
             [
-                'rolls' => [99],
+                'rolls' => range(980, 989),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
                     ->createItemWithQuantity(1),
             ],
             [
-                'rolls' => range(14, 30),
+                'rolls' => range(140, 300),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))
                     ->createItemWithQuantity($generator->generateInt(1, 3)),
             ],
             [
-                'rolls' => range(1, 17),
+                'rolls' => range(1, 170),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"))
                     ->createItemWithQuantity($generator->generateInt(1, 2)),
             ],
         ];
 
+        if (!$this->hasStorage($gameRepository, $entityRepository)) {
+            $rollTable[] = [
+                'rolls' => range(1000, 1000),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))
+                    ->createItemWithQuantity(1),
+            ];
+        }
+
         if ($this->needsPringles()) {
             $rollTable[] = [
-                'rolls' => range(35, 51),
+                'rolls' => range(350, 510),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
                     ->createItemWithQuantity(1),
@@ -217,10 +250,10 @@ final class Entity
 
         $scavengedItems = [];
 
-        $d100 = $generator->generateInt(1, 100);
+        $d1000 = $generator->generateInt(1, 1000);
 
         foreach ($rollTable as $rollTableEntry) {
-            if (in_array($d100, $rollTableEntry['rolls'])) {
+            if (in_array($d1000, $rollTableEntry['rolls'])) {
                 $scavengedItems[] = $rollTableEntry['item'];
             }
         }
@@ -230,6 +263,24 @@ final class Entity
         $this->afterAction();
 
         return $haul;
+    }
+
+    private function hasStorage(GameRepository $gameRepository, EntityRepository $entityRepository): bool
+    {
+        if (array_key_exists("59593b72-3845-491e-9721-4452a337019b", $this->inventory)) {
+            return true;
+        }
+
+        $entityIds = $gameRepository->findEntityIds($this->gameId);
+
+        foreach ($entityIds as $entityId) {
+            $entity = $entityRepository->find($entityId);
+            if ($entity->getVarietyId()->equals(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function addHaulToInventory(ScavengingHaul $haul): void

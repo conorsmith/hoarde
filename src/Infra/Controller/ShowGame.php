@@ -46,17 +46,22 @@ final class ShowGame
 
         $game = $this->gameRepo->find($gameId);
         $entityIds = $this->gameRepo->findEntityIds($gameId);
-        $entity = $this->entityRepo->find($entityIds[0]);
 
-        $body = $this->renderTemplate($game, $entity, [
-            'entity' => (object)[
-                'label'     => $entity->getLabel(),
-                'icon'      => $entity->getIcon(),
-                'inventory' => (object)[
-                    'weight'   => $entity->getInventoryWeight(),
-                    'capacity' => $entity->getInventoryCapacity(),
-                ],
-            ],
+        $human = null;
+        $crate = null;
+
+        foreach ($entityIds as $entityId) {
+            $entity = $this->entityRepo->find($entityId);
+            if ($entity->getVarietyId()->equals(Uuid::fromString("fde2146a-c29d-4262-b96f-ec7b696eccad"))) {
+                $human = $entity;
+            } elseif ($entity->getVarietyId()->equals(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))) {
+                $crate = $entity;
+            }
+        }
+
+        $body = $this->renderTemplate($game, $human, [
+            'entity' => $this->presentEntity($human),
+            'crate'  => $this->presentEntity($crate),
         ]);
 
         $response = new Response;
@@ -105,6 +110,21 @@ final class ShowGame
         ob_end_clean();
 
         return $body;
+    }
+
+    private function presentEntity(?Entity $entity) {
+        if (is_null($entity)) {
+            return null;
+        }
+
+        return (object)[
+            'label'     => $entity->getLabel(),
+            'icon'      => $entity->getIcon(),
+            'inventory' => (object)[
+                'weight'   => $entity->getInventoryWeight(),
+                'capacity' => $entity->getInventoryCapacity(),
+            ],
+        ];
     }
 
     private function presentItem(Item $item): array

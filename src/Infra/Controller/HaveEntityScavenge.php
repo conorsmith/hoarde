@@ -52,7 +52,7 @@ final class HaveEntityScavenge
         $entityIds = $this->gameRepo->findEntityIds($gameId);
         $entity = $this->entityRepo->find($entityIds[0]);
 
-        $haul = $entity->scavenge($this->varietyRepo);
+        $haul = $entity->scavenge($this->varietyRepo, $this->gameRepo, $this->entityRepo);
         $this->entityRepo->save($entity);
         $this->scavengedHaulRepo->save($haul);
 

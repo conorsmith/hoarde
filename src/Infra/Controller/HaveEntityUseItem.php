@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
+use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use Psr\Http\Message\ResponseInterface;
@@ -43,6 +44,21 @@ final class HaveEntityUseItem
         $itemId = Uuid::fromString($_POST['item']);
         $usedItem = $entity->useItem($itemId);
         $this->entityRepo->save($entity);
+
+        if ($itemId->equals(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))) {
+            $crate = new Entity(
+                Uuid::uuid4(),
+                $gameId,
+                Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"),
+                $usedItem->getVariety()->getLabel(),
+                $usedItem->getVariety()->getIcon(),
+                true,
+                [],
+                []
+            );
+
+            $this->entityRepo->save($crate);
+        }
 
         $game->proceedToNextTurn();
         $this->gameRepo->save($game);

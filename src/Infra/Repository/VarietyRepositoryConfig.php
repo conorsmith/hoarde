@@ -36,6 +36,18 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'     => 1,
             'icon'       => "moon",
         ],
+        "59593b72-3845-491e-9721-4452a337019b" => [
+            'label'      => "Wooden Crate",
+            'resourceId' => "e06a51c4-da54-4263-8d90-bc83fe126cd5",
+            'weight'     => 4000,
+            'icon'       => "box",
+        ],
+        "fde2146a-c29d-4262-b96f-ec7b696eccad" => [
+            'label'      => "Human",
+            'resourceId' => "ab68e402-c4e9-43ef-a33b-cae0be014a09",
+            'weight'     => 75000,
+            'icon'       => "user",
+        ],
     ];
 
     private $resourceRepository;

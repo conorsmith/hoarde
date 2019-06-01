@@ -47,6 +47,7 @@ final class GenerateNewGame
         $newEntity = new Entity(
             Uuid::uuid4(),
             $id,
+            Uuid::fromString("fde2146a-c29d-4262-b96f-ec7b696eccad"),
             $request->getParsedBody()['label'],
             $request->getParsedBody()['icon'],
             true,

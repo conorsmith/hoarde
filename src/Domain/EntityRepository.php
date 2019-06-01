@@ -9,4 +9,5 @@ interface EntityRepository
 {
     public function find(UuidInterface $id): ?Entity;
     public function save(Entity $entity): void;
+    public function delete(Entity $entity): void;
 }
