@@ -153,6 +153,7 @@ var createHaul = function (response) {
 
 var scavengeSubmitButton;
 var scavengeHaulProgressBar;
+var scavengeInventoryProgressBar;
 var scavengeHaulWeight;
 
 scavengeModal.querySelectorAll(".js-scavenge-inventory-items .js-scavenge-inventory-quantity").forEach(function (quantity) {
@@ -175,7 +176,7 @@ scavengeModal.querySelector(".js-scavenge-inventory").findInputs = function () {
 
 scavengeModal.addEventListener("inventory.modify", function (e) {
     scavengeSubmitButton.repaint();
-    this.querySelector(".js-scavenge-inventory-progress").handleInventoryModified(e);
+    scavengeInventoryProgressBar.repaint();
     scavengeHaulProgressBar.repaint();
     this.querySelectorAll(".js-scavenge-inventory-quantity").forEach(function (quantity) {
         quantity.handleInventoryModified(e);
@@ -343,10 +344,6 @@ scavengeModal.querySelector(".js-scavenge-inventory").handelHaulCreated = functi
     }
 };
 
-scavengeModal.querySelector(".js-scavenge-inventory-progress").handleInventoryModified = function (e) {
-    this.style.width = (e.detail.inventory.weight / e.detail.inventory.capacity * 100) + "%";
-};
-
 scavengeModal.querySelector(".js-scavenge-toggle-inventory").onclick = function (e) {
     e.preventDefault();
     if (this.dataset.isShown === "1") {
@@ -384,6 +381,11 @@ for (var i = 0; i < scavengeButtons.length; i++) {
 
             scavengeHaulProgressBar = new ScavengeHaulProgressBar(
                 scavengeModal.querySelector(".js-scavenge-inventory-haul-progress"),
+                inventory
+            );
+
+            scavengeInventoryProgressBar = new ScavengeInventoryProgressBar(
+                scavengeModal.querySelector(".js-scavenge-inventory-progress"),
                 inventory
             );
 
