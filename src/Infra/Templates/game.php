@@ -126,6 +126,7 @@
     <?php include __DIR__ . "/Game/modal-scavenge.php"; ?>
 
     <input type="hidden" id="gameId" value="<?=$gameId?>" />
+    <input type="hidden" id="inventoryItems" value='<?=json_encode($inventory)?>' />
 
     <?php include __DIR__ . "/Game/template-scavenge-item-slider.php"; ?>
     <?php include __DIR__ . "/Game/template-spinner.php"; ?>

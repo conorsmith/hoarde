@@ -1,3 +1,98 @@
+
+class Inventory {
+    constructor(items, capacity) {
+        this.items = items;
+        this.capacity = capacity;
+        this.weight = this.calculateWeight();
+    }
+
+    calculateWeight() {
+        var weight = 0;
+
+        for (var i = 0; i < this.items.length; i++) {
+            weight += this.items[i].weight * this.items[i].quantity;
+        }
+
+        return weight;
+    }
+
+    modifyItemQuantity(varietyId, newQuantity) {
+        var modifiedItem;
+
+        for (var i = 0; i < this.items.length; i++) {
+            if (varietyId === this.items[i].id) {
+                this.items[i].quantity = newQuantity;
+                modifiedItem = this.items[i];
+            }
+        }
+
+        this.weight = this.calculateWeight();
+
+        scavengeModal.dispatchEvent(new CustomEvent("inventory.modify", {
+            detail: {
+                inventory: this,
+                modifiedItem: modifiedItem
+            }
+        }));
+    }
+}
+
+class ScavengeSubmitButton {
+    constructor(el, inventory) {
+        this.el = el;
+        this.inventory = inventory;
+
+        this.original = {
+            innerText: this.el.innerText
+        }
+    }
+
+    attachHaul(haul) {
+        this.haul = haul;
+        this.el.dataset.haulId = haul.id;
+        this.el.dataset.isEmpty = haul.isEmpty();
+    }
+
+    repaint() {
+        if (this.haul.isOverCapacity()) {
+            this.el.setAttribute("disabled", true);
+        } else {
+            this.el.removeAttribute("disabled");
+        }
+
+        if (this.haul.isEmpty()) {
+            this.el.innerText = "Oh well...";
+        } else if (this.haul.isBeingDiscarded()) {
+            this.el.innerText = "Discard Haul";
+        } else {
+            this.el.innerText = this.original.innerText;
+        }
+    }
+}
+
+class ScavengeHaulProgressBar {
+    constructor(el, inventory) {
+        this.el = el;
+        this.inventory = inventory;
+    }
+
+    attachHaul(haul) {
+        this.haul = haul;
+    }
+
+    repaint() {
+        if (this.haul.isOverCapacity()) {
+            this.el.classList.remove("bg-success");
+            this.el.classList.add("bg-danger");
+            this.el.style.width = (100 - (this.inventory.weight / this.inventory.capacity * 100)) + "%";
+        } else {
+            this.el.classList.remove("bg-danger");
+            this.el.classList.add("bg-success");
+            this.el.style.width = (this.haul.getWeight() / this.inventory.capacity * 100) + "%";
+        }
+    }
+}
+
 var gameId = document.getElementById("gameId").value;
 var useButtons = document.getElementsByClassName("js-use");
 
@@ -81,44 +176,16 @@ for (var i = 0; i < useButtons.length; i++) {
 var scavengeModal = document.getElementById("scavengeModal");
 var scavengeButtons = document.getElementsByClassName("js-scavenge");
 
-var haul;
-
-var inventory = {
-    items: JSON.parse('<?=json_encode($inventory)?>'),
-    weight: parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryWeight, 10),
-    capacity: parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryCapacity, 10),
-    modifyItemQuantity: function (varietyId, newQuantity) {
-        for (var i = 0; i < this.items.length; i++) {
-            if (varietyId === this.items[i].id) {
-                this.items[i].quantity = newQuantity;
-            }
-        }
-
-        this.weight = 0;
-
-        for (i = 0; i < this.items.length; i++) {
-            this.weight += this.items[i].weight * this.items[i].quantity;
-        }
-
-        scavengeModal.dispatchEvent(new CustomEvent("inventory.modify", {
-            detail: {
-                newQuantity: newQuantity,
-                newWeight: this.weight,
-                isOverCapacity: this.isOverCapacity(),
-                inventory: this,
-                modifiedItemVarietyId: varietyId,
-                haul: haul
-            }
-        }));
-    },
-    isOverCapacity: function () {
-        return this.weight + haul.getWeight() > this.capacity;
-    }
-};
+var inventory = new Inventory(
+    JSON.parse(document.getElementById("inventoryItems").value),
+    parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryCapacity, 10)
+);
 
 var createHaul = function (response) {
     var haul = {
+        id: response.haul.id,
         items: response.haul.items,
+        isInitiallyEmpty: response.haul.items.length === 0,
         inventory: inventory,
         modifyItemQuantity: function (varietyId, newQuantity) {
             for (var i = 0; i < this.items.length; i++) {
@@ -151,6 +218,15 @@ var createHaul = function (response) {
         },
         isEmpty: function () {
             return this.items.length === 0;
+        },
+        isBeingDiscarded: function () {
+            for (var i = 0; i < this.items.length; i++) {
+                if (this.items[i].quantity > 0) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     };
 
@@ -169,10 +245,13 @@ var createHaul = function (response) {
     return haul;
 };
 
+var scavengeSubmitButton;
+var scavengeHaulProgressBar;
+
 scavengeModal.querySelectorAll(".js-scavenge-inventory-items .js-scavenge-inventory-quantity").forEach(function (quantity) {
     quantity.handleInventoryModified = function (e) {
-        if (e.detail.modifiedItemVarietyId === this.dataset.varietyId) {
-            this.innerHTML = e.detail.newQuantity;
+        if (e.detail.modifiedItem.id === this.dataset.varietyId) {
+            this.innerHTML = e.detail.modifiedItem.quantity;
         }
     };
 })
@@ -188,26 +267,29 @@ scavengeModal.querySelector(".js-scavenge-inventory").findInputs = function () {
 };
 
 scavengeModal.addEventListener("inventory.modify", function (e) {
-    this.querySelector(".js-scavenge-submit").handleInventoryModified(e);
+    scavengeSubmitButton.repaint();
     this.querySelector(".js-scavenge-inventory-progress").handleInventoryModified(e);
-    this.querySelector(".js-scavenge-inventory-haul-progress").handleInventoryModified(e);
+    scavengeHaulProgressBar.repaint();
     this.querySelectorAll(".js-scavenge-inventory-quantity").forEach(function (quantity) {
         quantity.handleInventoryModified(e);
     })
 });
 
 scavengeModal.addEventListener("haul.created", function (e) {
-    this.querySelector(".js-scavenge-submit").handleHaulCreated(e);
+    scavengeSubmitButton.attachHaul(e.detail.haul);
+    scavengeHaulProgressBar.attachHaul(e.detail.haul);
+
+    scavengeSubmitButton.repaint();
     this.querySelector(".js-scavenge-haul").handleHaulCreated(e);
     this.querySelector(".js-scavenge-inventory").handelHaulCreated(e);
     this.querySelector(".js-scavenge-inventory-haul-weight").handleHaulCreated(e);
-    this.querySelector(".js-scavenge-inventory-haul-progress").handleHaulCreated(e);
+    scavengeHaulProgressBar.repaint();
 });
 
 scavengeModal.addEventListener("haul.modify", function (e) {
-    this.querySelector(".js-scavenge-submit").handleHaulModified(e);
+    scavengeSubmitButton.repaint();
     this.querySelector(".js-scavenge-inventory-haul-weight").handleHaulModified(e);
-    this.querySelector(".js-scavenge-inventory-haul-progress").handleHaulModified(e);
+    scavengeHaulProgressBar.repaint();
     this.querySelectorAll(".js-scavange-quantity").forEach(function (quantity) {
         quantity.handleHaulModified(e);
     })
@@ -221,39 +303,7 @@ scavengeModal.addEventListener("haul.notAdded", function (e) {
     this.querySelector(".js-scavenge-haul").handleHaulNotAdded(e);
 });
 
-scavengeModal.querySelector(".js-scavenge-submit").handleInventoryModified = function (e) {
-    if (e.detail.isOverCapacity) {
-        this.setAttribute("disabled", true);
-    } else {
-        this.removeAttribute("disabled");
-    }
-};
-
-scavengeModal.querySelector(".js-scavenge-submit").handleHaulCreated = function (e) {
-    this.dataset.haulId = e.detail.id;
-    this.dataset.isEmpty = e.detail.isEmpty;
-
-    if (e.detail.isEmpty) {
-        this.innerHTML = "Oh well...";
-
-    } else if (e.detail.isOverCapacity) {
-        this.setAttribute("disabled", true);
-    }
-};
-
-scavengeModal.querySelector(".js-scavenge-submit").handleHaulModified = function (e) {
-    if (e.detail.newWeight === 0) {
-        this.innerHTML = "Discard Haul";
-    } else {
-        this.innerHTML = "Add to Inventory";
-    }
-
-    if (e.detail.isOverCapacity) {
-        this.setAttribute("disabled", true);
-    } else {
-        this.removeAttribute("disabled");
-    }
-};
+var haul;
 
 scavengeModal.querySelector(".js-scavenge-discard").onclick = function (e) {
     e.preventDefault();
@@ -405,40 +455,6 @@ scavengeModal.querySelector(".js-scavenge-inventory-progress").handleInventoryMo
     this.style.width = (e.detail.inventory.weight / e.detail.inventory.capacity * 100) + "%";
 };
 
-scavengeModal.querySelector(".js-scavenge-inventory-haul-progress").handleInventoryModified = function (e) {
-    if (e.detail.isOverCapacity) {
-        this.classList.remove("bg-success");
-        this.classList.add("bg-danger");
-        this.style.width = (100 - (e.detail.inventory.weight / e.detail.inventory.capacity * 100)) + "%";
-    } else {
-        this.classList.remove("bg-danger");
-        this.classList.add("bg-success");
-        this.style.width = (e.detail.haul.getWeight() / e.detail.inventory.capacity * 100) + "%";
-    }
-};
-
-scavengeModal.querySelector(".js-scavenge-inventory-haul-progress").handleHaulCreated = function (e) {
-    if (e.detail.isOverCapacity) {
-        this.classList.add("bg-danger");
-        this.style.width = (100 - (e.detail.inventory.weight / e.detail.inventory.capacity * 100)) + "%";
-    } else {
-        this.classList.add("bg-success");
-        this.style.width = (e.detail.weight / e.detail.inventory.capacity * 100) + "%";
-    }
-};
-
-scavengeModal.querySelector(".js-scavenge-inventory-haul-progress").handleHaulModified = function (e) {
-    if (e.detail.isOverCapacity) {
-        this.classList.remove("bg-success");
-        this.classList.add("bg-danger");
-        this.style.width = (100 - (e.detail.inventory.weight / e.detail.inventory.capacity * 100)) + "%";
-    } else {
-        this.classList.remove("bg-danger");
-        this.classList.add("bg-success");
-        this.style.width = (e.detail.newWeight / e.detail.inventory.capacity * 100) + "%";
-    }
-};
-
 scavengeModal.querySelector(".js-scavenge-toggle-inventory").onclick = function (e) {
     e.preventDefault();
     if (this.dataset.isShown === "1") {
@@ -468,6 +484,17 @@ for (var i = 0; i < scavengeButtons.length; i++) {
 
         xhr.onload = function () {
             var response = JSON.parse(this.response);
+
+            scavengeSubmitButton = new ScavengeSubmitButton(
+                scavengeModal.querySelector(".js-scavenge-submit"),
+                inventory
+            );
+
+            scavengeHaulProgressBar = new ScavengeHaulProgressBar(
+                scavengeModal.querySelector(".js-scavenge-inventory-haul-progress"),
+                inventory
+            )
+
             haul = createHaul(response);
 
             if (haul.isEmpty()) {
