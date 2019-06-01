@@ -88,14 +88,17 @@
 
             <div class="modal-footer">
                 <div class="btn-group d-flex" style="width: 100%;">
+
                     <button type="button"
                             class="btn btn-light btn-block js-scavenge-submit"
                             style="border-right: 1px solid #fff;"
                     >Add to Inventory</button>
+
                     <button type="button"
                             class="btn btn-light js-scavenge-discard"
                             style="border-left: 1px solid #fff;"
                     ><i class="fas fa-trash"></i></button>
+
                 </div>
             </div>
 

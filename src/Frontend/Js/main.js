@@ -1,98 +1,4 @@
 
-class Inventory {
-    constructor(items, capacity) {
-        this.items = items;
-        this.capacity = capacity;
-        this.weight = this.calculateWeight();
-    }
-
-    calculateWeight() {
-        var weight = 0;
-
-        for (var i = 0; i < this.items.length; i++) {
-            weight += this.items[i].weight * this.items[i].quantity;
-        }
-
-        return weight;
-    }
-
-    modifyItemQuantity(varietyId, newQuantity) {
-        var modifiedItem;
-
-        for (var i = 0; i < this.items.length; i++) {
-            if (varietyId === this.items[i].id) {
-                this.items[i].quantity = newQuantity;
-                modifiedItem = this.items[i];
-            }
-        }
-
-        this.weight = this.calculateWeight();
-
-        scavengeModal.dispatchEvent(new CustomEvent("inventory.modify", {
-            detail: {
-                inventory: this,
-                modifiedItem: modifiedItem
-            }
-        }));
-    }
-}
-
-class ScavengeSubmitButton {
-    constructor(el, inventory) {
-        this.el = el;
-        this.inventory = inventory;
-
-        this.original = {
-            innerText: this.el.innerText
-        }
-    }
-
-    attachHaul(haul) {
-        this.haul = haul;
-        this.el.dataset.haulId = haul.id;
-        this.el.dataset.isEmpty = haul.isEmpty();
-    }
-
-    repaint() {
-        if (this.haul.isOverCapacity()) {
-            this.el.setAttribute("disabled", true);
-        } else {
-            this.el.removeAttribute("disabled");
-        }
-
-        if (this.haul.isEmpty()) {
-            this.el.innerText = "Oh well...";
-        } else if (this.haul.isBeingDiscarded()) {
-            this.el.innerText = "Discard Haul";
-        } else {
-            this.el.innerText = this.original.innerText;
-        }
-    }
-}
-
-class ScavengeHaulProgressBar {
-    constructor(el, inventory) {
-        this.el = el;
-        this.inventory = inventory;
-    }
-
-    attachHaul(haul) {
-        this.haul = haul;
-    }
-
-    repaint() {
-        if (this.haul.isOverCapacity()) {
-            this.el.classList.remove("bg-success");
-            this.el.classList.add("bg-danger");
-            this.el.style.width = (100 - (this.inventory.weight / this.inventory.capacity * 100)) + "%";
-        } else {
-            this.el.classList.remove("bg-danger");
-            this.el.classList.add("bg-success");
-            this.el.style.width = (this.haul.getWeight() / this.inventory.capacity * 100) + "%";
-        }
-    }
-}
-
 var gameId = document.getElementById("gameId").value;
 var useButtons = document.getElementsByClassName("js-use");
 
@@ -247,6 +153,7 @@ var createHaul = function (response) {
 
 var scavengeSubmitButton;
 var scavengeHaulProgressBar;
+var scavengeHaulWeight;
 
 scavengeModal.querySelectorAll(".js-scavenge-inventory-items .js-scavenge-inventory-quantity").forEach(function (quantity) {
     quantity.handleInventoryModified = function (e) {
@@ -278,17 +185,18 @@ scavengeModal.addEventListener("inventory.modify", function (e) {
 scavengeModal.addEventListener("haul.created", function (e) {
     scavengeSubmitButton.attachHaul(e.detail.haul);
     scavengeHaulProgressBar.attachHaul(e.detail.haul);
+    scavengeHaulWeight.attachHaul(e.detail.haul);
 
     scavengeSubmitButton.repaint();
     this.querySelector(".js-scavenge-haul").handleHaulCreated(e);
     this.querySelector(".js-scavenge-inventory").handelHaulCreated(e);
-    this.querySelector(".js-scavenge-inventory-haul-weight").handleHaulCreated(e);
+    scavengeHaulWeight.repaint();
     scavengeHaulProgressBar.repaint();
 });
 
 scavengeModal.addEventListener("haul.modify", function (e) {
     scavengeSubmitButton.repaint();
-    this.querySelector(".js-scavenge-inventory-haul-weight").handleHaulModified(e);
+    scavengeHaulWeight.repaint();
     scavengeHaulProgressBar.repaint();
     this.querySelectorAll(".js-scavange-quantity").forEach(function (quantity) {
         quantity.handleHaulModified(e);
@@ -435,22 +343,6 @@ scavengeModal.querySelector(".js-scavenge-inventory").handelHaulCreated = functi
     }
 };
 
-scavengeModal.querySelector(".js-scavenge-inventory-haul-weight").handleHaulCreated = function (e) {
-    if (e.detail.weight < 100 && e.detail.weight > 0) {
-        this.innerHTML = "+" + (e.detail.weight) + " g";
-    } else {
-        this.innerHTML = "+" + (e.detail.weight / 1000) + " kg";
-    }
-};
-
-scavengeModal.querySelector(".js-scavenge-inventory-haul-weight").handleHaulModified = function (e) {
-    if (e.detail.newWeight < 100 && e.detail.newWeight > 0) {
-        this.innerHTML = "+" + (e.detail.newWeight) + " g";
-    } else {
-        this.innerHTML = "+" + (e.detail.newWeight / 1000) + " kg";
-    }
-};
-
 scavengeModal.querySelector(".js-scavenge-inventory-progress").handleInventoryModified = function (e) {
     this.style.width = (e.detail.inventory.weight / e.detail.inventory.capacity * 100) + "%";
 };
@@ -493,7 +385,11 @@ for (var i = 0; i < scavengeButtons.length; i++) {
             scavengeHaulProgressBar = new ScavengeHaulProgressBar(
                 scavengeModal.querySelector(".js-scavenge-inventory-haul-progress"),
                 inventory
-            )
+            );
+
+            scavengeHaulWeight = new ScavengeHaulWeight(
+                scavengeModal.querySelector(".js-scavenge-inventory-haul-weight")
+            );
 
             haul = createHaul(response);
 
