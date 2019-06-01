@@ -7,6 +7,7 @@
             </div>
 
             <div class="modal-body">
+                <div class="js-scavenge-error"></div>
                 <div class="js-scavenge-haul"></div>
             </div>
 

@@ -170,13 +170,18 @@ var scavengeHaulWeight = new ScavengeHaulWeight(
     scavengeModal.querySelector(".js-scavenge-inventory-haul-weight")
 );
 
+var scavengeHaul = new ScavengeHaul(
+    scavengeModal.querySelector(".js-scavenge-haul"),
+    document.getElementById("scavange-item-slider")
+);
+
 scavengeModal.querySelectorAll(".js-scavenge-inventory-items .js-scavenge-inventory-quantity").forEach(function (quantity) {
     quantity.handleInventoryModified = function (e) {
         if (e.detail.modifiedItem.id === this.dataset.varietyId) {
             this.innerHTML = e.detail.modifiedItem.quantity;
         }
     };
-})
+});
 
 scavengeModal.querySelectorAll(".js-scavenge-inventory-items input[type='range']").forEach(function (input) {
     input.addEventListener("input", function (e) {
@@ -201,9 +206,10 @@ scavengeModal.addEventListener("haul.created", function (e) {
     scavengeSubmitButton.attachHaul(e.detail.haul);
     scavengeHaulProgressBar.attachHaul(e.detail.haul);
     scavengeHaulWeight.attachHaul(e.detail.haul);
+    scavengeHaul.attachHaul(e.detail.haul);
 
     scavengeSubmitButton.repaint();
-    this.querySelector(".js-scavenge-haul").handleHaulCreated(e);
+    scavengeHaul.repaint();
     scavengeHaulWeight.repaint();
     scavengeHaulProgressBar.repaint();
 });
@@ -218,11 +224,11 @@ scavengeModal.addEventListener("haul.modify", function (e) {
 });
 
 scavengeModal.addEventListener("haul.add", function (e) {
-    this.querySelector(".js-scavenge-haul").handleHaulAdd(e);
+    this.querySelector(".js-scavenge-error").handleHaulAdd(e);
 });
 
 scavengeModal.addEventListener("haul.notAdded", function (e) {
-    this.querySelector(".js-scavenge-haul").handleHaulNotAdded(e);
+    this.querySelector(".js-scavenge-error").handleHaulNotAdded(e);
 });
 
 var haul;
@@ -330,7 +336,7 @@ scavengeModal.querySelector(".js-scavenge-haul").handleHaulCreated = function (e
     }
 };
 
-scavengeModal.querySelector(".js-scavenge-haul").handleHaulAdd = function (e) {
+scavengeModal.querySelector(".js-scavenge-error").handleHaulAdd = function (e) {
     var previousAlert = this.querySelector(".alert");
 
     if (previousAlert) {
@@ -338,10 +344,11 @@ scavengeModal.querySelector(".js-scavenge-haul").handleHaulAdd = function (e) {
     }
 };
 
-scavengeModal.querySelector(".js-scavenge-haul").handleHaulNotAdded = function (e) {
+scavengeModal.querySelector(".js-scavenge-error").handleHaulNotAdded = function (e) {
     var alert = document.createElement("div");
     alert.classList.add("alert");
     alert.classList.add("alert-danger");
+    alert.style.marginBottom = "1rem";
     alert.innerHTML = e.detail.message;
 
     this.appendChild(alert);
