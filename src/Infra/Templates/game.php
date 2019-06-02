@@ -149,10 +149,14 @@
                       <div class="align-self-center" style="margin-right: 0.6rem; margin-bottom: 1px;">
                         <span class="badge"><?=$item->quantity?></span>
                       </div>
-                      <div class="btn-group dropdown" role="group">
+                      <div class="dropdown" role="group">
                         <button type="button"
                                 class="btn btn-light dropdown-toggle"
                                 data-toggle="dropdown"
+                                style="border-top-left-radius: 0;
+                                       border-bottom-left-radius: 0;
+                                       padding-top: 0.7rem;
+                                       padding-bottom: 0.5rem;"
                             <?=($isIntact ? "" : "disabled")?>></button>
                         <div class="dropdown-menu dropdown-menu-right">
                           <a href="#"
