@@ -149,7 +149,7 @@
                       <div class="align-self-center" style="margin-right: 0.6rem; margin-bottom: 1px;">
                         <span class="badge"><?=$item->quantity?></span>
                       </div>
-                      <div class="btn-group" role="group">
+                      <div class="btn-group dropdown" role="group">
                         <button type="button"
                                 class="btn btn-light dropdown-toggle"
                                 data-toggle="dropdown"
@@ -163,7 +163,10 @@
                              data-item-id="<?=$item->varietyId?>"
                              data-item-label="<?=$item->label?>"
                              data-item-quantity="<?=$item->quantity?>"
-                          >Drop</a>
+                          >
+                            <i class="fas fa-fw fa-trash"></i>
+                            Drop
+                          </a>
                         </div>
                       </div>
                     </div>
