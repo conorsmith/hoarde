@@ -5,6 +5,7 @@ var useButtons = document.getElementsByClassName("js-use");
 $("#dropModal").on("show.bs.modal", function (e) {
     var button = e.relatedTarget;
     e.target.dataset.itemId = button.dataset.itemId;
+    e.target.dataset.entityId = button.dataset.entityId;
     e.target.querySelector(".js-drop-title").innerHTML = "Drop " + button.dataset.itemLabel;
     e.target.querySelector(".js-drop-submit").innerHTML = "Drop 0";
     document.getElementById("js-drop-slider").value = 0;
@@ -27,6 +28,7 @@ document.getElementById("dropModal").querySelector(".js-drop-submit").onclick = 
     e.preventDefault();
 
     var itemId = document.getElementById("dropModal").dataset.itemId;
+    var entityId = document.getElementById("dropModal").dataset.entityId;
     var itemQuantity = e.target.dataset.itemQuantity;
 
     var form = document.createElement("form");
@@ -44,6 +46,12 @@ document.getElementById("dropModal").querySelector(".js-drop-submit").onclick = 
     itemInput.setAttribute("type", "hidden");
     itemInput.setAttribute("name", "quantity");
     itemInput.setAttribute("value", itemQuantity);
+    form.appendChild(itemInput);
+
+    var itemInput = document.createElement("input");
+    itemInput.setAttribute("type", "hidden");
+    itemInput.setAttribute("name", "entityId");
+    itemInput.setAttribute("value", entityId);
     form.appendChild(itemInput);
 
     document.body.appendChild(form);

@@ -37,7 +37,15 @@ final class HaveEntityDropItem
         $gameId = Uuid::fromString($args['gameId']);
 
         $entityIds = $this->gameRepo->findEntityIds($gameId);
-        $entity = $this->entityRepo->find($entityIds[0]);
+        $entity = $this->entityRepo->find(Uuid::fromString($_POST['entityId']));
+
+        if (!in_array($entity->getId(), $entityIds)) {
+            $this->session->setFlash("danger", "Drop items request must be for entities from this game");
+
+            $response = new Response;
+            $response = $response->withHeader("Location", "/{$gameId}");
+            return $response;
+        }
 
         $itemId = Uuid::fromString($_POST['item']);
         $droppedQuantity = intval($_POST['quantity']);

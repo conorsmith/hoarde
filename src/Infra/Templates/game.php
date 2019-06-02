@@ -88,6 +88,7 @@
                                            class="dropdown-item"
                                            data-toggle="modal"
                                            data-target="#dropModal"
+                                           data-entity-id="<?=$entity->id?>"
                                            data-item-id="<?=$item['id']?>"
                                            data-item-label="<?=$item['label']?>"
                                            data-item-quantity="<?=$item['quantity']?>"
@@ -144,9 +145,29 @@
                   <ul class="list-group">
                   <?php foreach ($crate->inventory->items as $item) : ?>
                     <li class="list-group-item">
-                      <i class="fas fa-fw fa-<?=$item->icon?>"></i>
-                      <?=$item->label?>
-                      (<?=$item->quantity?>)
+                      <div class="d-flex w-100 justify-content-between">
+                        <div>
+                          <i class="fas fa-fw fa-<?=$item->icon?>"></i>
+                            <?=$item->label?>
+                          (<?=$item->quantity?>)
+                        </div>
+                        <div>
+                          <a href="#" class="text-dark" data-toggle="dropdown">
+                            <i class="fas fa-caret-down"></i>
+                          </a>
+                          <div class="dropdown-menu dropdown-menu-right">
+                            <a href="#"
+                               class="dropdown-item"
+                               data-toggle="modal"
+                               data-target="#dropModal"
+                               data-entity-id="<?=$crate->id?>"
+                               data-item-id="<?=$item->varietyId?>"
+                               data-item-label="<?=$item->label?>"
+                               data-item-quantity="<?=$item->quantity?>"
+                            >Drop</a>
+                          </div>
+                        </div>
+                      </div>
                     </li>
                   <?php endforeach ?>
                   </ul>
