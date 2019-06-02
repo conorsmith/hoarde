@@ -5,6 +5,7 @@ class TransferController {
         this.eventBus = eventBus;
         this.view = view;
 
+        this.capacityBarControllers = [];
         this.itemSliderControllers = [];
 
         const inventoryA = this.view.capacityBars[0].createModel();
@@ -13,11 +14,11 @@ class TransferController {
         const transferA = new Transfer(inventoryA, inventoryB);
         const transferB = new Transfer(inventoryB, inventoryA);
 
-        new TransferCapacityBarController(
+        this.capacityBarControllers.push(new TransferCapacityBarController(
             this.eventBus,
             this.view.capacityBars[0],
             transferA
-        );
+        ));
 
         new TransferInventoryWeightController(
             this.eventBus,
@@ -25,11 +26,11 @@ class TransferController {
             transferA
         );
 
-        new TransferCapacityBarController(
+        this.capacityBarControllers.push(new TransferCapacityBarController(
             this.eventBus,
             this.view.capacityBars[1],
             transferB
-        );
+        ));
 
         new TransferInventoryWeightController(
             this.eventBus,
@@ -74,17 +75,19 @@ class TransferController {
     }
 
     createRequestBody() {
-        var body = {};
+        let body = {};
+
+        this.capacityBarControllers.forEach(function (capacityBar) {
+            const entityId = capacityBar.model.inventoryFrom.entityId;
+
+            body[entityId] = {
+                entityId: entityId,
+                items: []
+            }
+        });
 
         this.itemSliderControllers.forEach(function (itemSlider) {
             const entityId = itemSlider.model.entityId;
-
-            if (body[entityId] === undefined) {
-                body[entityId] = {
-                    entityId: entityId,
-                    items: []
-                };
-            }
 
             body[entityId].items.push({
                 varietyId: itemSlider.model.varietyId,
