@@ -25,7 +25,9 @@
                       <div style="margin-right: 1rem; font-weight: 900;">
                           <i class="fas fa-fw fa-<?=$entity->icon?>"></i> <?=$entity->label?>
                       </div>
-                      <div style="margin-left: 1rem; font-size: 0.8rem; text-align: right;">
+                      <div class="align-self-center"
+                           style="margin-left: 1rem; font-size: 0.8rem; text-align: right;"
+                      >
                           <span class="js-inventory-weight"><?=$entity->inventory->weight / 1000?></span> / <?=$entity->inventory->capacity / 1000?> kg
                       </div>
                   </div>
