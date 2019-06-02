@@ -141,8 +141,8 @@
 
                 <div>
                   <?php foreach ($crate->inventory->items as $item) : ?>
-                    <div class="btn-group inventory-item d-flex align-items-stretch">
-                      <div class="btn inventory-item-label" style="text-align: left;">
+                    <div class="inventory-item d-flex justify-content-end">
+                      <div class="btn flex-grow-1 inventory-item-label" style="text-align: left;">
                         <i class="fas fa-fw fa-<?=$item->icon?>"></i>
                           <?=$item->label?>
                       </div>
