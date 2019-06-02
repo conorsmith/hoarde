@@ -30,7 +30,15 @@
       </ol>
     </nav>
 
-
+    <?php if (!is_null($danger)) : ?>
+      <div class="alert alert-danger"><?=$danger?></div>
+    <?php elseif (!is_null($warning)) : ?>
+      <div class="alert alert-warning"><?=$warning?></div>
+    <?php elseif (!is_null($success)) : ?>
+      <div class="alert alert-success"><?=$success?></div>
+    <?php elseif (!is_null($info)) : ?>
+      <div class="alert alert-info"><?=$info?></div>
+    <?php endif ?>
 
   <div class="row justify-content-center">
         <div class="col-lg-4 mb-3">
@@ -45,16 +53,6 @@
                       <?php endif ?>
                       <?=$entity->label?>
                     </h5>
-
-                    <?php if (!is_null($danger)) : ?>
-                        <div class="alert alert-danger"><?=$danger?></div>
-                    <?php elseif (!is_null($warning)) : ?>
-                      <div class="alert alert-warning"><?=$warning?></div>
-                    <?php elseif (!is_null($success)) : ?>
-                      <div class="alert alert-success"><?=$success?></div>
-                    <?php elseif (!is_null($info)) : ?>
-                      <div class="alert alert-info"><?=$info?></div>
-                    <?php endif ?>
 
                     <?php foreach ($resources as $resource) : ?>
                         <p>
