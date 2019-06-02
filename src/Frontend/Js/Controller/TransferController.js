@@ -1,19 +1,22 @@
 class TransferController {
     constructor(eventBus, view) {
+        const controller = this;
+
         this.eventBus = eventBus;
         this.view = view;
+        this.itemSliderControllers = [];
 
         this.view.itemSliders.forEach(function (itemSlider) {
-            new TransferItemSliderController(
-                eventBus,
+            controller.itemSliderControllers.push(new TransferItemSliderController(
+                controller.eventBus,
                 itemSlider,
                 itemSlider.createModel()
-            );
+            ));
         });
 
         this.view.itemCounters.forEach(function (itemCounter) {
             new TransferItemCounterController(
-                eventBus,
+                controller.eventBus,
                 itemCounter,
                 itemCounter.createModel()
             )
@@ -34,25 +37,32 @@ class TransferController {
         });
     }
 
+    createRequestBody() {
+        var body = {};
+
+        this.itemSliderControllers.forEach(function (itemSlider) {
+            const entityId = itemSlider.model.entityId;
+
+            if (body[entityId] === undefined) {
+                body[entityId] = {
+                    entityId: entityId,
+                    items: []
+                };
+            }
+
+            body[entityId].items.push({
+                varietyId: itemSlider.model.varietyId,
+                quantity: itemSlider.model.quantity
+            });
+        });
+
+        return Object.values(body);
+    }
+
     onClick(e) {
         const controller = this;
-        var body = [];
 
         this.eventBus.dispatchEvent("transfer.submitRequest");
-
-        document.getElementById("transferModal").querySelectorAll(".js-inventory").forEach(function (inventory) {
-            var transfer = {
-                entityId: inventory.dataset.entityId,
-                items: []
-            };
-            inventory.querySelectorAll("input[type='range']").forEach(function (input) {
-                transfer.items.push({
-                    varietyId: input.dataset.varietyId,
-                    quantity: input.value
-                })
-            });
-            body.push(transfer)
-        });
 
         var xhr = new XMLHttpRequest();
 
@@ -71,6 +81,6 @@ class TransferController {
 
         xhr.open("POST", "/" + gameId + "/transfer");
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(body));
+        xhr.send(JSON.stringify(this.createRequestBody()));
     }
 }
