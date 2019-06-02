@@ -1,9 +1,34 @@
-class Transfer {
-    constructor() {
+class TransferController {
+    constructor(eventBus, view) {
+        this.eventBus = eventBus;
+        this.view = view;
 
+        this.view.itemSliders.forEach(function (itemSlider) {
+            new TransferItemSliderController(
+                eventBus,
+                itemSlider,
+                itemSlider.createModel()
+            );
+        });
+
+        this.view.itemCounters.forEach(function (itemCounter) {
+            new TransferItemCounterController(
+                eventBus,
+                itemCounter,
+                itemCounter.createModel()
+            )
+        });
+
+        this.addEventListeners(this);
     }
 
-    execute() {
+    addEventListeners(controller) {
+        this.view.submitButton.el.addEventListener("click", function (e) {
+            controller.onClick(e);
+        });
+    }
+
+    onClick(e) {
         var body = [];
         var error = document.getElementById("transferModal").querySelector(".js-error");
 

@@ -53,6 +53,7 @@
                                    value="0"
                                    list="item-slider-<?=$entity->id?>-<?=$item->varietyId?>"
                                    data-variety-id="<?=$item->varietyId?>"
+                                   data-entity-id="<?=$entity->id?>"
                                    style="width: 100%"
                             >
                             <datalist id="item-slider-<?=$entity->id?>-<?=$item->varietyId?>">
@@ -63,7 +64,11 @@
                         </div>
 
                         <div class="align-self-center">
-                            <span style="margin-left: 1rem; text-align: right;">0</span>
+                            <span class="js-item-counter"
+                                  data-variety-id="<?=$item->varietyId?>"
+                                  data-entity-id="<?=$entity->id?>"
+                                  style="margin-left: 1rem; text-align: right;"
+                            >0</span>
                         </div>
 
                     </div>
@@ -116,6 +121,7 @@
                                    value="0"
                                    list="item-slider-<?=$crate->id?>-<?=$item->varietyId?>"
                                    data-variety-id="<?=$item->varietyId?>"
+                                   data-entity-id="<?=$crate->id?>"
                                    style="width: 100%"
                             >
                             <datalist id="item-slider-<?=$crate->id?>-<?=$item->varietyId?>">
@@ -126,7 +132,11 @@
                         </div>
 
                         <div class="align-self-center">
-                            <span style="margin-left: 1rem; text-align: right;">0</span>
+                            <span class="js-item-counter"
+                                  data-variety-id="<?=$item->varietyId?>"
+                                  data-entity-id="<?=$crate->id?>"
+                                  style="margin-left: 1rem; text-align: right;"
+                            >0</span>
                         </div>
 
                     </div>

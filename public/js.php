@@ -9,6 +9,12 @@ foreach ($controllers as $controller) {
     include __DIR__ . "/../src/Frontend/Js/Controller/{$controller}";
 }
 
+$models = scandir(__DIR__ . "/../src/Frontend/Js/Model");
+
+foreach ($models as $model) {
+    include __DIR__ . "/../src/Frontend/Js/Model/{$model}";
+}
+
 $views = scandir(__DIR__ . "/../src/Frontend/Js/View");
 
 foreach ($views as $view) {

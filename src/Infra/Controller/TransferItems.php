@@ -48,7 +48,7 @@ final class TransferItems
         if (count($manifests) !== 2) {
             $response = new Response;
             $response->withStatus(400);
-            $response->getBody()->write("Transfer request must contain exactly two transfer manifests");
+            $response->getBody()->write("TransferController request must contain exactly two transfer manifests");
             return $response;
         }
 
@@ -63,7 +63,7 @@ final class TransferItems
         ) {
             $response = new Response;
             $response->withStatus(400);
-            $response->getBody()->write("Transfer request must be for entities from this game");
+            $response->getBody()->write("TransferController request must be for entities from this game");
             return $response;
         }
 

@@ -79,9 +79,13 @@ for (var i = 0; i < useButtons.length; i++) {
     }
 }
 
-var transferModal = new TransferModal(
-    document.getElementById("transferModal"),
-    new Transfer()
+var eventBus = new EventBus();
+
+new TransferController(
+    eventBus,
+    new TransferModal(
+        document.getElementById("transferModal")
+    )
 );
 
 var scavengeModal = document.getElementById("scavengeModal");
