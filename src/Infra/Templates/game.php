@@ -122,39 +122,66 @@
                     <hr>
 
                     <p><strong>Inventory</strong></p>
-                    <div class="inventory-actions">
-                        <?php foreach ($inventory as $item) : ?>
-                            <div class="btn-group d-flex" role="group">
 
-                                <a href="#"
-                                   class="btn btn-light btn-block js-use <?=($isIntact ? "" : "disabled")?>"
-                                   data-item-id="<?=$item['id']?>"
-                                   style="text-align: left;"
-                                ><i class="fas fa-fw fa-<?=$item['icon']?>"></i> <?=$item['label']?> (<?=$item['quantity']?>)</a>
+                    <div>
+                        <?php foreach ($entity->inventory->items as $item) : ?>
+                          <div class="btn-group inventory-item d-flex justify-content-end">
 
-                                <div class="btn-group" role="group">
-                                    <button type="button"
-                                            class="btn btn-light dropdown-toggle"
-                                            data-toggle="dropdown"
-                                            <?=($isIntact ? "" : "disabled")?>></button>
-                                    <div class="dropdown-menu dropdown-menu-right w-100">
-                                        <a href="#"
-                                           class="dropdown-item"
-                                           data-toggle="modal"
-                                           data-target="#dropModal"
-                                           data-entity-id="<?=$entity->id?>"
-                                           data-item-id="<?=$item['id']?>"
-                                           data-item-label="<?=$item['label']?>"
-                                           data-item-quantity="<?=$item['quantity']?>"
-                                        >Drop</a>
-                                    </div>
-                                </div>
+                            <div class="btn btn-block flex-grow-1 d-flex align-items-baseline justify-content-between inventory-item-label" style="text-align: left;">
+                              <div>
+                                <i class="fas fa-fw fa-<?=$item->icon?>"></i>
+                                  <?=$item->label?>
+                              </div>
+                              <div>
+                                <span class="badge"><?=$item->quantity?></span>
+                              </div>
                             </div>
+
+                            <button type="button"
+                                    class="btn btn-light dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    style="border-top-left-radius: 0;
+                                       border-bottom-left-radius: 0;
+                                       padding-top: 0.7rem;
+                                       padding-bottom: 0.5rem;"
+                                <?=($isIntact ? "" : "disabled")?>></button>
+                            <div class="dropdown-menu dropdown-menu-right w-100">
+
+                              <h6 class="dropdown-header"><?=$item->label?></h6>
+
+                              <a href="#"
+                                 class="dropdown-item js-use"
+                                 data-entity-id="<?=$entity->id?>"
+                                 data-item-id="<?=$item->varietyId?>"
+                              >
+                                <i class="fas fa-fw fa-hand-pointer"></i>
+                                Use
+                              </a>
+
+                              <a href="#"
+                                 class="dropdown-item"
+                                 data-toggle="modal"
+                                 data-target="#dropModal"
+                                 data-entity-id="<?=$entity->id?>"
+                                 data-item-id="<?=$item->varietyId?>"
+                                 data-item-label="<?=$item->label?>"
+                                 data-item-quantity="<?=$item->quantity?>"
+                              >
+                                <i class="fas fa-fw fa-trash"></i>
+                                Drop
+                              </a>
+
+                            </div>
+
+                          </div>
                         <?php endforeach ?>
                     </div>
-                    <div class="progress" style="height: 0.5rem; margin-top: 1rem;">
-                          <div class="progress-bar <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>" style="width: <?=$inventoryWeight?>%;"></div>
-                    </div>
+
+                  <div class="progress" style="height: 0.5rem; margin-top: 1rem;">
+                    <div class="progress-bar <?=$entity->inventory->isAtCapacity ? "bg-danger" : "bg-primary"?>"
+                         style="width: <?=($entity->inventory->weight / $entity->inventory->capacity * 100)?>%;"
+                    ></div>
+                  </div>
 
                     <hr>
 
