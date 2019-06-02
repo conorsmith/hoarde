@@ -74,6 +74,10 @@
     flex-grow: 1;
 }
 
+.popover-label {
+    font-weight: 100;
+}
+
 @keyframes rotating {
     from {
         -ms-transform: rotate(0deg);

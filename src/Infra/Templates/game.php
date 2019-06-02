@@ -127,7 +127,20 @@
                         <?php foreach ($entity->inventory->items as $item) : ?>
                           <div class="btn-group inventory-item d-flex justify-content-end">
 
-                            <div class="btn btn-block flex-grow-1 d-flex align-items-baseline justify-content-between inventory-item-label" style="text-align: left;">
+                            <div class="btn btn-block flex-grow-1 d-flex align-items-baseline justify-content-between inventory-item-label"
+                                 style="text-align: left;"
+                                 data-toggle="popover"
+                                 title="<?=$item->label?>"
+                                 data-content='
+                                    <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
+                                        ? ($item->weight / 1000)." kg"
+                                        : $item->weight . " g" ?>
+                                    </div>
+                                    <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
+                                 '
+                                 data-placement="top"
+                                 tabindex="0"
+                            >
                               <div>
                                 <i class="fas fa-fw fa-<?=$item->icon?>"></i>
                                   <?=$item->label?>
@@ -221,7 +234,20 @@
                   <?php foreach ($crate->inventory->items as $item) : ?>
                     <div class="btn-group inventory-item d-flex justify-content-end">
 
-                      <div class="btn btn-block flex-grow-1 d-flex align-items-baseline justify-content-between inventory-item-label" style="text-align: left;">
+                      <div class="btn btn-block flex-grow-1 d-flex align-items-baseline justify-content-between inventory-item-label"
+                           style="text-align: left;"
+                           data-toggle="popover"
+                           title="<?=$item->label?>"
+                           data-content='
+                              <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
+                                 ? ($item->weight / 1000)." kg"
+                                 : $item->weight . " g" ?>
+                              </div>
+                              <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
+                           '
+                           data-placement="top"
+                           tabindex="0"
+                      >
                         <div>
                           <i class="fas fa-fw fa-<?=$item->icon?>"></i>
                           <?=$item->label?>

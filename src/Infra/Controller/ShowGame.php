@@ -151,12 +151,13 @@ final class ShowGame
     private function presentItem(Item $item): array
     {
         return [
-            'id'        => $item->getVariety()->getId(),
-            'varietyId' => $item->getVariety()->getId(),
-            'label'     => $item->getVariety()->getLabel(),
-            'quantity'  => $item->getQuantity(),
-            'weight'    => $item->getVariety()->getWeight(),
-            'icon'      => $item->getVariety()->getIcon(),
+            'id'            => $item->getVariety()->getId(),
+            'varietyId'     => $item->getVariety()->getId(),
+            'label'         => $item->getVariety()->getLabel(),
+            'quantity'      => $item->getQuantity(),
+            'weight'        => $item->getVariety()->getWeight(),
+            'icon'          => $item->getVariety()->getIcon(),
+            'resourceLabel' => $item->getVariety()->getResource()->getLabel(),
         ];
     }
 }

@@ -3,6 +3,13 @@ var gameId = document.getElementById("gameId").value;
 var useButtons = document.getElementsByClassName("js-use");
 var consumeButtons = document.getElementsByClassName("js-consume");
 
+$(function () {
+    $('[data-toggle="popover"]').popover({
+        trigger: 'focus',
+        html: true
+    });
+});
+
 $("#dropModal").on("show.bs.modal", function (e) {
     var button = e.relatedTarget;
     e.target.dataset.itemId = button.dataset.itemId;
