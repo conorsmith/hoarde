@@ -39,8 +39,8 @@
                             <div class="progress-bar" style="width: 0;"></div>
                         </div>
                     </div>
-                    <div style="margin-left: 1rem; font-size: 0.8rem;">
-                        <span><?=$entity->inventory->weight / 1000?></span> / <?=$entity->inventory->capacity / 1000?> kg
+                    <div style="margin-left: 1rem; font-size: 0.8rem; width: 4.2rem; text-align: right;">
+                        <span class="js-inventory-weight"><?=$entity->inventory->weight / 1000?></span> / <?=$entity->inventory->capacity / 1000?> kg
                     </div>
                 </div>
 
@@ -70,11 +70,12 @@
                             </datalist>
                         </div>
 
-                        <div class="align-self-center">
+                        <div class="align-self-center"
+                             style="margin-left: 1rem; text-align: right; width: 1.4rem;"
+                        >
                             <span class="js-item-counter"
                                   data-variety-id="<?=$item->varietyId?>"
                                   data-entity-id="<?=$entity->id?>"
-                                  style="margin-left: 1rem; text-align: right;"
                             >0</span>
                         </div>
 
@@ -114,8 +115,8 @@
                             <div class="progress-bar" style="width: 0;"></div>
                         </div>
                     </div>
-                    <div style="margin-left: 1rem; font-size: 0.8rem;">
-                        <span><?=$crate->inventory->weight / 1000?></span> / <?=$crate->inventory->capacity / 1000?> kg
+                    <div style="margin-left: 1rem; font-size: 0.8rem; width: 4.2rem; text-align: right;">
+                        <span class="js-inventory-weight"><?=$crate->inventory->weight / 1000?></span> / <?=$crate->inventory->capacity / 1000?> kg
                     </div>
                 </div>
 
@@ -145,11 +146,12 @@
                             </datalist>
                         </div>
 
-                        <div class="align-self-center">
+                        <div class="align-self-center"
+                             style="margin-left: 1rem; text-align: right; width: 1.4rem;"
+                        >
                             <span class="js-item-counter"
                                   data-variety-id="<?=$item->varietyId?>"
                                   data-entity-id="<?=$crate->id?>"
-                                  style="margin-left: 1rem; text-align: right;"
                             >0</span>
                         </div>
 

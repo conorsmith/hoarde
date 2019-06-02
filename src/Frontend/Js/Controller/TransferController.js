@@ -19,9 +19,21 @@ class TransferController {
             transferA
         );
 
+        new TransferInventoryWeightController(
+            this.eventBus,
+            this.view.inventoryWeights[0],
+            transferA
+        );
+
         new TransferCapacityBarController(
             this.eventBus,
             this.view.capacityBars[1],
+            transferB
+        );
+
+        new TransferInventoryWeightController(
+            this.eventBus,
+            this.view.inventoryWeights[1],
             transferB
         );
 

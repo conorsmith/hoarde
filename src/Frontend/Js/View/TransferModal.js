@@ -6,6 +6,10 @@ class TransferModal {
             return new TransferCapacityBar(bar);
         });
 
+        this.inventoryWeights = Array.from(this.el.querySelectorAll(".js-inventory-weight")).map(function (weight) {
+            return new TransferInventoryWeight(weight);
+        });
+
         this.itemSliders = Array.from(this.el.querySelectorAll("input[type='range']")).map(function (input) {
             return new TransferItemSlider(input);
         });
