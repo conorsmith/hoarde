@@ -2,6 +2,7 @@
 var gameId = document.getElementById("gameId").value;
 var useButtons = document.getElementsByClassName("js-use");
 var consumeButtons = document.getElementsByClassName("js-consume");
+var infoButtons = document.getElementsByClassName("js-info");
 
 $(function () {
     $('[data-toggle="popover"]').popover({
@@ -132,6 +133,13 @@ for (var i = 0; i < consumeButtons.length; i++) {
         document.body.appendChild(form);
 
         form.submit();
+    }
+}
+
+for (var i = 0; i < infoButtons.length; i++) {
+    infoButtons[i].onclick = function (e) {
+        e.preventDefault();
+        this.parentNode.parentNode.querySelector("i[data-toggle='popover']").focus();
     }
 }
 

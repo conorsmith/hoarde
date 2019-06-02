@@ -185,6 +185,14 @@
                                 Drop
                               </a>
 
+                              <a href="#"
+                                 class="dropdown-item js-info"
+                                 data-item-id="<?=$item->varietyId?>"
+                              >
+                                <i class="fas fa-fw fa-info-circle"></i>
+                                Info
+                              </a>
+
                             </div>
 
                           </div>
@@ -268,7 +276,9 @@
                                      padding-bottom: 0.5rem;"
                           <?=($isIntact ? "" : "disabled")?>></button>
                       <div class="dropdown-menu dropdown-menu-right w-100">
+
                         <h6 class="dropdown-header"><?=$item->label?></h6>
+
                         <a href="#"
                            class="dropdown-item"
                            data-toggle="modal"
@@ -281,6 +291,15 @@
                           <i class="fas fa-fw fa-trash"></i>
                           Drop
                         </a>
+
+                        <a href="#"
+                           class="dropdown-item js-info"
+                           data-item-id="<?=$item->varietyId?>"
+                        >
+                          <i class="fas fa-fw fa-info-circle"></i>
+                          Info
+                        </a>
+
                       </div>
 
                     </div>
