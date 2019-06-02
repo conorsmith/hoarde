@@ -57,19 +57,20 @@
 
                           <div class="align-self-center"
                                style="margin-right: 1rem;"
-                               data-toggle="popover"
-                               title="<?=$item->label?>"
-                               data-content='
-                              <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
-                                   ? ($item->weight / 1000)." kg"
-                                   : $item->weight . " g" ?>
-                              </div>
-                              <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
-                           '
-                               data-placement="top"
-                               tabindex="0"
                           >
-                              <i class="fas fa-fw fa-<?=$item->icon?>"></i>
+                              <i class="fas fa-fw fa-<?=$item->icon?>"
+                                 data-toggle="popover"
+                                 title="<?=$item->label?>"
+                                 data-content='
+                                    <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
+                                           ? ($item->weight / 1000)." kg"
+                                           : $item->weight . " g" ?>
+                                    </div>
+                                    <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
+                                 '
+                                 data-placement="top"
+                                 tabindex="0"
+                              ></i>
                               <?=$item->label?>
                           </div>
 

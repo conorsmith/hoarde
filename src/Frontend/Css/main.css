@@ -78,6 +78,10 @@
     font-weight: 100;
 }
 
+.fas:focus {
+    outline: none;
+}
+
 @keyframes rotating {
     from {
         -ms-transform: rotate(0deg);

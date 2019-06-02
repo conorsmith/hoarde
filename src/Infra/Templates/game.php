@@ -129,20 +129,21 @@
 
                             <div class="btn btn-block flex-grow-1 d-flex align-items-baseline justify-content-between inventory-item-label"
                                  style="text-align: left;"
-                                 data-toggle="popover"
-                                 title="<?=$item->label?>"
-                                 data-content='
-                                    <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
-                                        ? ($item->weight / 1000)." kg"
-                                        : $item->weight . " g" ?>
-                                    </div>
-                                    <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
-                                 '
-                                 data-placement="top"
-                                 tabindex="0"
                             >
                               <div>
-                                <i class="fas fa-fw fa-<?=$item->icon?>"></i>
+                                <i class="fas fa-fw fa-<?=$item->icon?>"
+                                   data-toggle="popover"
+                                   title="<?=$item->label?>"
+                                   data-content='
+                                      <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
+                                         ? ($item->weight / 1000)." kg"
+                                         : $item->weight . " g" ?>
+                                      </div>
+                                      <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
+                                   '
+                                   data-placement="top"
+                                   tabindex="0"
+                                ></i>
                                   <?=$item->label?>
                               </div>
                               <div>
@@ -236,20 +237,21 @@
 
                       <div class="btn btn-block flex-grow-1 d-flex align-items-baseline justify-content-between inventory-item-label"
                            style="text-align: left;"
-                           data-toggle="popover"
-                           title="<?=$item->label?>"
-                           data-content='
+                      >
+                        <div>
+                          <i class="fas fa-fw fa-<?=$item->icon?>"
+                             data-toggle="popover"
+                             title="<?=$item->label?>"
+                             data-content='
                               <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
                                  ? ($item->weight / 1000)." kg"
                                  : $item->weight . " g" ?>
                               </div>
                               <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
                            '
-                           data-placement="top"
-                           tabindex="0"
-                      >
-                        <div>
-                          <i class="fas fa-fw fa-<?=$item->icon?>"></i>
+                             data-placement="top"
+                             tabindex="0"
+                          ></i>
                           <?=$item->label?>
                         </div>
                         <div>
