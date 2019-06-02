@@ -144,6 +144,11 @@ class ScavengeHaul {
             const template = this.itemTemplate.content.cloneNode(true);
 
             template.querySelector(".tmpl-icon").classList.add("fa-" + item.icon);
+            template.querySelector(".tmpl-icon").title = item.label;
+            template.querySelector(".tmpl-icon").dataset.content = '<div><span class="popover-label">Weight:</span> '
+                + (item.weight >= 1000 ? (item.weight / 1000) + " kg" : item.weight + " g") + '</div>'
+                + '<div><span class="popover-label">Resource:</span> ' + item.resourceLabel + '</div>';
+
             template.querySelector(".tmpl-label").innerText = item.label;
 
             template.querySelector(".tmpl-quantity").innerText = item.quantity;
@@ -172,6 +177,11 @@ class ScavengeHaul {
             }
 
             this.el.appendChild(template);
+
+            $(this.el.querySelector(".tmpl-icon")).popover({
+                trigger: 'focus',
+                html: true
+            });
         }
     }
 }
