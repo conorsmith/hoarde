@@ -221,6 +221,36 @@ final class Entity
                     ->createItemWithQuantity(1),
             ],
             [
+                'rolls' => range(965, 969),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("450349d4-fe21-4da0-8f78-99c684b05b45"))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(960, 964),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("813980ad-7604-4713-909c-b2701420de1b"))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(955, 959),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("e12981d2-5873-454a-b297-895f42e66bd5"))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(950, 954),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("5de1c51c-2747-426d-a3b0-c854107c7132"))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(940, 944),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("cf057538-d3f0-4657-8a4c-f911bc113ad7"))
+                    ->createItemWithQuantity(1),
+            ],
+            [
                 'rolls' => range(140, 300),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))
