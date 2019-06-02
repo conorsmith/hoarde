@@ -13,34 +13,35 @@
 
                 <div class="alert alert-danger js-error" style="display: none; margin-bottom: 1rem;"></div>
 
-                <div class="d-flex"
-                     style="margin-bottom: 1rem;"
+                <div class="d-flex justify-content-between"
+                     style="margin-bottom: 0.6rem;"
                 >
 
                     <div style="margin-right: 1rem; font-weight: 900;">
                         <i class="fas fa-fw fa-<?=$entity->icon?>"></i> <?=$entity->label?>
                     </div>
-                    <div class="flex-fill align-self-center">
-                        <div class="progress js-capacity-bar"
-                             style="height: 0.8rem;"
-                             data-entity-id="<?=$entity->id?>"
-                             data-weight="<?=$entity->inventory->weight?>"
-                             data-capacity="<?=$entity->inventory->capacity?>"
-                        >
-                            <div class="progress-bar
-                                      <?php if ($entity->inventory->weight < $entity->inventory->capacity) : ?>
-                                          bg-primary
-                                      <?php else : ?>
-                                          bg-danger
-                                      <?php endif ?>
-                                 "
-                                 style="width: <?=$inventoryWeight?>%;"
-                            ></div>
-                            <div class="progress-bar" style="width: 0;"></div>
-                        </div>
-                    </div>
-                    <div style="margin-left: 1rem; font-size: 0.8rem; width: 4.2rem; text-align: right;">
+                    <div style="margin-left: 1rem; font-size: 0.8rem; text-align: right;">
                         <span class="js-inventory-weight"><?=$entity->inventory->weight / 1000?></span> / <?=$entity->inventory->capacity / 1000?> kg
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <div class="progress js-capacity-bar"
+                         style="height: 0.6rem;"
+                         data-entity-id="<?=$entity->id?>"
+                         data-weight="<?=$entity->inventory->weight?>"
+                         data-capacity="<?=$entity->inventory->capacity?>"
+                    >
+                        <div class="progress-bar
+                                            <?php if ($entity->inventory->weight < $entity->inventory->capacity) : ?>
+                                                bg-primary
+                                            <?php else : ?>
+                                                bg-danger
+                                            <?php endif ?>
+                                       "
+                             style="width: <?=$inventoryWeight?>%;"
+                        ></div>
+                        <div class="progress-bar" style="width: 0;"></div>
                     </div>
                 </div>
 
@@ -89,34 +90,35 @@
                  data-entity-id="<?=$crate->id?>"
             >
 
-                <div class="d-flex"
-                     style="margin-bottom: 1rem;"
+                <div class="d-flex justify-content-between"
+                     style="margin-bottom: 0.6rem;"
                 >
 
                     <div style="margin-right: 1rem; font-weight: 900;">
                         <i class="fas fa-fw fa-<?=$crate->icon?>"></i> <?=$crate->label?>
                     </div>
-                    <div class="flex-fill align-self-center">
-                        <div class="progress js-capacity-bar"
-                             data-entity-id="<?=$crate->id?>"
-                             data-weight="<?=$crate->inventory->weight?>"
-                             data-capacity="<?=$crate->inventory->capacity?>"
-                             style="height: 0.8rem;"
-                        >
-                            <div class="progress-bar
-                                        <?php if ($crate->inventory->weight < $crate->inventory->capacity) : ?>
-                                            bg-primary
-                                        <?php else : ?>
-                                            bg-danger
-                                        <?php endif ?>
-                                 "
-                                 style="width: <?=$crate->inventory->weight / $crate->inventory->capacity * 100?>%;"
-                            ></div>
-                            <div class="progress-bar" style="width: 0;"></div>
-                        </div>
-                    </div>
-                    <div style="margin-left: 1rem; font-size: 0.8rem; width: 4.2rem; text-align: right;">
+                    <div style="margin-left: 1rem; font-size: 0.8rem; text-align: right;">
                         <span class="js-inventory-weight"><?=$crate->inventory->weight / 1000?></span> / <?=$crate->inventory->capacity / 1000?> kg
+                    </div>
+                </div>
+
+              <div style="margin-bottom: 1rem;">
+                    <div class="progress js-capacity-bar"
+                         data-entity-id="<?=$crate->id?>"
+                         data-weight="<?=$crate->inventory->weight?>"
+                         data-capacity="<?=$crate->inventory->capacity?>"
+                         style="height: 0.6rem;"
+                    >
+                        <div class="progress-bar
+                                          <?php if ($crate->inventory->weight < $crate->inventory->capacity) : ?>
+                                              bg-primary
+                                          <?php else : ?>
+                                              bg-danger
+                                          <?php endif ?>
+                                   "
+                             style="width: <?=$crate->inventory->weight / $crate->inventory->capacity * 100?>%;"
+                        ></div>
+                        <div class="progress-bar" style="width: 0;"></div>
                     </div>
                 </div>
 
