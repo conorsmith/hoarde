@@ -4,14 +4,38 @@ class TransferController {
 
         this.eventBus = eventBus;
         this.view = view;
+
         this.itemSliderControllers = [];
 
+        const inventoryA = this.view.capacityBars[0].createModel();
+        const inventoryB = this.view.capacityBars[1].createModel();
+
+        const transferA = new Transfer(inventoryA, inventoryB);
+        const transferB = new Transfer(inventoryB, inventoryA);
+
+        new TransferCapacityBarController(
+            this.eventBus,
+            this.view.capacityBars[0],
+            transferA
+        );
+
+        new TransferCapacityBarController(
+            this.eventBus,
+            this.view.capacityBars[1],
+            transferB
+        );
+
         this.view.itemSliders.forEach(function (itemSlider) {
+            const item = itemSlider.createModel();
+
             controller.itemSliderControllers.push(new TransferItemSliderController(
                 controller.eventBus,
                 itemSlider,
-                itemSlider.createModel()
+                item
             ));
+
+            transferA.addItem(item);
+            transferB.addItem(item);
         });
 
         this.view.itemCounters.forEach(function (itemCounter) {

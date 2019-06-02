@@ -2,6 +2,10 @@ class TransferModal {
     constructor(el) {
         this.el = el;
 
+        this.capacityBars = Array.from(this.el.querySelectorAll(".js-capacity-bar")).map(function (bar) {
+            return new TransferCapacityBar(bar);
+        });
+
         this.itemSliders = Array.from(this.el.querySelectorAll("input[type='range']")).map(function (input) {
             return new TransferItemSlider(input);
         });

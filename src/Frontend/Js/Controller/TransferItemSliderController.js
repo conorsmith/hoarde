@@ -14,7 +14,7 @@ class TransferItemSliderController {
     }
 
     onInput(e) {
-        this.model.quantity = e.target.value;
+        this.model.quantity = parseInt(e.target.value, 10);
 
         this.eventBus.dispatchEvent("transfer.itemModified", {
             item: this.model

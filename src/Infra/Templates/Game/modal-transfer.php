@@ -21,16 +21,22 @@
                         <i class="fas fa-fw fa-<?=$entity->icon?>"></i> <?=$entity->label?>
                     </div>
                     <div class="flex-fill align-self-center">
-                        <div class="progress"
+                        <div class="progress js-capacity-bar"
                              style="height: 0.8rem;"
+                             data-entity-id="<?=$entity->id?>"
+                             data-weight="<?=$entity->inventory->weight?>"
+                             data-capacity="<?=$entity->inventory->capacity?>"
                         >
                             <div class="progress-bar
-                                        js-scavenge-inventory-progress
-                                        bg-primary
-                                     "
+                                      <?php if ($entity->inventory->weight < $entity->inventory->capacity) : ?>
+                                          bg-primary
+                                      <?php else : ?>
+                                          bg-danger
+                                      <?php endif ?>
+                                 "
                                  style="width: <?=$inventoryWeight?>%;"
                             ></div>
-                            <div class="progress-bar"></div>
+                            <div class="progress-bar" style="width: 0;"></div>
                         </div>
                     </div>
                     <div style="margin-left: 1rem; font-size: 0.8rem;">
@@ -54,6 +60,7 @@
                                    list="item-slider-<?=$entity->id?>-<?=$item->varietyId?>"
                                    data-variety-id="<?=$item->varietyId?>"
                                    data-entity-id="<?=$entity->id?>"
+                                   data-weight="<?=$item->weight?>"
                                    style="width: 100%"
                             >
                             <datalist id="item-slider-<?=$entity->id?>-<?=$item->varietyId?>">
@@ -89,16 +96,22 @@
                         <i class="fas fa-fw fa-<?=$crate->icon?>"></i> <?=$crate->label?>
                     </div>
                     <div class="flex-fill align-self-center">
-                        <div class="progress"
+                        <div class="progress js-capacity-bar"
+                             data-entity-id="<?=$crate->id?>"
+                             data-weight="<?=$crate->inventory->weight?>"
+                             data-capacity="<?=$crate->inventory->capacity?>"
                              style="height: 0.8rem;"
                         >
                             <div class="progress-bar
-                                        js-scavenge-inventory-progress
-                                        bg-primary
-                                     "
+                                        <?php if ($crate->inventory->weight < $crate->inventory->capacity) : ?>
+                                            bg-primary
+                                        <?php else : ?>
+                                            bg-danger
+                                        <?php endif ?>
+                                 "
                                  style="width: <?=$crate->inventory->weight / $crate->inventory->capacity * 100?>%;"
                             ></div>
-                            <div class="progress-bar"></div>
+                            <div class="progress-bar" style="width: 0;"></div>
                         </div>
                     </div>
                     <div style="margin-left: 1rem; font-size: 0.8rem;">
@@ -122,6 +135,7 @@
                                    list="item-slider-<?=$crate->id?>-<?=$item->varietyId?>"
                                    data-variety-id="<?=$item->varietyId?>"
                                    data-entity-id="<?=$crate->id?>"
+                                   data-weight="<?=$item->weight?>"
                                    style="width: 100%"
                             >
                             <datalist id="item-slider-<?=$crate->id?>-<?=$item->varietyId?>">
