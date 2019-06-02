@@ -19,6 +19,12 @@ class TransferController {
             )
         });
 
+        new TransferErrorController(
+            this.eventBus,
+            this.view.error,
+            new Error("")
+        );
+
         this.addEventListeners(this);
     }
 
@@ -29,10 +35,10 @@ class TransferController {
     }
 
     onClick(e) {
+        const controller = this;
         var body = [];
-        var error = document.getElementById("transferModal").querySelector(".js-error");
 
-        error.style.display = "none";
+        this.eventBus.dispatchEvent("transfer.submitRequest");
 
         document.getElementById("transferModal").querySelectorAll(".js-inventory").forEach(function (inventory) {
             var transfer = {
@@ -56,8 +62,11 @@ class TransferController {
                 return;
             }
 
-            error.innerText = this.responseText;
-            error.style.display = "block";
+            controller.eventBus.dispatchEvent("transfer.submitResponse", {
+                error: {
+                    message: this.responseText
+                }
+            });
         };
 
         xhr.open("POST", "/" + gameId + "/transfer");

@@ -12,6 +12,10 @@ class TransferModal {
 
         this.submitButton = new TransferSubmitButton(
             this.el.querySelector(".js-submit")
-        )
+        );
+
+        this.error = new TransferError(
+            this.el.querySelector(".js-error")
+        );
     }
 }
