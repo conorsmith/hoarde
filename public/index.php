@@ -31,6 +31,7 @@ $haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
 $haveEntityAddHaulToInventory = new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory($gameRepo, $entityRepo, $scavengingHaulRepo, $varietyRepo, $sessionSegment);
 $haveEntityDropItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem($gameRepo, $entityRepo, $sessionSegment);
 $showGame = new ConorSmith\Hoarde\Infra\Controller\ShowGame($gameRepo, $entityRepo, $resourceRepo, $sessionSegment);
+$transferItems = new ConorSmith\Hoarde\Infra\Controller\TransferItems($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
 $showNotFoundPage = new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage;
 
 $router = new League\Route\Router;
@@ -45,6 +46,7 @@ $router->post("/{gameId}/use", $haveEntityUseItem);
 $router->post("/{gameId}/scavenge", $haveEntityScavenge);
 $router->post("/{gameId}/scavenge/{haulId}", $haveEntityAddHaulToInventory);
 $router->post("/{gameId}/drop", $haveEntityDropItem);
+$router->post("/{gameId}/transfer", $transferItems);
 
 try {
     $response = $router->dispatch(Zend\Diactoros\ServerRequestFactory::fromGlobals(

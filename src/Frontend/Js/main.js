@@ -79,6 +79,11 @@ for (var i = 0; i < useButtons.length; i++) {
     }
 }
 
+var transferModal = new TransferModal(
+    document.getElementById("transferModal"),
+    new Transfer()
+);
+
 var scavengeModal = document.getElementById("scavengeModal");
 var scavengeButtons = document.getElementsByClassName("js-scavenge");
 
@@ -188,9 +193,3 @@ for (var i = 0; i < scavengeButtons.length; i++) {
         xhr.send();
     }
 }
-
-document.querySelector(".js-wait").onclick = function () {
-    const template = document.getElementById("spinner").content.cloneNode(true);
-    this.innerText = "";
-    this.appendChild(template);
-};

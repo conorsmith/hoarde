@@ -76,4 +76,14 @@ final class Item
 
         $this->quantity = $newQuantity;
     }
+
+    public function incrementBy(int $increment): void
+    {
+        $this->quantity += $increment;
+    }
+
+    public function decrementBy(int $decrement): void
+    {
+        $this->quantity -= $decrement;
+    }
 }

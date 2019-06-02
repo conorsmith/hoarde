@@ -112,6 +112,8 @@
 
                       <button type="button"
                               class="btn btn-light btn-block js-transfer"
+                              data-toggle="modal"
+                              data-target="#transferModal"
                           <?=($isIntact ? "" : "disabled")?>
                       >Transfer Items</button>
 
@@ -132,12 +134,33 @@
                     <?=$crate->label?>
                 </h5>
 
+                <p><strong>Inventory</strong></p>
+
+                <div>
+                  <ul class="list-group">
+                  <?php foreach ($crate->inventory->items as $item) : ?>
+                    <li class="list-group-item">
+                      <i class="fas fa-fw fa-<?=$item->icon?>"></i>
+                      <?=$item->label?>
+                      (<?=$item->quantity?>)
+                    </li>
+                  <?php endforeach ?>
+                  </ul>
+                </div>
+
+                <div class="progress" style="height: 0.5rem; margin-top: 1rem;">
+                  <?php $crateWeightProgress = $crate->inventory->weight / $crate->inventory->capacity * 100; ?>
+                  <div class="progress-bar <?=$crateWeightProgress >= 100 ? "bg-danger" : "bg-primary"?>" style="width: <?=$crateWeightProgress?>%;"></div>
+                </div>
+
                 <hr>
 
                 <div class="actions">
 
                   <button type="button"
                           class="btn btn-light btn-block js-transfer"
+                          data-toggle="modal"
+                          data-target="#transferModal"
                       <?=($isIntact ? "" : "disabled")?>
                   >Transfer Items</button>
 
@@ -153,6 +176,7 @@
 
     <?php include __DIR__ . "/Game/modal-drop.php"; ?>
     <?php include __DIR__ . "/Game/modal-scavenge.php"; ?>
+    <?php include __DIR__ . "/Game/modal-transfer.php"; ?>
 
     <input type="hidden" id="gameId" value="<?=$gameId?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($inventory)?>' />

@@ -117,12 +117,20 @@ final class ShowGame
             return null;
         }
 
+        $items = [];
+
+        foreach ($entity->getInventory() as $item) {
+            $items[] = (object) $this->presentItem($item);
+        }
+
         return (object)[
+            'id'        => $entity->getId(),
             'label'     => $entity->getLabel(),
             'icon'      => $entity->getIcon(),
             'inventory' => (object)[
                 'weight'   => $entity->getInventoryWeight(),
                 'capacity' => $entity->getInventoryCapacity(),
+                'items'    => $items,
             ],
         ];
     }

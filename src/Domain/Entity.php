@@ -124,6 +124,10 @@ final class Entity
 
     public function getInventoryCapacity(): int
     {
+        if ($this->varietyId->equals(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))) {
+            return 50000;
+        }
+
         return 10000;
     }
 
@@ -205,13 +209,13 @@ final class Entity
 
         $rollTable = [
             [
-                'rolls' => range(990, 999),
+                'rolls' => range(980, 989),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"))
                     ->createItemWithQuantity(1),
             ],
             [
-                'rolls' => range(980, 989),
+                'rolls' => range(970, 979),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
                     ->createItemWithQuantity(1),
@@ -232,7 +236,7 @@ final class Entity
 
         if (!$this->hasStorage($gameRepository, $entityRepository)) {
             $rollTable[] = [
-                'rolls' => range(1000, 1000),
+                'rolls' => range(996, 1000),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))
                     ->createItemWithQuantity(1),
@@ -296,6 +300,33 @@ final class Entity
             unset($this->inventory[strval($varietyId)]);
         } else {
             $this->inventory[strval($varietyId)]->reduceTo($newQuantity);
+        }
+    }
+
+    public function incrementInventoryItemQuantity(
+        UuidInterface $varietyId,
+        int $increment,
+        VarietyRepository $varietyRepository
+    ): void {
+        if (!array_key_exists(strval($varietyId), $this->inventory)) {
+            $this->inventory[strval($varietyId)] = $varietyRepository
+                ->find($varietyId)
+                ->createItemWithQuantity($increment);
+        } else {
+            $this->inventory[strval($varietyId)]->incrementBy($increment);
+        }
+
+        if ($this->getInventoryWeight() > $this->getInventoryCapacity()) {
+            throw new DomainException("{$this->label} cannot carry that much!");
+        }
+    }
+
+    public function decrementInventoryItemQuantity(UuidInterface $varietyId, int $decrement): void
+    {
+        if ($this->inventory[strval($varietyId)]->getQuantity() - $decrement === 0) {
+            unset($this->inventory[strval($varietyId)]);
+        } else {
+            $this->inventory[strval($varietyId)]->decrementBy($decrement);
         }
     }
 
