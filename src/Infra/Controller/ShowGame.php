@@ -140,9 +140,10 @@ final class ShowGame
             'label'     => $entity->getLabel(),
             'icon'      => $entity->getIcon(),
             'inventory' => (object)[
-                'weight'   => $entity->getInventoryWeight(),
-                'capacity' => $entity->getInventoryCapacity(),
-                'items'    => $items,
+                'weight'       => $entity->getInventoryWeight(),
+                'capacity'     => $entity->getInventoryCapacity(),
+                'isAtCapacity' => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
+                'items'        => $items,
             ],
         ];
     }

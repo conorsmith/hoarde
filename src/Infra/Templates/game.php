@@ -113,6 +113,12 @@
 
                     </div>
 
+                    <div class="progress" style="height: 0.5rem; margin-top: 1rem;">
+                      <div class="progress-bar <?=$entity->inventory->isAtCapacity ? "bg-danger" : "bg-primary"?>"
+                           style="width: <?=($entity->inventory->weight / $entity->inventory->capacity * 100)?>%;"
+                      ></div>
+                    </div>
+
                     <hr>
 
                     <p><strong>Inventory</strong></p>
