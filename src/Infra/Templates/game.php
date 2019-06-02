@@ -140,35 +140,34 @@
                 <p><strong>Inventory</strong></p>
 
                 <div>
-                  <ul class="list-group">
                   <?php foreach ($crate->inventory->items as $item) : ?>
-                    <li class="list-group-item">
-                      <div class="d-flex w-100 justify-content-between">
-                        <div>
-                          <i class="fas fa-fw fa-<?=$item->icon?>"></i>
-                            <?=$item->label?>
-                          (<?=$item->quantity?>)
-                        </div>
-                        <div>
-                          <a href="#" class="text-dark" data-toggle="dropdown">
-                            <i class="fas fa-caret-down"></i>
-                          </a>
-                          <div class="dropdown-menu dropdown-menu-right">
-                            <a href="#"
-                               class="dropdown-item"
-                               data-toggle="modal"
-                               data-target="#dropModal"
-                               data-entity-id="<?=$crate->id?>"
-                               data-item-id="<?=$item->varietyId?>"
-                               data-item-label="<?=$item->label?>"
-                               data-item-quantity="<?=$item->quantity?>"
-                            >Drop</a>
-                          </div>
+                    <div class="btn-group inventory-item d-flex align-items-stretch">
+                      <div class="btn inventory-item-label" style="text-align: left;">
+                        <i class="fas fa-fw fa-<?=$item->icon?>"></i>
+                          <?=$item->label?>
+                      </div>
+                      <div class="align-self-center" style="margin-right: 0.6rem; margin-bottom: 1px;">
+                        <span class="badge"><?=$item->quantity?></span>
+                      </div>
+                      <div class="btn-group" role="group">
+                        <button type="button"
+                                class="btn btn-light dropdown-toggle"
+                                data-toggle="dropdown"
+                            <?=($isIntact ? "" : "disabled")?>></button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                          <a href="#"
+                             class="dropdown-item"
+                             data-toggle="modal"
+                             data-target="#dropModal"
+                             data-entity-id="<?=$crate->id?>"
+                             data-item-id="<?=$item->varietyId?>"
+                             data-item-label="<?=$item->label?>"
+                             data-item-quantity="<?=$item->quantity?>"
+                          >Drop</a>
                         </div>
                       </div>
-                    </li>
+                    </div>
                   <?php endforeach ?>
-                  </ul>
                 </div>
 
                 <div class="progress" style="height: 0.5rem; margin-top: 1rem;">
