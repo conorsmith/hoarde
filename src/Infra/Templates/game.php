@@ -110,12 +110,16 @@
                               <?=($isIntact ? "" : "disabled")?>
                       >Scavenge</button>
 
-                      <button type="button"
-                              class="btn btn-light btn-block js-transfer"
-                              data-toggle="modal"
-                              data-target="#transferModal"
-                          <?=($isIntact ? "" : "disabled")?>
-                      >Transfer Items</button>
+                      <?php if ($crate) : ?>
+
+                          <button type="button"
+                                  class="btn btn-light btn-block js-transfer"
+                                  data-toggle="modal"
+                                  data-target="#transferModal"
+                              <?=($isIntact ? "" : "disabled")?>
+                          >Transfer Items</button>
+
+                      <?php endif ?>
 
                     </div>
 
