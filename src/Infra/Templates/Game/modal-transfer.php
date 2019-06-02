@@ -9,158 +9,88 @@
                 </button>
             </div>
 
-            <div class="modal-body js-inventory" data-entity-id="<?=$entity->id?>">
+            <?php $entities = [$entity, $crate]; ?>
 
-                <div class="alert alert-danger js-error" style="display: none; margin-bottom: 1rem;"></div>
+            <?php foreach ($entities as $entity) : ?>
 
-                <div class="d-flex justify-content-between"
-                     style="margin-bottom: 0.6rem;"
-                >
+              <div class="modal-body js-inventory"
+                   data-entity-id="<?=$entity->id?>">
 
-                    <div style="margin-right: 1rem; font-weight: 900;">
-                        <i class="fas fa-fw fa-<?=$entity->icon?>"></i> <?=$entity->label?>
-                    </div>
-                    <div style="margin-left: 1rem; font-size: 0.8rem; text-align: right;">
-                        <span class="js-inventory-weight"><?=$entity->inventory->weight / 1000?></span> / <?=$entity->inventory->capacity / 1000?> kg
-                    </div>
-                </div>
+                  <div class="alert alert-danger js-error" style="display: none; margin-bottom: 1rem;"></div>
 
-                <div style="margin-bottom: 1rem;">
-                    <div class="progress js-capacity-bar"
-                         style="height: 0.6rem;"
-                         data-entity-id="<?=$entity->id?>"
-                         data-weight="<?=$entity->inventory->weight?>"
-                         data-capacity="<?=$entity->inventory->capacity?>"
-                    >
-                        <div class="progress-bar
-                                            <?php if ($entity->inventory->weight < $entity->inventory->capacity) : ?>
-                                                bg-primary
-                                            <?php else : ?>
-                                                bg-danger
-                                            <?php endif ?>
-                                       "
-                             style="width: <?=$inventoryWeight?>%;"
-                        ></div>
-                        <div class="progress-bar" style="width: 0;"></div>
-                    </div>
-                </div>
+                  <div class="d-flex justify-content-between"
+                       style="margin-bottom: 0.6rem;"
+                  >
 
-                <?php foreach ($entity->inventory->items as $item) : ?>
-                    <div class="item-slider d-flex">
+                      <div style="margin-right: 1rem; font-weight: 900;">
+                          <i class="fas fa-fw fa-<?=$entity->icon?>"></i> <?=$entity->label?>
+                      </div>
+                      <div style="margin-left: 1rem; font-size: 0.8rem; text-align: right;">
+                          <span class="js-inventory-weight"><?=$entity->inventory->weight / 1000?></span> / <?=$entity->inventory->capacity / 1000?> kg
+                      </div>
+                  </div>
 
-                        <div class="align-self-center" style="margin-right: 1rem;">
-                            <i class="fas fa-fw fa-<?=$item->icon?>"></i>
-                            <?=$item->label?>
-                        </div>
+                  <div style="margin-bottom: 1rem;">
+                      <div class="progress js-capacity-bar"
+                           style="height: 0.6rem;"
+                           data-entity-id="<?=$entity->id?>"
+                           data-weight="<?=$entity->inventory->weight?>"
+                           data-capacity="<?=$entity->inventory->capacity?>"
+                      >
+                          <div class="progress-bar
+                                              <?php if ($entity->inventory->weight < $entity->inventory->capacity) : ?>
+                                                  bg-primary
+                                              <?php else : ?>
+                                                  bg-danger
+                                              <?php endif ?>
+                                         "
+                               style="width: <?=$entity->inventory->weight / $entity->inventory->capacity * 100?>%;"
+                          ></div>
+                          <div class="progress-bar" style="width: 0;"></div>
+                      </div>
+                  </div>
 
-                        <div class="flex-fill" style="height: 32px;">
-                            <input type="range"
-                                   min="0"
-                                   max="<?=$item->quantity?>"
-                                   value="0"
-                                   list="item-slider-<?=$entity->id?>-<?=$item->varietyId?>"
-                                   data-variety-id="<?=$item->varietyId?>"
-                                   data-entity-id="<?=$entity->id?>"
-                                   data-weight="<?=$item->weight?>"
-                                   style="width: 100%"
-                            >
-                            <datalist id="item-slider-<?=$entity->id?>-<?=$item->varietyId?>">
-                                <?php for ($i = 0; $i <= $item->quantity; $i++) : ?>
-                                    <option value="<?=$i?>">
-                                <?php endfor ?>
-                            </datalist>
-                        </div>
+                  <?php foreach ($entity->inventory->items as $item) : ?>
+                      <div class="item-slider d-flex">
 
-                        <div class="align-self-center"
-                             style="margin-left: 1rem; text-align: right; width: 1.4rem;"
-                        >
-                            <span class="js-item-counter"
-                                  data-variety-id="<?=$item->varietyId?>"
-                                  data-entity-id="<?=$entity->id?>"
-                            >0</span>
-                        </div>
+                          <div class="align-self-center" style="margin-right: 1rem;">
+                              <i class="fas fa-fw fa-<?=$item->icon?>"></i>
+                              <?=$item->label?>
+                          </div>
 
-                    </div>
-                <?php endforeach ?>
+                          <div class="flex-fill" style="height: 32px;">
+                              <input type="range"
+                                     min="0"
+                                     max="<?=$item->quantity?>"
+                                     value="0"
+                                     list="item-slider-<?=$entity->id?>-<?=$item->varietyId?>"
+                                     data-variety-id="<?=$item->varietyId?>"
+                                     data-entity-id="<?=$entity->id?>"
+                                     data-weight="<?=$item->weight?>"
+                                     style="width: 100%"
+                              >
+                              <datalist id="item-slider-<?=$entity->id?>-<?=$item->varietyId?>">
+                                  <?php for ($i = 0; $i <= $item->quantity; $i++) : ?>
+                                      <option value="<?=$i?>">
+                                  <?php endfor ?>
+                              </datalist>
+                          </div>
 
-            </div>
+                          <div class="align-self-center"
+                               style="margin-left: 1rem; text-align: right; width: 1.4rem;"
+                          >
+                              <span class="js-item-counter"
+                                    data-variety-id="<?=$item->varietyId?>"
+                                    data-entity-id="<?=$entity->id?>"
+                              >0</span>
+                          </div>
 
-            <div class="modal-body js-inventory"
-                 style="border-top: 1px solid #dee2e6;"
-                 data-entity-id="<?=$crate->id?>"
-            >
+                      </div>
+                  <?php endforeach ?>
 
-                <div class="d-flex justify-content-between"
-                     style="margin-bottom: 0.6rem;"
-                >
+              </div>
 
-                    <div style="margin-right: 1rem; font-weight: 900;">
-                        <i class="fas fa-fw fa-<?=$crate->icon?>"></i> <?=$crate->label?>
-                    </div>
-                    <div style="margin-left: 1rem; font-size: 0.8rem; text-align: right;">
-                        <span class="js-inventory-weight"><?=$crate->inventory->weight / 1000?></span> / <?=$crate->inventory->capacity / 1000?> kg
-                    </div>
-                </div>
-
-              <div style="margin-bottom: 1rem;">
-                    <div class="progress js-capacity-bar"
-                         data-entity-id="<?=$crate->id?>"
-                         data-weight="<?=$crate->inventory->weight?>"
-                         data-capacity="<?=$crate->inventory->capacity?>"
-                         style="height: 0.6rem;"
-                    >
-                        <div class="progress-bar
-                                          <?php if ($crate->inventory->weight < $crate->inventory->capacity) : ?>
-                                              bg-primary
-                                          <?php else : ?>
-                                              bg-danger
-                                          <?php endif ?>
-                                   "
-                             style="width: <?=$crate->inventory->weight / $crate->inventory->capacity * 100?>%;"
-                        ></div>
-                        <div class="progress-bar" style="width: 0;"></div>
-                    </div>
-                </div>
-
-                <?php foreach ($crate->inventory->items as $item) : ?>
-                    <div class="item-slider d-flex">
-
-                        <div class="align-self-center" style="margin-right: 1rem;">
-                            <i class="fas fa-fw fa-<?=$item->icon?>"></i>
-                            <?=$item->label?>
-                        </div>
-
-                        <div class="flex-fill" style="height: 32px;">
-                            <input type="range"
-                                   min="0"
-                                   max="<?=$item->quantity?>"
-                                   value="0"
-                                   list="item-slider-<?=$crate->id?>-<?=$item->varietyId?>"
-                                   data-variety-id="<?=$item->varietyId?>"
-                                   data-entity-id="<?=$crate->id?>"
-                                   data-weight="<?=$item->weight?>"
-                                   style="width: 100%"
-                            >
-                            <datalist id="item-slider-<?=$crate->id?>-<?=$item->varietyId?>">
-                                <?php for ($i = 0; $i <= $item->quantity; $i++) : ?>
-                                <option value="<?=$i?>">
-                                    <?php endfor ?>
-                            </datalist>
-                        </div>
-
-                        <div class="align-self-center"
-                             style="margin-left: 1rem; text-align: right; width: 1.4rem;"
-                        >
-                            <span class="js-item-counter"
-                                  data-variety-id="<?=$item->varietyId?>"
-                                  data-entity-id="<?=$crate->id?>"
-                            >0</span>
-                        </div>
-
-                    </div>
-                <?php endforeach ?>
-
-            </div>
+            <?php endforeach ?>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
