@@ -1,6 +1,6 @@
 <template id="scavange-item-slider">
-    <div class="item-slider d-flex">
-        <div class="align-self-center" style="margin-right: 1rem;">
+    <div class="item-slider d-flex align-items-center">
+        <div style="margin-right: 1rem; white-space: nowrap;">
             <i class="tmpl-icon fas fa-fw"
                data-toggle="popover"
                data-placement="top"
@@ -12,7 +12,7 @@
             <input type="range" min="0" style="width: 100%">
             <datalist></datalist>
         </div>
-        <div class="align-self-center">
+        <div>
             <span class="tmpl-quantity js-scavange-quantity" style="margin-left: 1rem; text-align: right;"></span>
         </div>
     </div>

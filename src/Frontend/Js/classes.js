@@ -177,12 +177,12 @@ class ScavengeHaul {
             }
 
             this.el.appendChild(template);
-
-            $(this.el.querySelector(".tmpl-icon")).popover({
-                trigger: 'focus',
-                html: true
-            });
         }
+
+        $(this.el).find(".tmpl-icon").popover({
+            trigger: 'focus',
+            html: true
+        });
     }
 }
 
