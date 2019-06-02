@@ -1,6 +1,7 @@
 
 var gameId = document.getElementById("gameId").value;
 var useButtons = document.getElementsByClassName("js-use");
+var consumeButtons = document.getElementsByClassName("js-consume");
 
 $("#dropModal").on("show.bs.modal", function (e) {
     var button = e.relatedTarget;
@@ -68,6 +69,7 @@ for (var i = 0; i < useButtons.length; i++) {
         this.appendChild(template);
 
         var itemId = e.target.dataset.itemId;
+        var entityId = e.target.dataset.entityId;
 
         var form = document.createElement("form");
         form.setAttribute("action", "/" + gameId + "/use");
@@ -78,8 +80,47 @@ for (var i = 0; i < useButtons.length; i++) {
         itemInput.setAttribute("type", "hidden");
         itemInput.setAttribute("name", "item");
         itemInput.setAttribute("value", itemId);
-
         form.appendChild(itemInput);
+
+        var entityIdInput = document.createElement("input");
+        entityIdInput.setAttribute("type", "hidden");
+        entityIdInput.setAttribute("name", "entityId");
+        entityIdInput.setAttribute("value", entityId);
+        form.appendChild(entityIdInput);
+
+        document.body.appendChild(form);
+
+        form.submit();
+    }
+}
+
+for (var i = 0; i < consumeButtons.length; i++) {
+    consumeButtons[i].onclick = function (e) {
+        e.preventDefault();
+
+        const template = document.getElementById("spinner").content.cloneNode(true);
+        this.innerText = "";
+        this.appendChild(template);
+
+        var resourceId = e.target.dataset.resourceId;
+        var entityId = e.target.dataset.entityId;
+
+        var form = document.createElement("form");
+        form.setAttribute("action", "/" + gameId + "/consume");
+        form.setAttribute("method", "POST");
+        form.setAttribute("hidden", true);
+
+        var resourceIdInput = document.createElement("input");
+        resourceIdInput.setAttribute("type", "hidden");
+        resourceIdInput.setAttribute("name", "resourceId");
+        resourceIdInput.setAttribute("value", resourceId);
+        form.appendChild(resourceIdInput);
+
+        var entityIdInput = document.createElement("input");
+        entityIdInput.setAttribute("type", "hidden");
+        entityIdInput.setAttribute("name", "entityId");
+        entityIdInput.setAttribute("value", entityId);
+        form.appendChild(entityIdInput);
 
         document.body.appendChild(form);
 

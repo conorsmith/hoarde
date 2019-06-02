@@ -64,6 +64,16 @@
     padding: 0.6rem 1rem;
 }
 
+.btn-flex {
+    display: flex;
+    align-items: stretch;
+    align-content: stretch;
+}
+
+.btn-flex .btn:first-child {
+    flex-grow: 1;
+}
+
 @keyframes rotating {
     from {
         -ms-transform: rotate(0deg);

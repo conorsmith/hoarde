@@ -54,16 +54,64 @@
                       <?=$entity->label?>
                     </h5>
 
-                    <?php foreach ($resources as $resource) : ?>
-                        <p>
-                            <strong><?=$resource['label']?></strong>
-                            <div class="progress resource">
+                    <div style="margin-bottom: 1.6rem;">
+                      <?php foreach ($resources as $resource) : ?>
+                          <div style="margin-bottom: 1rem;">
+
+                            <div style="margin-bottom: 0.4rem;">
+                                <strong><?=$resource['label']?></strong>
+                            </div>
+
+                            <div class="progress resource"
+                                 style="margin-bottom: 0.6rem;"
+                            >
                                 <?php for ($i = 0; $i < $resource['level']; $i++): ?>
                                     <div class="progress-bar" style="width: <?=$resource['segmentWidth']?>%;"></div>
                                 <?php endfor; ?>
                             </div>
-                        </p>
-                    <?php endforeach ?>
+
+                            <div class="btn-group btn-flex">
+                              <button type="button"
+                                      class="btn btn-light btn-block js-consume <?=($isIntact ? "" : "disabled")?>"
+                                      data-entity-id="<?=$entity->id?>"
+                                      data-resource-id="<?=$resource['id']?>"
+                              >
+                                Consume <?=$resource['label']?>
+                              </button>
+
+                              <button type="button"
+                                      class="btn btn-light dropdown-toggle"
+                                      data-toggle="dropdown"
+                                  <?=($isIntact ? "" : "disabled")?>></button>
+
+                              <div class="dropdown-menu dropdown-menu-right w-100">
+                                <?php foreach ($resource['items'] as $item) : ?>
+                                  <a href="#"
+                                     class="dropdown-item d-flex align-items-baseline justify-content-between js-use"
+                                     data-entity-id="<?=$entity->id?>"
+                                     data-item-id="<?=$item->id?>"
+                                  >
+                                    Consume <?=$item->label?>
+                                    <span class="badge"><?=$item->quantity?></span>
+                                  </a>
+                                <?php endforeach ?>
+                              </div>
+                            </div>
+
+                          </div>
+                      <?php endforeach ?>
+                    </div>
+
+                    <div class="actions">
+
+                      <button type="button"
+                              class="btn btn-light btn-block js-scavenge"
+                          <?=($isIntact ? "" : "disabled")?>
+                      >Scavenge</button>
+
+                    </div>
+
+                    <hr>
 
                     <p><strong>Inventory</strong></p>
                     <div class="inventory-actions">
@@ -81,7 +129,7 @@
                                             class="btn btn-light dropdown-toggle"
                                             data-toggle="dropdown"
                                             <?=($isIntact ? "" : "disabled")?>></button>
-                                    <div class="dropdown-menu dropdown-menu-right">
+                                    <div class="dropdown-menu dropdown-menu-right w-100">
                                         <a href="#"
                                            class="dropdown-item"
                                            data-toggle="modal"
@@ -103,11 +151,6 @@
                     <hr>
 
                     <div class="actions">
-
-                      <button type="button"
-                              class="btn btn-light btn-block js-scavenge"
-                              <?=($isIntact ? "" : "disabled")?>
-                      >Scavenge</button>
 
                       <?php if ($crate) : ?>
 

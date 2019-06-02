@@ -82,10 +82,22 @@ final class ShowGame
 
         $resources = [];
         foreach ($entity->getResourceNeeds() as $resourceNeed) {
+            $resource = $this->resourceRepo->find($resourceNeed->getResource()->getId());
+
+            $items = [];
+
+            foreach ($entity->getInventory() as $item) {
+                if ($item->getVariety()->getResource()->getId()->equals($resource->getId())) {
+                    $items[] = (object) $this->presentItem($item);
+                }
+            }
+
             $resources[] = [
-                'label'        => $this->resourceRepo->find($resourceNeed->getResource()->getId())->getLabel(),
+                'id'           => $resource->getId(),
+                'label'        => $resource->getLabel(),
                 'level'        => $resourceNeed->getCurrentLevel(),
                 'segmentWidth' => 100 / $resourceNeed->getMaximumLevel(),
+                'items'        => $items,
             ];
         }
 

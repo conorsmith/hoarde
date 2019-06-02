@@ -27,6 +27,7 @@ $generateNewGame = new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame($gameR
 $restartGame = new ConorSmith\Hoarde\Infra\Controller\RestartGame($gameRepo, $entityRepo, $varietyRepo, $resourceRepo);
 $haveEntityWait = new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait($gameRepo, $entityRepo, $sessionSegment);
 $haveEntityUseItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem($gameRepo, $entityRepo, $sessionSegment);
+$haveEntityConsumeResource = new ConorSmith\Hoarde\Infra\Controller\HaveEntityConsumeResource($gameRepo, $entityRepo, $sessionSegment);
 $haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge($gameRepo, $entityRepo, $scavengingHaulRepo, $varietyRepo, $sessionSegment);
 $haveEntityAddHaulToInventory = new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory($gameRepo, $entityRepo, $scavengingHaulRepo, $varietyRepo, $sessionSegment);
 $haveEntityDropItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem($gameRepo, $entityRepo, $sessionSegment);
@@ -43,6 +44,7 @@ $router->get("/{gameId}", $showGame);
 $router->post("/{gameId}/restart", $restartGame);
 $router->post("/{gameId}/wait", $haveEntityWait);
 $router->post("/{gameId}/use", $haveEntityUseItem);
+$router->post("/{gameId}/consume", $haveEntityConsumeResource);
 $router->post("/{gameId}/scavenge", $haveEntityScavenge);
 $router->post("/{gameId}/scavenge/{haulId}", $haveEntityAddHaulToInventory);
 $router->post("/{gameId}/drop", $haveEntityDropItem);
