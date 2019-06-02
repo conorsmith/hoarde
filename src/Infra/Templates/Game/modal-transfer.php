@@ -62,6 +62,7 @@
                                  data-toggle="popover"
                                  title="<?=$item->label?>"
                                  data-content='
+                                    <p><?=$item->description?></p>
                                     <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
                                            ? ($item->weight / 1000)." kg"
                                            : $item->weight . " g" ?>

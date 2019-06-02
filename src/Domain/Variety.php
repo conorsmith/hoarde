@@ -22,13 +22,23 @@ final class Variety
     /** @var string */
     private $icon;
 
-    public function __construct(UuidInterface $id, string $label, Resource $resource, int $weight, string $icon)
-    {
+    /** @var string */
+    private $description;
+
+    public function __construct(
+        UuidInterface $id,
+        string $label,
+        Resource $resource,
+        int $weight,
+        string $icon,
+        string $description
+    ) {
         $this->id = $id;
         $this->label = $label;
         $this->resource = $resource;
         $this->weight = $weight;
         $this->icon = $icon;
+        $this->description = $description;
     }
 
     public function getId(): UuidInterface
@@ -54,6 +64,11 @@ final class Variety
     public function getIcon(): string
     {
         return $this->icon;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
     }
 
     public function createItemWithQuantity(int $quantity): Item

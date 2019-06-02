@@ -74,6 +74,7 @@ final class HaveEntityScavenge
                     'quantity'      => $item->getQuantity(),
                     'icon'          => $item->getVariety()->getIcon(),
                     'resourceLabel' => $item->getVariety()->getResource()->getLabel(),
+                    'description'   => $item->getVariety()->getDescription(),
                 ];
             }
         }

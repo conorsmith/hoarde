@@ -145,7 +145,8 @@ class ScavengeHaul {
 
             template.querySelector(".tmpl-icon").classList.add("fa-" + item.icon);
             template.querySelector(".tmpl-icon").title = item.label;
-            template.querySelector(".tmpl-icon").dataset.content = '<div><span class="popover-label">Weight:</span> '
+            template.querySelector(".tmpl-icon").dataset.content = '<p>' + item.description + '</p>'
+                + '<div><span class="popover-label">Weight:</span> '
                 + (item.weight >= 1000 ? (item.weight / 1000) + " kg" : item.weight + " g") + '</div>'
                 + '<div><span class="popover-label">Resource:</span> ' + item.resourceLabel + '</div>';
 
