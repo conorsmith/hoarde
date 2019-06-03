@@ -5,6 +5,7 @@ namespace ConorSmith\Hoarde\Infra\Repository;
 
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
+use ConorSmith\Hoarde\Domain\Item;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Domain\ResourceNeed;
@@ -92,6 +93,10 @@ final class EntityRepositoryDb implements EntityRepository
                 ->createItemWithQuantity(intval($row['quantity']));
             $inventory[] = $item;
         }
+
+        usort($inventory, function (Item $itemA, Item $itemB) {
+            return strnatcasecmp($itemA->getVariety()->getLabel(), $itemB->getVariety()->getLabel());
+        });
 
         return $inventory;
     }
