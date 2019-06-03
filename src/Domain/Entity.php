@@ -251,6 +251,12 @@ final class Entity
                     ->createItemWithQuantity(1),
             ],
             [
+                'rolls' => array_merge(range(1, 10), range(290, 330)),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString("fb793da2-cff9-4e88-9f9c-84278c6662ca"))
+                    ->createItemWithQuantity($generator->generateInt(1, 2)),
+            ],
+            [
                 'rolls' => range(140, 300),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))

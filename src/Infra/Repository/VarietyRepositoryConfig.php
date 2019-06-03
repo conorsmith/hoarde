@@ -91,6 +91,16 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "utensils",
             'description' => "A steel can for storing food. The label is thoroughly worn, but it indicates that the can contains... drew?",
         ],
+        "fb793da2-cff9-4e88-9f9c-84278c6662ca" => [
+            'label'       => "Tinned Soup",
+            'resources'   => [
+                ResourceRepositoryConfig::FOOD,
+                ResourceRepositoryConfig::WATER,
+            ],
+            'weight'      => 600,
+            'icon'        => "utensils",
+            'description' => "A steel can for storing food. The faded label indicates it to be some variety of soup.",
+        ],
         "275d6f62-16ff-4f5f-8ac6-149ec4cde1e2" => [
             'label'       => "Pringle",
             'resources'   => [
