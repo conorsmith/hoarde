@@ -1,9 +1,11 @@
-.progress.resource .progress-bar {
+.progress.resource .progress-bar,
+.progress.construction .progress-bar{
     border-left: 1px solid #e9ecef;
     box-sizing: border-box;
 }
 
-.progress.resource .progress-bar:first-child {
+.progress.resource .progress-bar:first-child,
+.progress.construction .progress-bar:first-child{
     border-left: none;
 }
 

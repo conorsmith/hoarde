@@ -56,6 +56,13 @@ final class FetchWater
             return $response;
         }
 
+        if (!$well->getConstruction()->isConstructed()) {
+            $response = new Response;
+            $response->withStatus(400);
+            $response->getBody()->write("Well is not constructed!");
+            return $response;
+        }
+
         $availableCapacity = $entity->getInventoryCapacity() - $entity->getInventoryWeight();
         $waterBottlesRetrieved = min(
             intval(floor($availableCapacity / 500)),

@@ -215,7 +215,29 @@
                 <h5 class="card-title">
                   <i class="fas fa-fw fa-<?=$well->icon?>"></i>
                     <?=$well->label?>
+                    <?php if (!$well->isConstructed) : ?>
+                      <span class="text-muted" style="font-size: 1rem; font-weight: 400;">Under Construction</span>
+                    <?php endif ?>
                 </h5>
+
+                <?php if (!$well->isConstructed) : ?>
+                  <div class="progress construction"
+                       style="margin-bottom: 0.6rem;"
+                  >
+                      <?php for ($i = 0; $i < $well->requiredConstructionSteps - $well->remainingConstructionSteps; $i++): ?>
+                        <div class="progress-bar"
+                             style="width: <?=(100 / $well->requiredConstructionSteps)?>%;"
+                        ></div>
+                      <?php endfor; ?>
+                  </div>
+
+                  <button type="button"
+                          class="btn btn-light btn-block js-construct"
+                          data-actor-id="<?=$entity->id?>"
+                          data-target-id="<?=$well->id?>"
+                      <?=($isIntact ? "" : "disabled")?>
+                  >Continue Construction</button>
+                <?php endif ?>
 
                 <hr>
 
@@ -225,7 +247,7 @@
                           class="btn btn-light btn-block js-fetch"
                           data-entity-id="<?=$entity->id?>"
                           data-well-id="<?=$well->id?>"
-                      <?=($isIntact ? "" : "disabled")?>
+                      <?=($isIntact && $well->isConstructed ? "" : "disabled")?>
                   >Fetch Water</button>
 
                 </div>

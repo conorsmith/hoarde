@@ -181,16 +181,21 @@ final class ShowGame
         }
 
         return (object)[
-            'id'        => $entity->getId(),
-            'label'     => $entity->getLabel(),
-            'icon'      => $entity->getIcon(),
-            'inventory' => (object)[
+            'id'                         => $entity->getId(),
+            'label'                      => $entity->getLabel(),
+            'icon'                       => $entity->getIcon(),
+            'inventory'                  => (object)[
                 'weight'       => $entity->getInventoryWeight(),
                 'capacity'     => $entity->getInventoryCapacity(),
                 'isAtCapacity' => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
                 'items'        => $items,
             ],
-            'isHuman'  => $entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN)),
+            'isHuman'                    => $entity->getVarietyId()->equals(
+                Uuid::fromString(VarietyRepositoryConfig::HUMAN)
+            ),
+            'isConstructed'              => $entity->getConstruction()->isConstructed(),
+            'remainingConstructionSteps' => $entity->getConstruction()->getRemainingSteps(),
+            'requiredConstructionSteps'  => $entity->getConstruction()->getRequiredSteps(),
         ];
     }
 

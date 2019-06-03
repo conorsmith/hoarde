@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
+use ConorSmith\Hoarde\Domain\Construction;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
@@ -98,6 +99,11 @@ final class HaveEntityUseItem
                 "Well",
                 "tint",
                 true,
+                new Construction(
+                    false,
+                    9,
+                    10
+                ),
                 [],
                 []
             );
@@ -123,6 +129,7 @@ final class HaveEntityUseItem
                 $usedItem->getVariety()->getLabel(),
                 $usedItem->getVariety()->getIcon(),
                 true,
+                Construction::constructed(),
                 [],
                 []
             );

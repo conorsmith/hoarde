@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Infra\Repository;
 
+use ConorSmith\Hoarde\Domain\Construction;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Item;
@@ -20,6 +21,10 @@ final class EntityRepositoryDb implements EntityRepository
         "9972c015-842a-4601-8fb2-c900e1a54177" => 5,
         "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => 10,
         "5234c112-05be-4b15-80df-3c2b67e88262" => 12,
+    ];
+
+    private const CONSTRUCTION_MAXIMUMS_FOR_ENTITY = [
+        VarietyRepositoryConfig::WELL => 10,
     ];
 
     /** @var Connection */
@@ -55,6 +60,13 @@ final class EntityRepositoryDb implements EntityRepository
             $row['label'],
             $row['icon'],
             $row['intact'] === "1",
+            new Construction(
+                $row['is_constructed'] === "1",
+                intval($row['construction_level']),
+                array_key_exists($row['variety_id'], self::CONSTRUCTION_MAXIMUMS_FOR_ENTITY)
+                    ? self::CONSTRUCTION_MAXIMUMS_FOR_ENTITY[$row['variety_id']]
+                    : 0
+            ),
             $this->findResourceNeeds($id),
             $this->findInventory($id)
         );
@@ -129,18 +141,22 @@ final class EntityRepositoryDb implements EntityRepository
 
         if ($row === false) {
             $this->db->insert("entities", [
-                'id'         => $entity->getId(),
-                'game_id'    => $entity->getGameId(),
-                'variety_id' => $entity->getVarietyId(),
-                'label'      => $entity->getLabel(),
-                'icon'       => $entity->getIcon(),
-                'intact'     => $entity->isIntact(),
+                'id'                 => $entity->getId(),
+                'game_id'            => $entity->getGameId(),
+                'variety_id'         => $entity->getVarietyId(),
+                'label'              => $entity->getLabel(),
+                'icon'               => $entity->getIcon(),
+                'intact'             => $entity->isIntact(),
+                'is_constructed'     => $entity->getConstruction()->isConstructed() ? "1" : "0",
+                'construction_level' => $entity->getConstruction()->getRemainingSteps(),
             ]);
         } else {
             $this->db->update("entities", [
-                'label'  => $entity->getLabel(),
-                'icon'   => $entity->getIcon(),
-                'intact' => $entity->isIntact() ? "1" : "0",
+                'label'              => $entity->getLabel(),
+                'icon'               => $entity->getIcon(),
+                'intact'             => $entity->isIntact() ? "1" : "0",
+                'is_constructed'     => $entity->getConstruction()->isConstructed() ? "1" : "0",
+                'construction_level' => $entity->getConstruction()->getRemainingSteps(),
             ], [
                 'id' => $entity->getId(),
             ]);

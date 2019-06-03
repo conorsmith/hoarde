@@ -30,6 +30,9 @@ final class Entity
     /** @var bool */
     private $isIntact;
 
+    /** @var Construction */
+    private $construction;
+
     /** @var array */
     private $resourceNeeds;
 
@@ -43,6 +46,7 @@ final class Entity
         string $label,
         string $icon,
         bool $isIntact,
+        Construction $construction,
         iterable $resourceNeeds,
         iterable $inventory
     ) {
@@ -52,6 +56,7 @@ final class Entity
         $this->label = $label;
         $this->icon = $icon;
         $this->isIntact = $isIntact;
+        $this->construction = $construction;
         $this->resourceNeeds = [];
         $this->inventory = [];
 
@@ -100,6 +105,11 @@ final class Entity
     public function isIntact(): bool
     {
         return $this->isIntact;
+    }
+
+    public function getConstruction(): Construction
+    {
+        return $this->construction;
     }
 
     public function getResourceNeeds(): iterable
@@ -207,6 +217,15 @@ final class Entity
         } else {
             $this->inventory[strval($item->getVariety()->getId())] = $item;
         }
+    }
+
+    public function construct(Entity $target): void
+    {
+        $this->beforeAction();
+
+        $target->construction = $target->construction->takeAStep();
+
+        $this->afterAction();
     }
 
     public function scavenge(

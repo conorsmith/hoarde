@@ -4,6 +4,7 @@ var useButtons = document.getElementsByClassName("js-use");
 var consumeButtons = document.getElementsByClassName("js-consume");
 var infoButtons = document.getElementsByClassName("js-info");
 var fetchButtons = document.getElementsByClassName("js-fetch");
+var constructButtons = document.getElementsByClassName("js-construct");
 
 $(function () {
     $('[data-toggle="popover"]').popover({
@@ -171,6 +172,40 @@ for (var i = 0; i < fetchButtons.length; i++) {
         entityIdInput.setAttribute("name", "entityId");
         entityIdInput.setAttribute("value", entityId);
         form.appendChild(entityIdInput);
+
+        document.body.appendChild(form);
+
+        form.submit();
+    }
+}
+
+for (var i = 0; i < constructButtons.length; i++) {
+    constructButtons[i].onclick = function (e) {
+        e.preventDefault();
+
+        const template = document.getElementById("spinner").content.cloneNode(true);
+        this.innerText = "";
+        this.appendChild(template);
+
+        var targetId = e.currentTarget.dataset.targetId;
+        var actorId = e.currentTarget.dataset.actorId;
+
+        var form = document.createElement("form");
+        form.setAttribute("action", "/" + gameId + "/construct");
+        form.setAttribute("method", "POST");
+        form.setAttribute("hidden", true);
+
+        var targetIdInput = document.createElement("input");
+        targetIdInput.setAttribute("type", "hidden");
+        targetIdInput.setAttribute("name", "targetId");
+        targetIdInput.setAttribute("value", targetId);
+        form.appendChild(targetIdInput);
+
+        var actorIdInput = document.createElement("input");
+        actorIdInput.setAttribute("type", "hidden");
+        actorIdInput.setAttribute("name", "actorId");
+        actorIdInput.setAttribute("value", actorId);
+        form.appendChild(actorIdInput);
 
         document.body.appendChild(form);
 

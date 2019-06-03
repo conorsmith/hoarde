@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Infra\Controller;
 
+use ConorSmith\Hoarde\Domain\Construction;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Game;
@@ -52,6 +53,7 @@ final class GenerateNewGame
             $request->getParsedBody()['label'],
             $request->getParsedBody()['icon'],
             true,
+            Construction::constructed(),
             [],
             []
         );
