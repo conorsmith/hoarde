@@ -200,6 +200,15 @@ final class Entity
         return $item;
     }
 
+    public function addItem(Item $item): void
+    {
+        if (array_key_exists(strval($item->getVariety()->getId()), $this->inventory)) {
+            $this->inventory[strval($item->getVariety()->getId())]->add($item->getQuantity());
+        } else {
+            $this->inventory[strval($item->getVariety()->getId())] = $item;
+        }
+    }
+
     public function scavenge(
         VarietyRepository $varietyRepository,
         GameRepository $gameRepository,
@@ -250,6 +259,24 @@ final class Entity
                 'rolls' => range(940, 944),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_DREW))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(907, 909),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::BUCKET))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(904, 906),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::ROPE))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(901, 903),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::SHOVEL))
                     ->createItemWithQuantity(1),
             ],
             [

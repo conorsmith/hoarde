@@ -206,6 +206,36 @@
 
         <?php endif ?>
 
+        <?php if ($well) : ?>
+
+          <div class="col-lg-4 mb-3">
+            <div class="card">
+              <div class="card-body">
+
+                <h5 class="card-title">
+                  <i class="fas fa-fw fa-<?=$well->icon?>"></i>
+                    <?=$well->label?>
+                </h5>
+
+                <hr>
+
+                <div class="actions">
+
+                  <button type="button"
+                          class="btn btn-light btn-block js-fetch"
+                          data-entity-id="<?=$entity->id?>"
+                          data-well-id="<?=$well->id?>"
+                      <?=($isIntact ? "" : "disabled")?>
+                  >Fetch Water</button>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        <?php endif ?>
+
     </div>
 
     <?=$this->renderTemplate("Game/modal-drop.php")?>

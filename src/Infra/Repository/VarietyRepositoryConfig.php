@@ -12,6 +12,7 @@ use Ramsey\Uuid\UuidInterface;
 final class VarietyRepositoryConfig implements VarietyRepository
 {
     public const HUMAN = "fde2146a-c29d-4262-b96f-ec7b696eccad";
+    public const WELL = "59aabe00-8418-4127-9ceb-12beca840854";
     public const WATER_BOTTLE = "2f555296-ff9f-4205-a4f7-d181e4455f9d";
     public const COKE_ZERO = "08db1181-2bc9-4408-b378-5270e8dbee4b";
     public const CHERRY_COKE_ZERO = "450349d4-fe21-4da0-8f78-99c684b05b45";
@@ -23,6 +24,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
     public const TINNED_SOUP = "fb793da2-cff9-4e88-9f9c-84278c6662ca";
     public const PRINGLE = "275d6f62-16ff-4f5f-8ac6-149ec4cde1e2";
     public const WOODEN_CRATE = "59593b72-3845-491e-9721-4452a337019b";
+    public const SHOVEL = "75d861d5-b6b7-4cd2-ad4a-a56db4db1fcf";
+    public const BUCKET = "6722e875-6d19-404c-a1bd-e49fb3470cd7";
+    public const ROPE = "0646f8e6-32b9-476f-86f5-834dc7160d95";
 
     private const VARIETIES = [
         self::HUMAN => [
@@ -31,6 +35,13 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 75000,
             'icon'        => "user",
             'description' => "Homo sapiens, the only extant members of the subtribe Hominina.",
+        ],
+        self::WELL => [
+            'label'       => "Well",
+            'resources'   => [],
+            'weight'      => 0,
+            'icon'        => "tint",
+            'description' => "A 10 metre deep hole reaching the water table.",
         ],
         self::WATER_BOTTLE => [
             'label'       => "Water Bottle",
@@ -132,6 +143,27 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "box",
             'description' => "A sturdy crate crafted from wood in which items could be protected from the elements.",
         ],
+        self::SHOVEL => [
+            'label'       => "Shovel",
+            'resources'   => [],
+            'weight'      => 3000,
+            'icon'        => "tools",
+            'description' => "A tool for digging, lifting, and moving bulk materials.",
+        ],
+        self::ROPE => [
+            'label'       => "Rope",
+            'resources'   => [],
+            'weight'      => 3770,
+            'icon'        => "tools",
+            'description' => "A coil of nylon rope, 10 metres long and 24 mm in diameter.",
+        ],
+        self::BUCKET => [
+            'label'       => "Bucket",
+            'resources'   => [],
+            'weight'      => 600,
+            'icon'        => "fill",
+            'description' => "A galvanised steel bucket with a capacity of 10 litres.",
+        ]
     ];
 
     private $resourceRepository;

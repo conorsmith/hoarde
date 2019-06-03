@@ -46,8 +46,11 @@ final class RestartGame
         $this->entityRepo->save($entity);
 
         if (count($entityIds) > 1) {
-            $crate = $this->entityRepo->find($entityIds[1]);
-            $this->entityRepo->delete($crate);
+            for ($i = 1; $i < count($entityIds); $i++) {
+                $this->entityRepo->delete(
+                    $this->entityRepo->find($entityIds[$i])
+                );
+            }
         }
 
         $game->restart();

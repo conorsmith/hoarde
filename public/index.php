@@ -26,13 +26,14 @@ $showLandingPage = new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage;
 $generateNewGame = new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame($gameRepo, $entityRepo, $varietyRepo, $resourceRepo);
 $restartGame = new ConorSmith\Hoarde\Infra\Controller\RestartGame($gameRepo, $entityRepo, $varietyRepo, $resourceRepo);
 $haveEntityWait = new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait($gameRepo, $entityRepo, $sessionSegment);
-$haveEntityUseItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem($gameRepo, $entityRepo, $sessionSegment);
+$haveEntityUseItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
 $haveEntityConsumeResource = new ConorSmith\Hoarde\Infra\Controller\HaveEntityConsumeResource($gameRepo, $entityRepo, $sessionSegment);
 $haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge($gameRepo, $entityRepo, $scavengingHaulRepo, $varietyRepo, $sessionSegment);
 $haveEntityAddHaulToInventory = new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory($gameRepo, $entityRepo, $scavengingHaulRepo, $varietyRepo, $sessionSegment);
 $haveEntityDropItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem($gameRepo, $entityRepo, $sessionSegment);
 $showGame = new ConorSmith\Hoarde\Infra\Controller\ShowGame($gameRepo, $entityRepo, $resourceRepo, $sessionSegment);
 $transferItems = new ConorSmith\Hoarde\Infra\Controller\TransferItems($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
+$fetchWater = new ConorSmith\Hoarde\Infra\Controller\FetchWater($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
 $showNotFoundPage = new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage;
 
 $router = new League\Route\Router;
@@ -49,6 +50,7 @@ $router->post("/{gameId}/scavenge", $haveEntityScavenge);
 $router->post("/{gameId}/scavenge/{haulId}", $haveEntityAddHaulToInventory);
 $router->post("/{gameId}/drop", $haveEntityDropItem);
 $router->post("/{gameId}/transfer", $transferItems);
+$router->post("/{gameId}/fetch-water", $fetchWater);
 
 try {
     $response = $router->dispatch(Zend\Diactoros\ServerRequestFactory::fromGlobals(

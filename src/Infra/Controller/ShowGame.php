@@ -51,6 +51,7 @@ final class ShowGame
 
         $human = null;
         $crate = null;
+        $well = null;
 
         foreach ($entityIds as $entityId) {
             $entity = $this->entityRepo->find($entityId);
@@ -58,12 +59,15 @@ final class ShowGame
                 $human = $entity;
             } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
                 $crate = $entity;
+            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
+                $well = $entity;
             }
         }
 
         $body = $this->renderGameTemplate($game, $human, [
             'entity' => $this->presentEntity($human),
             'crate'  => $this->presentEntity($crate),
+            'well'   => $this->presentEntity($well),
         ]);
 
         $response = new Response;

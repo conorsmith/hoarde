@@ -3,6 +3,7 @@ var gameId = document.getElementById("gameId").value;
 var useButtons = document.getElementsByClassName("js-use");
 var consumeButtons = document.getElementsByClassName("js-consume");
 var infoButtons = document.getElementsByClassName("js-info");
+var fetchButtons = document.getElementsByClassName("js-fetch");
 
 $(function () {
     $('[data-toggle="popover"]').popover({
@@ -140,6 +141,40 @@ for (var i = 0; i < infoButtons.length; i++) {
     infoButtons[i].onclick = function (e) {
         e.preventDefault();
         this.parentNode.parentNode.querySelector("i[data-toggle='popover']").focus();
+    }
+}
+
+for (var i = 0; i < fetchButtons.length; i++) {
+    fetchButtons[i].onclick = function (e) {
+        e.preventDefault();
+
+        const template = document.getElementById("spinner").content.cloneNode(true);
+        this.innerText = "";
+        this.appendChild(template);
+
+        var wellId = e.currentTarget.dataset.wellId;
+        var entityId = e.currentTarget.dataset.entityId;
+
+        var form = document.createElement("form");
+        form.setAttribute("action", "/" + gameId + "/fetch-water");
+        form.setAttribute("method", "POST");
+        form.setAttribute("hidden", true);
+
+        var wellIdInput = document.createElement("input");
+        wellIdInput.setAttribute("type", "hidden");
+        wellIdInput.setAttribute("name", "wellId");
+        wellIdInput.setAttribute("value", wellId);
+        form.appendChild(wellIdInput);
+
+        var entityIdInput = document.createElement("input");
+        entityIdInput.setAttribute("type", "hidden");
+        entityIdInput.setAttribute("name", "entityId");
+        entityIdInput.setAttribute("value", entityId);
+        form.appendChild(entityIdInput);
+
+        document.body.appendChild(form);
+
+        form.submit();
     }
 }
 
