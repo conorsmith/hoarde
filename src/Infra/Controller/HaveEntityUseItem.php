@@ -7,6 +7,7 @@ use Aura\Session\Segment;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -45,11 +46,11 @@ final class HaveEntityUseItem
         $usedItem = $entity->useItem($itemId);
         $this->entityRepo->save($entity);
 
-        if ($itemId->equals(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))) {
+        if ($itemId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
             $crate = new Entity(
                 Uuid::uuid4(),
                 $gameId,
-                Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"),
+                Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE),
                 $usedItem->getVariety()->getLabel(),
                 $usedItem->getVariety()->getIcon(),
                 true,

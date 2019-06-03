@@ -11,6 +11,7 @@ use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\Item;
 use ConorSmith\Hoarde\Domain\Resource;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
+use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
@@ -53,9 +54,9 @@ final class ShowGame
 
         foreach ($entityIds as $entityId) {
             $entity = $this->entityRepo->find($entityId);
-            if ($entity->getVarietyId()->equals(Uuid::fromString("fde2146a-c29d-4262-b96f-ec7b696eccad"))) {
+            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
                 $human = $entity;
-            } elseif ($entity->getVarietyId()->equals(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))) {
+            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
                 $crate = $entity;
             }
         }
@@ -185,7 +186,7 @@ final class ShowGame
                 'isAtCapacity' => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
                 'items'        => $items,
             ],
-            'isHuman'  => $entity->getVarietyId()->equals(Uuid::fromString("fde2146a-c29d-4262-b96f-ec7b696eccad")),
+            'isHuman'  => $entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN)),
         ];
     }
 

@@ -9,6 +9,7 @@ use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
+use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -47,7 +48,7 @@ final class GenerateNewGame
         $newEntity = new Entity(
             Uuid::uuid4(),
             $id,
-            Uuid::fromString("fde2146a-c29d-4262-b96f-ec7b696eccad"),
+            Uuid::fromString(VarietyRepositoryConfig::HUMAN),
             $request->getParsedBody()['label'],
             $request->getParsedBody()['icon'],
             true,

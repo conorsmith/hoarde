@@ -11,15 +11,28 @@ use Ramsey\Uuid\UuidInterface;
 
 final class VarietyRepositoryConfig implements VarietyRepository
 {
+    public const HUMAN = "fde2146a-c29d-4262-b96f-ec7b696eccad";
+    public const WATER_BOTTLE = "2f555296-ff9f-4205-a4f7-d181e4455f9d";
+    public const COKE_ZERO = "08db1181-2bc9-4408-b378-5270e8dbee4b";
+    public const CHERRY_COKE_ZERO = "450349d4-fe21-4da0-8f78-99c684b05b45";
+    public const VANILLA_COKE_ZERO = "813980ad-7604-4713-909c-b2701420de1b";
+    public const PEACH_COKE_ZERO = "e12981d2-5873-454a-b297-895f42e66bd5";
+    public const GINGER_COKE_ZERO = "5de1c51c-2747-426d-a3b0-c854107c7132";
+    public const TINNED_STEW = "9c2bb508-c40f-491b-a4ca-fc811087a158";
+    public const TINNED_DREW = "cf057538-d3f0-4657-8a4c-f911bc113ad7";
+    public const TINNED_SOUP = "fb793da2-cff9-4e88-9f9c-84278c6662ca";
+    public const PRINGLE = "275d6f62-16ff-4f5f-8ac6-149ec4cde1e2";
+    public const WOODEN_CRATE = "59593b72-3845-491e-9721-4452a337019b";
+
     private const VARIETIES = [
-        "fde2146a-c29d-4262-b96f-ec7b696eccad" => [
+        self::HUMAN => [
             'label'       => "Human",
             'resources'   => [],
             'weight'      => 75000,
             'icon'        => "user",
             'description' => "Homo sapiens, the only extant members of the subtribe Hominina.",
         ],
-        "2f555296-ff9f-4205-a4f7-d181e4455f9d" => [
+        self::WATER_BOTTLE => [
             'label'       => "Water Bottle",
             'resources'   => [
                 ResourceRepositoryConfig::WATER,
@@ -28,7 +41,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "tint",
             'description' => "A bottle of water that is probably still drinkable.",
         ],
-        "08db1181-2bc9-4408-b378-5270e8dbee4b" => [
+        self::COKE_ZERO => [
             'label'       => "Coke Zero",
             'resources'   => [
                 ResourceRepositoryConfig::WATER,
@@ -37,7 +50,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola!",
         ],
-        "450349d4-fe21-4da0-8f78-99c684b05b45" => [
+        self::CHERRY_COKE_ZERO => [
             'label'       => "Cherry Coke Zero",
             'resources'   => [
                 ResourceRepositoryConfig::WATER,
@@ -46,7 +59,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola, now flavoured with sweet cherry!",
         ],
-        "813980ad-7604-4713-909c-b2701420de1b" => [
+        self::VANILLA_COKE_ZERO => [
             'label'       => "Vanilla Coke Zero",
             'resources'   => [
                 ResourceRepositoryConfig::WATER,
@@ -55,7 +68,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola, now flavoured with creamy vanilla!",
         ],
-        "e12981d2-5873-454a-b297-895f42e66bd5" => [
+        self::PEACH_COKE_ZERO => [
             'label'       => "Peach Coke Zero",
             'resources'   => [
                 ResourceRepositoryConfig::WATER,
@@ -64,7 +77,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola, now flavoured with overpowering peach!",
         ],
-        "5de1c51c-2747-426d-a3b0-c854107c7132" => [
+        self::GINGER_COKE_ZERO => [
             'label'       => "Ginger Coke Zero",
             'resources'   => [
                 ResourceRepositoryConfig::WATER,
@@ -73,7 +86,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola, a real spicy boy!",
         ],
-        "9c2bb508-c40f-491b-a4ca-fc811087a158" => [
+        self::TINNED_STEW => [
             'label'       => "Tinned Stew",
             'resources'   => [
                 ResourceRepositoryConfig::FOOD,
@@ -82,7 +95,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "utensils",
             'description' => "A steel can for storing food. The faded label indicates it to be some variety of stew.",
         ],
-        "cf057538-d3f0-4657-8a4c-f911bc113ad7" => [
+        self::TINNED_DREW => [
             'label'       => "Tinned Drew",
             'resources'   => [
                 ResourceRepositoryConfig::FOOD,
@@ -91,7 +104,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "utensils",
             'description' => "A steel can for storing food. The label is thoroughly worn, but it indicates that the can contains... drew?",
         ],
-        "fb793da2-cff9-4e88-9f9c-84278c6662ca" => [
+        self::TINNED_SOUP => [
             'label'       => "Tinned Soup",
             'resources'   => [
                 ResourceRepositoryConfig::FOOD,
@@ -101,7 +114,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "utensils",
             'description' => "A steel can for storing food. The faded label indicates it to be some variety of soup.",
         ],
-        "275d6f62-16ff-4f5f-8ac6-149ec4cde1e2" => [
+        self::PRINGLE => [
             'label'       => "Pringle",
             'resources'   => [
                 ResourceRepositoryConfig::PRINGLES,
@@ -110,7 +123,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "moon",
             'description' => "A delicious stackable potato crisp, but be warned: once you pop, you cannot stop.",
         ],
-        "59593b72-3845-491e-9721-4452a337019b" => [
+        self::WOODEN_CRATE => [
             'label'       => "Wooden Crate",
             'resources'   => [
                 ResourceRepositoryConfig::STORAGE,

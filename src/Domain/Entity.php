@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Domain;
 
 use ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
+use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use DomainException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -124,7 +125,7 @@ final class Entity
 
     public function getInventoryCapacity(): int
     {
-        if ($this->varietyId->equals(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))) {
+        if ($this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
             return 50000;
         }
 
@@ -212,61 +213,61 @@ final class Entity
             [
                 'rolls' => range(980, 989),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("08db1181-2bc9-4408-b378-5270e8dbee4b"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::COKE_ZERO))
                     ->createItemWithQuantity(1),
             ],
             [
                 'rolls' => range(970, 979),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::PRINGLE))
                     ->createItemWithQuantity(1),
             ],
             [
                 'rolls' => range(965, 969),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("450349d4-fe21-4da0-8f78-99c684b05b45"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::CHERRY_COKE_ZERO))
                     ->createItemWithQuantity(1),
             ],
             [
                 'rolls' => range(960, 964),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("813980ad-7604-4713-909c-b2701420de1b"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::VANILLA_COKE_ZERO))
                     ->createItemWithQuantity(1),
             ],
             [
                 'rolls' => range(955, 959),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("e12981d2-5873-454a-b297-895f42e66bd5"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::PEACH_COKE_ZERO))
                     ->createItemWithQuantity(1),
             ],
             [
                 'rolls' => range(950, 954),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("5de1c51c-2747-426d-a3b0-c854107c7132"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::GINGER_COKE_ZERO))
                     ->createItemWithQuantity(1),
             ],
             [
                 'rolls' => range(940, 944),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("cf057538-d3f0-4657-8a4c-f911bc113ad7"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_DREW))
                     ->createItemWithQuantity(1),
             ],
             [
                 'rolls' => array_merge(range(1, 10), range(290, 330)),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("fb793da2-cff9-4e88-9f9c-84278c6662ca"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_SOUP))
                     ->createItemWithQuantity($generator->generateInt(1, 2)),
             ],
             [
                 'rolls' => range(140, 300),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::WATER_BOTTLE))
                     ->createItemWithQuantity($generator->generateInt(1, 3)),
             ],
             [
                 'rolls' => range(1, 170),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_STEW))
                     ->createItemWithQuantity($generator->generateInt(1, 2)),
             ],
         ];
@@ -275,7 +276,7 @@ final class Entity
             $rollTable[] = [
                 'rolls' => range(996, 1000),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))
                     ->createItemWithQuantity(1),
             ];
         }
@@ -284,7 +285,7 @@ final class Entity
             $rollTable[] = [
                 'rolls' => range(350, 510),
                 'item'  => $varietyRepository
-                    ->find(Uuid::fromString("275d6f62-16ff-4f5f-8ac6-149ec4cde1e2"))
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::PRINGLE))
                     ->createItemWithQuantity(1),
             ];
         }
@@ -308,7 +309,7 @@ final class Entity
 
     private function hasStorage(GameRepository $gameRepository, EntityRepository $entityRepository): bool
     {
-        if (array_key_exists("59593b72-3845-491e-9721-4452a337019b", $this->inventory)) {
+        if (array_key_exists(VarietyRepositoryConfig::WOODEN_CRATE, $this->inventory)) {
             return true;
         }
 
@@ -316,7 +317,7 @@ final class Entity
 
         foreach ($entityIds as $entityId) {
             $entity = $entityRepository->find($entityId);
-            if ($entity->getVarietyId()->equals(Uuid::fromString("59593b72-3845-491e-9721-4452a337019b"))) {
+            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
                 return true;
             }
         }
@@ -426,10 +427,10 @@ final class Entity
 
         $this->inventory = [
             $varietyRepository
-                ->find(Uuid::fromString("2f555296-ff9f-4205-a4f7-d181e4455f9d"))
+                ->find(Uuid::fromString(VarietyRepositoryConfig::WATER_BOTTLE))
                 ->createItemWithQuantity(8),
             $varietyRepository
-                ->find(Uuid::fromString("9c2bb508-c40f-491b-a4ca-fc811087a158"))
+                ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_STEW))
                 ->createItemWithQuantity(3),
         ];
     }
