@@ -212,7 +212,7 @@
 
     <?=$this->renderTemplate("Game/modal-scavenge.php", [
         'entity'               => $entity,
-        'entityOverencumbered' => $entityOverencumbed,
+        'entityOverencumbered' => $entityOverencumbered,
         'inventoryWeight'      => $inventoryWeight,
         'inventory'            => $inventory,
     ])?>
