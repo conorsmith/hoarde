@@ -54,7 +54,7 @@
                       <div class="item-slider d-flex">
 
                           <div class="align-self-center"
-                               style="margin-right: 1rem;"
+                               style="margin-right: 1rem; white-space: nowrap;"
                           >
                               <i class="fas fa-fw fa-<?=$item->icon?>"
                                  data-toggle="popover"

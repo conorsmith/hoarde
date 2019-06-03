@@ -60,7 +60,7 @@
                 <div class="js-scavenge-inventory-items" style="display: none; margin-top: 1.6rem;">
                     <?php foreach ($inventory as $item) : ?>
                         <div class="item-slider d-flex">
-                            <div class="align-self-center" style="margin-right: 1rem;">
+                            <div class="align-self-center" style="margin-right: 1rem; white-space: nowrap;">
                                 <i class="fas fa-fw fa-<?=$item['icon']?>"
                                    data-toggle="popover"
                                    title="<?=$item['label']?>"
