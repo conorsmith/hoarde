@@ -123,88 +123,10 @@
 
                     <p><strong>Inventory</strong></p>
 
-                    <div>
-                        <?php foreach ($entity->inventory->items as $item) : ?>
-                          <div class="btn-group inventory-item d-flex justify-content-end">
-
-                            <div class="btn btn-block flex-grow-1 d-flex align-items-baseline justify-content-between inventory-item-label"
-                                 style="text-align: left;"
-                            >
-                              <div>
-                                <i class="fas fa-fw fa-<?=$item->icon?>"
-                                   data-toggle="popover"
-                                   title="<?=$item->label?>"
-                                   data-content='
-                                      <p><?=$item->description?></p>
-                                      <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
-                                         ? ($item->weight / 1000)." kg"
-                                         : $item->weight . " g" ?>
-                                      </div>
-                                      <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
-                                   '
-                                   data-placement="top"
-                                   tabindex="0"
-                                ></i>
-                                  <?=$item->label?>
-                              </div>
-                              <div>
-                                <span class="badge"><?=$item->quantity?></span>
-                              </div>
-                            </div>
-
-                            <button type="button"
-                                    class="btn btn-light dropdown-toggle"
-                                    data-toggle="dropdown"
-                                    style="border-top-left-radius: 0;
-                                       border-bottom-left-radius: 0;
-                                       padding-top: 0.7rem;
-                                       padding-bottom: 0.5rem;"
-                                <?=($isIntact ? "" : "disabled")?>></button>
-                            <div class="dropdown-menu dropdown-menu-right w-100">
-
-                              <h6 class="dropdown-header"><?=$item->label?></h6>
-
-                              <a href="#"
-                                 class="dropdown-item js-use"
-                                 data-entity-id="<?=$entity->id?>"
-                                 data-item-id="<?=$item->varietyId?>"
-                              >
-                                <i class="fas fa-fw fa-hand-pointer"></i>
-                                Use
-                              </a>
-
-                              <a href="#"
-                                 class="dropdown-item"
-                                 data-toggle="modal"
-                                 data-target="#dropModal"
-                                 data-entity-id="<?=$entity->id?>"
-                                 data-item-id="<?=$item->varietyId?>"
-                                 data-item-label="<?=$item->label?>"
-                                 data-item-quantity="<?=$item->quantity?>"
-                              >
-                                <i class="fas fa-fw fa-trash"></i>
-                                Drop
-                              </a>
-
-                              <a href="#"
-                                 class="dropdown-item js-info"
-                                 data-item-id="<?=$item->varietyId?>"
-                              >
-                                <i class="fas fa-fw fa-info-circle"></i>
-                                Info
-                              </a>
-
-                            </div>
-
-                          </div>
-                        <?php endforeach ?>
-                    </div>
-
-                  <div class="progress" style="height: 0.5rem; margin-top: 1rem;">
-                    <div class="progress-bar <?=$entity->inventory->isAtCapacity ? "bg-danger" : "bg-primary"?>"
-                         style="width: <?=($entity->inventory->weight / $entity->inventory->capacity * 100)?>%;"
-                    ></div>
-                  </div>
+                    <?=$this->renderTemplate("Game/inventory.php", [
+                        'entity'   => $entity,
+                        'isIntact' => $isIntact,
+                    ])?>
 
                     <hr>
 
@@ -240,78 +162,10 @@
 
                 <p><strong>Inventory</strong></p>
 
-                <div>
-                  <?php foreach ($crate->inventory->items as $item) : ?>
-                    <div class="btn-group inventory-item d-flex justify-content-end">
-
-                      <div class="btn btn-block flex-grow-1 d-flex align-items-baseline justify-content-between inventory-item-label"
-                           style="text-align: left;"
-                      >
-                        <div>
-                          <i class="fas fa-fw fa-<?=$item->icon?>"
-                             data-toggle="popover"
-                             title="<?=$item->label?>"
-                             data-content='
-                                <p><?=$item->description?></p>
-                                <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
-                                   ? ($item->weight / 1000)." kg"
-                                   : $item->weight . " g" ?>
-                                </div>
-                                <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
-                             '
-                             data-placement="top"
-                             tabindex="0"
-                          ></i>
-                          <?=$item->label?>
-                        </div>
-                        <div>
-                          <span class="badge"><?=$item->quantity?></span>
-                        </div>
-                      </div>
-
-                      <button type="button"
-                              class="btn btn-light dropdown-toggle"
-                              data-toggle="dropdown"
-                              style="border-top-left-radius: 0;
-                                     border-bottom-left-radius: 0;
-                                     padding-top: 0.7rem;
-                                     padding-bottom: 0.5rem;"
-                          <?=($isIntact ? "" : "disabled")?>></button>
-                      <div class="dropdown-menu dropdown-menu-right w-100">
-
-                        <h6 class="dropdown-header"><?=$item->label?></h6>
-
-                        <a href="#"
-                           class="dropdown-item"
-                           data-toggle="modal"
-                           data-target="#dropModal"
-                           data-entity-id="<?=$crate->id?>"
-                           data-item-id="<?=$item->varietyId?>"
-                           data-item-label="<?=$item->label?>"
-                           data-item-quantity="<?=$item->quantity?>"
-                        >
-                          <i class="fas fa-fw fa-trash"></i>
-                          Drop
-                        </a>
-
-                        <a href="#"
-                           class="dropdown-item js-info"
-                           data-item-id="<?=$item->varietyId?>"
-                        >
-                          <i class="fas fa-fw fa-info-circle"></i>
-                          Info
-                        </a>
-
-                      </div>
-
-                    </div>
-                  <?php endforeach ?>
-                </div>
-
-                <div class="progress" style="height: 0.5rem; margin-top: 1rem;">
-                  <?php $crateWeightProgress = $crate->inventory->weight / $crate->inventory->capacity * 100; ?>
-                  <div class="progress-bar <?=$crateWeightProgress >= 100 ? "bg-danger" : "bg-primary"?>" style="width: <?=$crateWeightProgress?>%;"></div>
-                </div>
+                <?=$this->renderTemplate("Game/inventory.php", [
+                    'entity'   => $crate,
+                    'isIntact' => $isIntact,
+                ])?>
 
                 <hr>
 
@@ -334,15 +188,27 @@
 
     </div>
 
-    <?php include __DIR__ . "/Game/modal-drop.php"; ?>
-    <?php include __DIR__ . "/Game/modal-scavenge.php"; ?>
-    <?php include __DIR__ . "/Game/modal-transfer.php"; ?>
+    <?=$this->renderTemplate("Game/modal-drop.php")?>
+
+    <?=$this->renderTemplate("Game/modal-scavenge.php", [
+        'entity'               => $entity,
+        'entityOverencumbered' => $entityOverencumbed,
+        'inventoryWeight'      => $inventoryWeight,
+        'inventory'            => $inventory,
+    ])?>
+
+    <?=$this->renderTemplate("Game/modal-transfer.php", [
+        'entities' => [
+            $entity,
+            $crate,
+        ],
+    ])?>
 
     <input type="hidden" id="gameId" value="<?=$gameId?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($inventory)?>' />
 
-    <?php include __DIR__ . "/Game/template-scavenge-item-slider.php"; ?>
-    <?php include __DIR__ . "/Game/template-spinner.php"; ?>
+    <?=$this->renderTemplate("Game/template-scavenge-item-slider.php")?>
+    <?=$this->renderTemplate("Game/template-spinner.php")?>
 
 </div>
 

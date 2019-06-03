@@ -9,8 +9,6 @@
                 </button>
             </div>
 
-            <?php $entities = [$entity, $crate]; ?>
-
             <?php foreach ($entities as $entity) : ?>
 
               <div class="modal-body js-inventory"

@@ -59,7 +59,7 @@ final class ShowGame
             }
         }
 
-        $body = $this->renderTemplate($game, $human, [
+        $body = $this->renderGameTemplate($game, $human, [
             'entity' => $this->presentEntity($human),
             'crate'  => $this->presentEntity($crate),
         ]);
@@ -69,7 +69,7 @@ final class ShowGame
         return $response;
     }
 
-    private function renderTemplate(Game $game, Entity $entity, array $variables): string
+    private function renderGameTemplate(Game $game, Entity $entity, array $variables): string
     {
         $gameId = $game->getId();
 
@@ -111,11 +111,33 @@ final class ShowGame
         $inventoryWeight = $entity->getInventoryWeight() / $entity->getInventoryCapacity() * 100;
         $entityOverencumbered = $entity->isOverencumbered();
 
+        $variables = array_merge(
+            compact([
+                "gameId",
+                "danger",
+                "warning",
+                "success",
+                "info",
+                "turnIndex",
+                "resources",
+                "inventory",
+                "isIntact",
+                "inventoryWeight",
+                "entityOverencumbered",
+            ]),
+            $variables
+        );
+
+        return $this->renderTemplate("game.php", $variables);
+    }
+
+    private function renderTemplate(string $path, array $variables = []): string
+    {
         extract($variables);
 
         ob_start();
 
-        include __DIR__ . "/../Templates/game.php";
+        include __DIR__ . "/../Templates/{$path}";
 
         $body = ob_get_contents();
 
@@ -145,6 +167,7 @@ final class ShowGame
                 'isAtCapacity' => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
                 'items'        => $items,
             ],
+            'isHuman'  => $entity->getVarietyId()->equals(Uuid::fromString("fde2146a-c29d-4262-b96f-ec7b696eccad")),
         ];
     }
 
