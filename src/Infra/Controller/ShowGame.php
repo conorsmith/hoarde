@@ -113,6 +113,7 @@ final class ShowGame
                 'label'            => $resource->getLabel(),
                 'level'            => $resourceNeed->getCurrentLevel(),
                 'segmentWidth'     => 100 / $resourceNeed->getMaximumLevel(),
+                'noItems'          => is_null($lastConsumedItem) && count($items) === 0,
                 'lastConsumedItem' => $lastConsumedItem,
                 'items'            => $items,
             ];

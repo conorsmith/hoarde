@@ -75,7 +75,7 @@
                                       class="btn btn-light btn-block js-consume"
                                       data-entity-id="<?=$entity->id?>"
                                       data-resource-id="<?=$resource['id']?>"
-                                      <?=(!$isIntact || count($resource['items']) === 0 ? "disabled" : "")?>
+                                      <?=(!$isIntact || $resource['noItems'] ? "disabled" : "")?>
                               >
                                 Consume <?=$resource['label']?>
                               </button>
@@ -83,7 +83,7 @@
                               <button type="button"
                                       class="btn btn-light dropdown-toggle"
                                       data-toggle="dropdown"
-                                      <?=(!$isIntact || count($resource['items']) === 0 ? "disabled" : "")?>
+                                      <?=(!$isIntact || $resource['noItems'] ? "disabled" : "")?>
                               ></button>
 
                               <div class="dropdown-menu dropdown-menu-right w-100">
