@@ -156,13 +156,13 @@ final class Entity
 
         $item = $this->inventory[strval($id)];
 
-        $resourceId = $item->getVariety()->getResource()->getId();
+        foreach ($item->getVariety()->getResources() as $resource) {
+            if ($resource->getId()->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))) {
+                $this->usePringles();
 
-        if ($resourceId->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))) {
-            $this->usePringles();
-
-        } elseif (array_key_exists(strval($resourceId), $this->resourceNeeds)) {
-            $this->useResourceReplenishingItem($resourceId);
+            } elseif (array_key_exists(strval($resource->getId()), $this->resourceNeeds)) {
+                $this->useResourceReplenishingItem($resource->getId());
+            }
         }
 
         $this->removeQuantityFromItem(1, $item);

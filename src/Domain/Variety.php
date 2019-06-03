@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Domain;
 
+use DomainException;
 use Ramsey\Uuid\UuidInterface;
 
 final class Variety
@@ -13,8 +14,8 @@ final class Variety
     /** @var string */
     private $label;
 
-    /** @var Resource */
-    private $resource;
+    /** @var array */
+    private $resources;
 
     /** @var int */
     private $weight;
@@ -28,17 +29,26 @@ final class Variety
     public function __construct(
         UuidInterface $id,
         string $label,
-        Resource $resource,
+        iterable $resources,
         int $weight,
         string $icon,
         string $description
     ) {
         $this->id = $id;
         $this->label = $label;
-        $this->resource = $resource;
         $this->weight = $weight;
         $this->icon = $icon;
         $this->description = $description;
+
+        $this->resources = [];
+
+        foreach ($resources as $resource) {
+            if (!$resource instanceof Resource) {
+                throw new DomainException;
+            }
+
+            $this->resources[strval($resource->getId())] = $resource;
+        }
     }
 
     public function getId(): UuidInterface
@@ -51,9 +61,9 @@ final class Variety
         return $this->label;
     }
 
-    public function getResource(): Resource
+    public function getResources(): iterable
     {
-        return $this->resource;
+        return $this->resources;
     }
 
     public function getWeight(): int

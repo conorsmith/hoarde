@@ -9,6 +9,7 @@ use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\Item;
+use ConorSmith\Hoarde\Domain\Resource;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
@@ -87,8 +88,10 @@ final class ShowGame
             $items = [];
 
             foreach ($entity->getInventory() as $item) {
-                if ($item->getVariety()->getResource()->getId()->equals($resource->getId())) {
-                    $items[] = (object) $this->presentItem($item);
+                foreach ($item->getVariety()->getResources() as $itemResource) {
+                    if ($itemResource->getId()->equals($resource->getId())) {
+                        $items[] = (object) $this->presentItem($item);
+                    }
                 }
             }
 
@@ -180,7 +183,9 @@ final class ShowGame
             'quantity'      => $item->getQuantity(),
             'weight'        => $item->getVariety()->getWeight(),
             'icon'          => $item->getVariety()->getIcon(),
-            'resourceLabel' => $item->getVariety()->getResource()->getLabel(),
+            'resourceLabel' => implode(", ", array_map(function (Resource $resource) {
+                return $resource->getLabel();
+            }, $item->getVariety()->getResources())),
             'description'   => $item->getVariety()->getDescription(),
         ];
     }

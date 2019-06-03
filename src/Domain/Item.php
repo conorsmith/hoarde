@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Domain;
 
 use DomainException;
-use Ramsey\Uuid\UuidInterface;
 
 final class Item
 {

@@ -6,6 +6,7 @@ namespace ConorSmith\Hoarde\Infra\Controller;
 use Aura\Session\Segment;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\Domain\Resource;
 use ConorSmith\Hoarde\Domain\ScavengingHaulRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Psr\Http\Message\ResponseInterface;
@@ -73,7 +74,9 @@ final class HaveEntityScavenge
                     'weight'        => $item->getVariety()->getWeight(),
                     'quantity'      => $item->getQuantity(),
                     'icon'          => $item->getVariety()->getIcon(),
-                    'resourceLabel' => $item->getVariety()->getResource()->getLabel(),
+                    'resourceLabel' => implode(", ", array_map(function (Resource $resource) {
+                        return $resource->getLabel();
+                    }, $item->getVariety()->getResources())),
                     'description'   => $item->getVariety()->getDescription(),
                 ];
             }

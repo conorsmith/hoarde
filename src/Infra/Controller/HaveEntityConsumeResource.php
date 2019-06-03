@@ -51,8 +51,10 @@ final class HaveEntityConsumeResource
         $chosenItem = null;
 
         foreach ($entity->getInventory() as $item) {
-            if ($item->getVariety()->getResource()->getId()->equals(Uuid::fromString($_POST['resourceId']))) {
-                $chosenItem = $item;
+            foreach ($item->getVariety()->getResources() as $resource) {
+                if ($resource->getId()->equals(Uuid::fromString($_POST['resourceId']))) {
+                    $chosenItem = $item;
+                }
             }
         }
 
