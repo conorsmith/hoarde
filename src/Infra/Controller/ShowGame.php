@@ -87,20 +87,34 @@ final class ShowGame
 
             $items = [];
 
+            $lastConsumedVarietyId = $resourceNeed->getLastConsumedVarietyId();
+            $lastConsumedItem = null;
+
+            if (!is_null($lastConsumedVarietyId)) {
+                foreach ($entity->getInventory() as $item) {
+                    if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
+                        $lastConsumedItem = (object) $this->presentItem($item);
+                    }
+                }
+            }
+
             foreach ($entity->getInventory() as $item) {
                 foreach ($item->getVariety()->getResources() as $itemResource) {
-                    if ($itemResource->getId()->equals($resource->getId())) {
+                    if ($itemResource->getId()->equals($resource->getId())
+                        && !$item->getVariety()->getId()->equals($lastConsumedVarietyId)
+                    ) {
                         $items[] = (object) $this->presentItem($item);
                     }
                 }
             }
 
             $resources[] = [
-                'id'           => $resource->getId(),
-                'label'        => $resource->getLabel(),
-                'level'        => $resourceNeed->getCurrentLevel(),
-                'segmentWidth' => 100 / $resourceNeed->getMaximumLevel(),
-                'items'        => $items,
+                'id'               => $resource->getId(),
+                'label'            => $resource->getLabel(),
+                'level'            => $resourceNeed->getCurrentLevel(),
+                'segmentWidth'     => 100 / $resourceNeed->getMaximumLevel(),
+                'lastConsumedItem' => $lastConsumedItem,
+                'items'            => $items,
             ];
         }
 

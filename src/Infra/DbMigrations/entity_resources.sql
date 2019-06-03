@@ -4,3 +4,5 @@ CREATE TABLE `entity_resources` (
   `level` int(11) NOT NULL,
   PRIMARY KEY (`entity_id`,`resource_id`)
 );
+
+ALTER TABLE `entity_resources` ADD COLUMN `last_consumed_variety_id` VARCHAR(36);

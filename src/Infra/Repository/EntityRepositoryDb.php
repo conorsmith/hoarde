@@ -72,7 +72,10 @@ final class EntityRepositoryDb implements EntityRepository
             $resourceNeeds[] = new ResourceNeed(
                 $this->resourceRepository->find(Uuid::fromString($row['resource_id'])),
                 intval($row['level']),
-                self::RESOURCE_MAXIMUMS_FOR_ENTITY[$row['resource_id']]
+                self::RESOURCE_MAXIMUMS_FOR_ENTITY[$row['resource_id']],
+                is_null($row['last_consumed_variety_id'])
+                    ? null
+                    : Uuid::fromString($row['last_consumed_variety_id'])
             );
         }
 
@@ -152,9 +155,10 @@ final class EntityRepositoryDb implements EntityRepository
 
         foreach ($entity->getResourceNeeds() as $resourceNeed) {
             $this->db->insert("entity_resources", [
-                'entity_id'   => $entity->getId(),
-                'resource_id' => $resourceNeed->getResource()->getId(),
-                'level'       => $resourceNeed->getCurrentLevel(),
+                'entity_id'                => $entity->getId(),
+                'resource_id'              => $resourceNeed->getResource()->getId(),
+                'level'                    => $resourceNeed->getCurrentLevel(),
+                'last_consumed_variety_id' => $resourceNeed->getLastConsumedVarietyId(),
             ]);
         }
     }

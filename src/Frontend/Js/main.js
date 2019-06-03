@@ -38,7 +38,7 @@ document.getElementById("dropModal").querySelector(".js-drop-submit").onclick = 
 
     var itemId = document.getElementById("dropModal").dataset.itemId;
     var entityId = document.getElementById("dropModal").dataset.entityId;
-    var itemQuantity = e.target.dataset.itemQuantity;
+    var itemQuantity = e.currentTarget.dataset.itemQuantity;
 
     var form = document.createElement("form");
     form.setAttribute("action", "/" + gameId + "/drop");
@@ -76,8 +76,8 @@ for (var i = 0; i < useButtons.length; i++) {
         this.innerText = "";
         this.appendChild(template);
 
-        var itemId = e.target.dataset.itemId;
-        var entityId = e.target.dataset.entityId;
+        var itemId = e.currentTarget.dataset.itemId;
+        var entityId = e.currentTarget.dataset.entityId;
 
         var form = document.createElement("form");
         form.setAttribute("action", "/" + gameId + "/use");
@@ -110,8 +110,8 @@ for (var i = 0; i < consumeButtons.length; i++) {
         this.innerText = "";
         this.appendChild(template);
 
-        var resourceId = e.target.dataset.resourceId;
-        var entityId = e.target.dataset.entityId;
+        var resourceId = e.currentTarget.dataset.resourceId;
+        var entityId = e.currentTarget.dataset.entityId;
 
         var form = document.createElement("form");
         form.setAttribute("action", "/" + gameId + "/consume");

@@ -87,6 +87,25 @@
                               ></button>
 
                               <div class="dropdown-menu dropdown-menu-right w-100">
+
+                                <?php if ($resource['lastConsumedItem']) : ?>
+                                  <a href="#"
+                                     class="dropdown-item d-flex align-items-baseline justify-content-between js-use"
+                                     data-entity-id="<?=$entity->id?>"
+                                     data-item-id="<?=$resource['lastConsumedItem']->id?>"
+                                  >
+                                    <div>
+                                      <i class="fas fa-history"></i>
+                                      Consume <?=$resource['lastConsumedItem']->label?>
+                                    </div>
+                                    <span class="badge"><?=$resource['lastConsumedItem']->quantity?></span>
+                                  </a>
+                                <?php endif ?>
+
+                                <?php if ($resource['lastConsumedItem'] && count($resource['items'])) : ?>
+                                  <div class="dropdown-divider"></div>
+                                <?php endif ?>
+
                                 <?php foreach ($resource['items'] as $item) : ?>
                                   <a href="#"
                                      class="dropdown-item d-flex align-items-baseline justify-content-between js-use"
@@ -97,6 +116,7 @@
                                     <span class="badge"><?=$item->quantity?></span>
                                   </a>
                                 <?php endforeach ?>
+
                               </div>
                             </div>
 

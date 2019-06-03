@@ -161,7 +161,7 @@ final class Entity
                 $this->usePringles();
 
             } elseif (array_key_exists(strval($resource->getId()), $this->resourceNeeds)) {
-                $this->useResourceReplenishingItem($resource->getId());
+                $this->useResourceReplenishingItem($resource->getId(), $item->getVariety());
             }
         }
 
@@ -172,9 +172,9 @@ final class Entity
         return $item;
     }
 
-    private function useResourceReplenishingItem(UuidInterface $resourceId)
+    private function useResourceReplenishingItem(UuidInterface $resourceId, Variety $variety)
     {
-        $this->resourceNeeds[strval($resourceId)] = $this->resourceNeeds[strval($resourceId)]->replenish();
+        $this->resourceNeeds[strval($resourceId)] = $this->resourceNeeds[strval($resourceId)]->replenish($variety);
     }
 
     private function usePringles()
@@ -185,7 +185,8 @@ final class Entity
             $this->resourceNeeds["5234c112-05be-4b15-80df-3c2b67e88262"] = new ResourceNeed(
                 $resourceRepository->find(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262")),
                 12,
-                12
+                12,
+                Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262")
             );
         }
     }
@@ -412,12 +413,14 @@ final class Entity
             "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => new ResourceNeed(
                 $resourceRepository->find(Uuid::fromString("6f5cc44d-db25-454a-b3fb-4ab3f61ce179")),
                 3,
-                0 // Hack
+                0, // Hack
+                null
             ),
             "9972c015-842a-4601-8fb2-c900e1a54177" => new ResourceNeed(
                 $resourceRepository->find(Uuid::fromString("9972c015-842a-4601-8fb2-c900e1a54177")),
                 3,
-                0 // Hack
+                0, // Hack
+                null
             )
         ];
 

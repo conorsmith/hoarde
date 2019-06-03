@@ -16,11 +16,19 @@ final class ResourceNeed
     /** @var int */
     private $maximumLevel;
 
-    public function __construct(Resource $resource, int $currentLevel, int $maximumLevel)
-    {
+    /** @var ?UuidInterface */
+    private $lastConsumedVarietyId;
+
+    public function __construct(
+        Resource $resource,
+        int $currentLevel,
+        int $maximumLevel,
+        ?UuidInterface $lastConsumedVarietyId
+    ) {
         $this->resource = $resource;
         $this->currentLevel = $currentLevel;
         $this->maximumLevel = $maximumLevel;
+        $this->lastConsumedVarietyId = $lastConsumedVarietyId;
     }
 
     public function getResourceId(): UuidInterface
@@ -43,6 +51,11 @@ final class ResourceNeed
         return $this->maximumLevel;
     }
 
+    public function getLastConsumedVarietyId(): ?UuidInterface
+    {
+        return $this->lastConsumedVarietyId;
+    }
+
     public function isDepleted(): bool
     {
         return $this->currentLevel === 0;
@@ -59,16 +72,18 @@ final class ResourceNeed
         return new self(
             $this->resource,
             $newLevel,
-            $this->maximumLevel
+            $this->maximumLevel,
+            $this->lastConsumedVarietyId
         );
     }
 
-    public function replenish(): self
+    public function replenish(Variety $variety): self
     {
         return new self(
             $this->resource,
             $this->maximumLevel,
-            $this->maximumLevel
+            $this->maximumLevel,
+            $variety->getId()
         );
     }
 }

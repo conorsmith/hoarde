@@ -50,10 +50,22 @@ final class HaveEntityConsumeResource
 
         $chosenItem = null;
 
-        foreach ($entity->getInventory() as $item) {
-            foreach ($item->getVariety()->getResources() as $resource) {
-                if ($resource->getId()->equals(Uuid::fromString($_POST['resourceId']))) {
+        $lastConsumedVarietyId = $entity->getResourceNeeds()[$_POST['resourceId']]->getLastConsumedVarietyId();
+
+        if (!is_null($lastConsumedVarietyId)) {
+            foreach ($entity->getInventory() as $item) {
+                if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
                     $chosenItem = $item;
+                }
+            }
+        }
+
+        if (is_null($chosenItem)) {
+            foreach ($entity->getInventory() as $item) {
+                foreach ($item->getVariety()->getResources() as $resource) {
+                    if ($resource->getId()->equals(Uuid::fromString($_POST['resourceId']))) {
+                        $chosenItem = $item;
+                    }
                 }
             }
         }
