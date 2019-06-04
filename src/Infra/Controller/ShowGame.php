@@ -182,6 +182,7 @@ final class ShowGame
 
         return (object)[
             'id'                         => $entity->getId(),
+            'varietyId'                  => $entity->getVarietyId(),
             'label'                      => $entity->getLabel(),
             'icon'                       => $entity->getIcon(),
             'inventory'                  => (object)[

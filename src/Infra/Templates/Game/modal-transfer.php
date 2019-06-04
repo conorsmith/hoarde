@@ -21,7 +21,8 @@
                   >
 
                       <div style="margin-right: 1rem; font-weight: 900;">
-                          <i class="fas fa-fw fa-<?=$entity->icon?>"></i> <?=$entity->label?>
+                          <i class="fas fa-fw transfer-icon"></i>
+                          <span class="transfer-label"></span>
                       </div>
                       <div class="align-self-end"
                            style="margin-left: 1rem; font-size: 0.8rem; text-align: right;"

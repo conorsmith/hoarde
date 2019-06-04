@@ -219,7 +219,8 @@ new TransferController(
     eventBus,
     new TransferModal(
         document.getElementById("transferModal")
-    )
+    ),
+    JSON.parse(document.getElementById("entities").value)
 );
 
 var scavengeModal = document.getElementById("scavengeModal");

@@ -1,9 +1,10 @@
 class TransferController {
-    constructor(eventBus, view) {
+    constructor(eventBus, view, entities) {
         const controller = this;
 
         this.eventBus = eventBus;
         this.view = view;
+        this.entities = entities;
 
         this.capacityBarControllers = [];
         this.itemSliderControllers = [];
@@ -69,8 +70,46 @@ class TransferController {
     }
 
     addEventListeners(controller) {
+        $(this.view.el).on("show.bs.modal", function (e) {
+            controller.onShow(e);
+        });
+
         this.view.submitButton.el.addEventListener("click", function (e) {
             controller.onClick(e);
+        });
+    }
+
+    onShow(e) {
+        let source;
+
+        this.entities.forEach(function (entity) {
+            if (entity.id === e.relatedTarget.dataset.sourceId) {
+                source = entity;
+            }
+        });
+
+        let destination;
+
+        this.entities.forEach(function (entity) {
+            if ((
+                    source.varietyId === "fde2146a-c29d-4262-b96f-ec7b696eccad"
+                    && entity.varietyId === "59593b72-3845-491e-9721-4452a337019b"
+                ) || (
+                    source.varietyId === "59593b72-3845-491e-9721-4452a337019b"
+                    && entity.varietyId === "fde2146a-c29d-4262-b96f-ec7b696eccad"
+                )
+            ) {
+                destination = entity;
+            }
+        });
+
+        let entities = [destination, source];
+
+        this.view.el.querySelectorAll(".js-inventory").forEach(function (body) {
+            let entity = entities.pop();
+
+            body.querySelector(".transfer-icon").classList.add("fa-" + entity.icon);
+            body.querySelector(".transfer-label").innerText = entity.label;
         });
     }
 

@@ -158,6 +158,7 @@
                                   class="btn btn-light btn-block js-transfer"
                                   data-toggle="modal"
                                   data-target="#transferModal"
+                                  data-source-id="<?=$entity->id?>"
                               <?=($isIntact ? "" : "disabled")?>
                           >Transfer Items</button>
 
@@ -195,6 +196,7 @@
                           class="btn btn-light btn-block js-transfer"
                           data-toggle="modal"
                           data-target="#transferModal"
+                          data-source-id="<?=$crate->id?>"
                       <?=($isIntact ? "" : "disabled")?>
                   >Transfer Items</button>
 
@@ -278,6 +280,7 @@
 
     <input type="hidden" id="gameId" value="<?=$gameId?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($inventory)?>' />
+    <input type="hidden" id="entities" value='<?=json_encode([$entity, $crate, $well])?>' />
 
     <?=$this->renderTemplate("Game/template-scavenge-item-slider.php")?>
     <?=$this->renderTemplate("Game/template-spinner.php")?>
