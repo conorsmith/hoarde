@@ -9,7 +9,8 @@
         "vlucas/phpdotenv": "^3.3",
         "league/route": "^4.2",
         "zendframework/zend-diactoros": "^2.1",
-        "zendframework/zend-httphandlerrunner": "^1.1"
+        "zendframework/zend-httphandlerrunner": "^1.1",
+        "robmorgan/phinx": "^0.10.7"
     },
     "autoload": {
         "psr-4": {
