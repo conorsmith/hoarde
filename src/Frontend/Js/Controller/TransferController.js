@@ -6,6 +6,9 @@ class TransferController {
         this.view = view;
         this.entities = entities;
 
+        this.itemSliderTemplate = document.getElementById("transfer-item-slider");
+        this.itemPopoverTemplate = document.getElementById("item-popover");
+
         this.capacityBarControllers = [];
         this.itemSliderControllers = [];
 
@@ -21,53 +24,32 @@ class TransferController {
             this.entities[1].inventory.capacity
         );
 
-        const transferA = new Transfer(inventoryA, inventoryB);
-        const transferB = new Transfer(inventoryB, inventoryA);
+        this.transferA = new Transfer(inventoryA, inventoryB);
+        this.transferB = new Transfer(inventoryB, inventoryA);
 
         this.capacityBarControllers.push(new TransferCapacityBarController(
             this.eventBus,
             this.view.capacityBars[0],
-            transferA
+            this.transferA
         ));
 
         new TransferInventoryWeightController(
             this.eventBus,
             this.view.inventoryWeights[0],
-            transferA
+            this.transferA
         );
 
         this.capacityBarControllers.push(new TransferCapacityBarController(
             this.eventBus,
             this.view.capacityBars[1],
-            transferB
+            this.transferB
         ));
 
         new TransferInventoryWeightController(
             this.eventBus,
             this.view.inventoryWeights[1],
-            transferB
+            this.transferB
         );
-
-        this.view.itemSliders.forEach(function (itemSlider) {
-            const item = itemSlider.createModel();
-
-            controller.itemSliderControllers.push(new TransferItemSliderController(
-                controller.eventBus,
-                itemSlider,
-                item
-            ));
-
-            transferA.addItem(item);
-            transferB.addItem(item);
-        });
-
-        this.view.itemCounters.forEach(function (itemCounter) {
-            new TransferItemCounterController(
-                controller.eventBus,
-                itemCounter,
-                itemCounter.createModel()
-            )
-        });
 
         new TransferErrorController(
             this.eventBus,
@@ -89,6 +71,8 @@ class TransferController {
     }
 
     onShow(e) {
+        const controller = this;
+
         let source = {};
 
         this.entities.forEach(function (entity) {
@@ -112,10 +96,10 @@ class TransferController {
             }
         });
 
-        let entities = [destination, source];
+        let entities = [source, destination];
 
         this.view.el.querySelectorAll(".js-inventory").forEach(function (body) {
-            let entity = entities.pop();
+            let entity = entities.shift();
 
             body.querySelector(".js-icon").classList.add("fa-" + entity.icon);
             body.querySelector(".js-label").innerText = entity.label;
@@ -131,6 +115,72 @@ class TransferController {
                 capacityBarPrimary.classList.add("bg-danger");
             }
             capacityBarPrimary.style.width = (entity.inventory.weight / entity.inventory.capacity * 100) + "%";
+
+            body.querySelector(".js-item-sliders").innerHTML = "";
+
+            entity.inventory.items.forEach(function (item) {
+
+                const initialQuantity = 0;
+                const transferItem = new TransferItem(
+                    entity.id,
+                    item.varietyId,
+                    item.weight,
+                    initialQuantity
+                );
+
+                controller.transferA.addItem(transferItem);
+                controller.transferB.addItem(transferItem);
+
+                const itemSliderTemplate = controller.itemSliderTemplate.content.cloneNode(true);
+                const itemPopoverTemplate = controller.itemPopoverTemplate.content.cloneNode(true);
+                const itemPopoverRenderer = document.createElement("div");
+                const itemSliderDatalistId = "item-slider-" + item.entityId + "-" + item.varietyId;
+
+                itemPopoverTemplate.querySelector(".tmpl-description").innerText = item.description;
+                itemPopoverTemplate.querySelector(".tmpl-weight").innerText = item.weight > 1000
+                    ? (item.weight / 1000) + " kg"
+                    : item.weight + " g";
+                itemPopoverTemplate.querySelector(".tmpl-resources").innerText = item.resourceLabel;
+                itemPopoverRenderer.appendChild(itemPopoverTemplate);
+
+                itemSliderTemplate.querySelector(".tmpl-label").innerText = item.label;
+
+                itemSliderTemplate.querySelector(".tmpl-icon").classList.add("fa-" + item.icon);
+                itemSliderTemplate.querySelector(".tmpl-icon").title = item.label;
+                itemSliderTemplate.querySelector(".tmpl-icon").dataset.content = itemPopoverRenderer.innerHTML;
+
+                itemSliderTemplate.querySelector("input[type='range']").value = initialQuantity;
+                itemSliderTemplate.querySelector("input[type='range']").max = item.quantity;
+                itemSliderTemplate.querySelector("input[type='range']").setAttribute("list", itemSliderDatalistId);
+
+                itemSliderTemplate.querySelector("datalist").id = itemSliderDatalistId;
+
+                for (let i = 0; i <= item.quantity; i++) {
+                    let option = document.createElement("option");
+                    option.value = i;
+                    itemSliderTemplate.querySelector("datalist").appendChild(option);
+                }
+
+                itemSliderTemplate.querySelector(".tmpl-item-counter").innerText = initialQuantity;
+
+                body.querySelector(".js-item-sliders").appendChild(itemSliderTemplate);
+
+                controller.itemSliderControllers.push(new TransferItemSliderController(
+                    controller.eventBus,
+                    new TransferItemSlider(
+                        body.querySelector(".js-item-sliders").lastElementChild.querySelector("input[type='range']")
+                    ),
+                    transferItem
+                ));
+
+                new TransferItemCounterController(
+                    controller.eventBus,
+                    new TransferItemCounter(
+                        body.querySelector(".js-item-sliders").lastElementChild.querySelector(".js-item-counter")
+                    ),
+                    transferItem
+                )
+            });
         });
     }
 

@@ -44,62 +44,7 @@
             </div>
           </div>
 
-          <?php foreach ($entity->inventory->items as $item) : ?>
-            <div class="item-slider d-flex">
-
-              <div class="align-self-center"
-                   style="margin-right: 1rem; white-space: nowrap;"
-              >
-                <i class="fas fa-fw fa-<?=$item->icon?>"
-                   data-toggle="popover"
-                   title="<?=$item->label?>"
-                   data-content='
-                    <p><?=$item->description?></p>
-                    <div><span class="popover-label">Weight:</span> <?= $item->weight >= 1000
-                      ? ($item->weight / 1000) . " kg"
-                      : $item->weight . " g" ?>
-                    </div>
-                    <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
-                   '
-                   data-placement="top"
-                   tabindex="0"
-                ></i>
-                  <?=$item->label?>
-              </div>
-
-              <div class="flex-fill"
-                   style="height: 32px;"
-              >
-                <input type="range"
-                       min="0"
-                       max="<?=$item->quantity?>"
-                       value="0"
-                       list="item-slider-<?= $entity->id ?>-<?=$item->varietyId?>"
-                       data-variety-id="<?=$item->varietyId?>"
-                       data-entity-id="<?=$entity->id?>"
-                       data-weight="<?=$item->weight?>"
-                       style="width: 100%"
-                >
-                <datalist id="item-slider-<?=$entity->id?>-<?=$item->varietyId?>">
-                  <?php for ($i = 0; $i <= $item->quantity;$i++) : ?>
-                    <option value="<?=$i?>">
-                  <?php endfor ?>
-                </datalist>
-              </div>
-
-              <div class="align-self-center"
-                   style="margin-left: 1rem; text-align: right; width: 1.4rem;"
-              >
-                <span class="js-item-counter"
-                      data-variety-id="<?=$item->varietyId?>"
-                      data-entity-id="<?=$entity->id?>"
-                >
-                  0
-                </span>
-              </div>
-
-            </div>
-          <?php endforeach ?>
+          <div class="js-item-sliders"></div>
 
         </div>
 

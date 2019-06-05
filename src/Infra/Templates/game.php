@@ -284,6 +284,8 @@
 
     <?=$this->renderTemplate("Game/template-scavenge-item-slider.php")?>
     <?=$this->renderTemplate("Game/template-spinner.php")?>
+    <?=$this->renderTemplate("Game/template-transfer-item-slider.php")?>
+    <?=$this->renderTemplate("Game/template-item-popover.php")?>
 
 </div>
 
