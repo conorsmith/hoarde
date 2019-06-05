@@ -25,9 +25,7 @@
         <div class="align-self-center"
              style="margin-left: 1rem; text-align: right; width: 1.4rem;"
         >
-            <span class="tmpl-item-counter js-item-counter">
-              0
-            </span>
+            <span class="js-item-counter"></span>
         </div>
 
     </div>

@@ -161,25 +161,29 @@ class TransferController {
                     itemSliderTemplate.querySelector("datalist").appendChild(option);
                 }
 
-                itemSliderTemplate.querySelector(".tmpl-item-counter").innerText = initialQuantity;
-
                 body.querySelector(".js-item-sliders").appendChild(itemSliderTemplate);
+
+                let itemSlider = new TransferItemSlider(
+                    body.querySelector(".js-item-sliders").lastElementChild.querySelector("input[type='range']")
+                );
+
+                let itemCounter = new TransferItemCounter(
+                    body.querySelector(".js-item-sliders").lastElementChild.querySelector(".js-item-counter")
+                );
+
+                itemCounter.repaint(transferItem);
 
                 controller.itemSliderControllers.push(new TransferItemSliderController(
                     controller.eventBus,
-                    new TransferItemSlider(
-                        body.querySelector(".js-item-sliders").lastElementChild.querySelector("input[type='range']")
-                    ),
+                    itemSlider,
                     transferItem
                 ));
 
                 new TransferItemCounterController(
                     controller.eventBus,
-                    new TransferItemCounter(
-                        body.querySelector(".js-item-sliders").lastElementChild.querySelector(".js-item-counter")
-                    ),
+                    itemCounter,
                     transferItem
-                )
+                );
             });
         });
     }
