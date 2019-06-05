@@ -1,4 +1,4 @@
-class TransferItemSlider {
+class TransferItemRangeInput {
     constructor(el) {
         this.el = el;
     }

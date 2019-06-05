@@ -1,4 +1,4 @@
-class TransferItemSliderController {
+class TransferItemRangeInputController {
     constructor(eventBus, view, model) {
         this.eventBus = eventBus;
         this.view = view;

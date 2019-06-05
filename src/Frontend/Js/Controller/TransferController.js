@@ -10,7 +10,7 @@ class TransferController {
         this.itemPopoverTemplate = document.getElementById("item-popover");
 
         this.capacityBarControllers = [];
-        this.itemSliderControllers = [];
+        this.itemRangeInputControllers = [];
 
         const inventoryA = new TransferInventory(
             this.entities[0].id,
@@ -163,7 +163,7 @@ class TransferController {
 
                 body.querySelector(".js-item-sliders").appendChild(itemSliderTemplate);
 
-                let itemSlider = new TransferItemSlider(
+                let itemRangeInput = new TransferItemRangeInput(
                     body.querySelector(".js-item-sliders").lastElementChild.querySelector("input[type='range']")
                 );
 
@@ -173,9 +173,9 @@ class TransferController {
 
                 itemCounter.repaint(transferItem);
 
-                controller.itemSliderControllers.push(new TransferItemSliderController(
+                controller.itemRangeInputControllers.push(new TransferItemRangeInputController(
                     controller.eventBus,
-                    itemSlider,
+                    itemRangeInput,
                     transferItem
                 ));
 
@@ -200,12 +200,12 @@ class TransferController {
             }
         });
 
-        this.itemSliderControllers.forEach(function (itemSlider) {
-            const entityId = itemSlider.model.entityId;
+        this.itemRangeInputControllers.forEach(function (itemRangeInputController) {
+            const entityId = itemRangeInputController.model.entityId;
 
             body[entityId].items.push({
-                varietyId: itemSlider.model.varietyId,
-                quantity: itemSlider.model.quantity
+                varietyId: itemRangeInputController.model.varietyId,
+                quantity: itemRangeInputController.model.quantity
             });
         });
 
