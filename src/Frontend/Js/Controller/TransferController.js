@@ -109,12 +109,14 @@ class TransferController {
             let capacityBar = body.querySelector(".js-capacity-bar");
 
             let capacityBarPrimary = capacityBar.querySelectorAll(".progress-bar")[0];
+            let capacityBarSecondary = capacityBar.querySelectorAll(".progress-bar")[1];
             if (entity.inventory.weight < entity.inventory.capacity) {
                 capacityBarPrimary.classList.add("bg-primary");
             } else {
                 capacityBarPrimary.classList.add("bg-danger");
             }
             capacityBarPrimary.style.width = (entity.inventory.weight / entity.inventory.capacity * 100) + "%";
+            capacityBarSecondary.style.width = 0;
 
             body.querySelector(".js-item-sliders").innerHTML = "";
 
