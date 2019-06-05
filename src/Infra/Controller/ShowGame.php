@@ -65,9 +65,10 @@ final class ShowGame
         }
 
         $body = $this->renderGameTemplate($game, $human, [
-            'entity' => $this->presentEntity($human),
-            'crate'  => $this->presentEntity($crate),
-            'well'   => $this->presentEntity($well),
+            'entity'          => $this->presentEntity($human),
+            'crate'           => $this->presentEntity($crate),
+            'well'            => $this->presentEntity($well),
+            'encodedEntities' => $this->presentEncodedEntities([$human, $crate, $well]),
         ]);
 
         $response = new Response;
@@ -167,6 +168,19 @@ final class ShowGame
         ob_end_clean();
 
         return $body;
+    }
+
+    private function presentEncodedEntities(iterable $entities): string
+    {
+        $presentedEntities = [];
+
+        foreach ($entities as $entity) {
+            if (!is_null($entity)) {
+                $presentedEntities[] = $this->presentEntity($entity);
+            }
+        }
+
+        return json_encode($presentedEntities);
     }
 
     private function presentEntity(?Entity $entity) {

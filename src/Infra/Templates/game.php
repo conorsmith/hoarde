@@ -280,7 +280,7 @@
 
     <input type="hidden" id="gameId" value="<?=$gameId?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($inventory)?>' />
-    <input type="hidden" id="entities" value='<?=json_encode([$entity, $crate, $well])?>' />
+    <input type="hidden" id="entities" value='<?=$encodedEntities?>' />
 
     <?=$this->renderTemplate("Game/template-scavenge-item-slider.php")?>
     <?=$this->renderTemplate("Game/template-spinner.php")?>
