@@ -14,20 +14,24 @@
               <div class="modal-body js-inventory"
                    data-entity-id="<?=$entity->id?>">
 
-                  <div class="alert alert-danger js-error" style="display: none; margin-bottom: 1rem;"></div>
+                  <div class="alert alert-danger js-error"
+                       style="display: none; margin-bottom: 1rem;"
+                  ></div>
 
                   <div class="d-flex justify-content-between"
                        style="margin-bottom: 0.6rem;"
                   >
 
                       <div style="margin-right: 1rem; font-weight: 900;">
-                          <i class="fas fa-fw transfer-icon"></i>
-                          <span class="transfer-label"></span>
+                          <i class="fas fa-fw js-icon"></i>
+                          <span class="js-label"></span>
                       </div>
                       <div class="align-self-end"
                            style="margin-left: 1rem; font-size: 0.8rem; text-align: right;"
                       >
-                          <span class="js-inventory-weight"><?=$entity->inventory->weight / 1000?></span> / <?=$entity->inventory->capacity / 1000?> kg
+                          <span class="js-inventory-weight"></span>
+                          /
+                          <span class="js-inventory-capacity"></span> kg
                       </div>
                   </div>
 

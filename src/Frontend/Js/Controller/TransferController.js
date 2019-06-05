@@ -80,7 +80,7 @@ class TransferController {
     }
 
     onShow(e) {
-        let source;
+        let source = {};
 
         this.entities.forEach(function (entity) {
             if (entity.id === e.relatedTarget.dataset.sourceId) {
@@ -88,7 +88,7 @@ class TransferController {
             }
         });
 
-        let destination;
+        let destination = {};
 
         this.entities.forEach(function (entity) {
             if ((
@@ -108,8 +108,10 @@ class TransferController {
         this.view.el.querySelectorAll(".js-inventory").forEach(function (body) {
             let entity = entities.pop();
 
-            body.querySelector(".transfer-icon").classList.add("fa-" + entity.icon);
-            body.querySelector(".transfer-label").innerText = entity.label;
+            body.querySelector(".js-icon").classList.add("fa-" + entity.icon);
+            body.querySelector(".js-label").innerText = entity.label;
+            body.querySelector(".js-inventory-weight").innerText = entity.inventory.weight / 1000;
+            body.querySelector(".js-inventory-capacity").innerText = entity.inventory.capacity / 1000;
         });
     }
 
