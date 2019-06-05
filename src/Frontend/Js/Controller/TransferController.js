@@ -9,8 +9,17 @@ class TransferController {
         this.capacityBarControllers = [];
         this.itemSliderControllers = [];
 
-        const inventoryA = this.view.capacityBars[0].createModel();
-        const inventoryB = this.view.capacityBars[1].createModel();
+        const inventoryA = new TransferInventory(
+            this.entities[0].id,
+            this.entities[0].inventory.weight,
+            this.entities[0].inventory.capacity
+        );
+
+        const inventoryB = new TransferInventory(
+            this.entities[1].id,
+            this.entities[1].inventory.weight,
+            this.entities[1].inventory.capacity
+        );
 
         const transferA = new Transfer(inventoryA, inventoryB);
         const transferB = new Transfer(inventoryB, inventoryA);
@@ -112,6 +121,16 @@ class TransferController {
             body.querySelector(".js-label").innerText = entity.label;
             body.querySelector(".js-inventory-weight").innerText = entity.inventory.weight / 1000;
             body.querySelector(".js-inventory-capacity").innerText = entity.inventory.capacity / 1000;
+
+            let capacityBar = body.querySelector(".js-capacity-bar");
+
+            let capacityBarPrimary = capacityBar.querySelectorAll(".progress-bar")[0];
+            if (entity.inventory.weight < entity.inventory.capacity) {
+                capacityBarPrimary.classList.add("bg-primary");
+            } else {
+                capacityBarPrimary.classList.add("bg-danger");
+            }
+            capacityBarPrimary.style.width = (entity.inventory.weight / entity.inventory.capacity * 100) + "%";
         });
     }
 

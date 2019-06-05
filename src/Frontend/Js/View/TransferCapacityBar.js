@@ -3,14 +3,6 @@ class TransferCapacityBar {
         this.el = el;
     }
 
-    createModel() {
-        return new TransferInventory(
-            this.el.dataset.entityId,
-            parseInt(this.el.dataset.weight, 10),
-            parseInt(this.el.dataset.capacity, 10)
-        );
-    }
-
     repaint(firstSegmentWidth, secondSegmentWidth, isIncreasing, isOverCapacity) {
         const firstSegment = this.el.querySelectorAll(".progress-bar")[0];
         const secondSegment = this.el.querySelectorAll(".progress-bar")[1];

@@ -38,19 +38,8 @@
           <div style="margin-bottom: 1rem;">
             <div class="progress js-capacity-bar"
                  style="height: 0.6rem;"
-                 data-entity-id="<?=$entity->id?>"
-                 data-weight="<?=$entity->inventory->weight?>"
-                 data-capacity="<?=$entity->inventory->capacity?>"
             >
-              <div class="progress-bar
-                          <?php if ($entity->inventory->weight < $entity->inventory->capacity) : ?>
-                              bg-primary
-                          <?php else : ?>
-                              bg-danger
-                          <?php endif ?>
-                         "
-                   style="width: <?=$entity->inventory->weight / $entity->inventory->capacity * 100?>%;"
-              ></div>
+              <div class="progress-bar"></div>
               <div class="progress-bar" style="width: 0;"></div>
             </div>
           </div>
