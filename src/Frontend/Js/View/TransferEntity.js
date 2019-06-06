@@ -1,0 +1,30 @@
+class TransferEntity {
+    constructor(el, itemSliderTemplate, itemPopoverTemplate) {
+        this.el = el;
+        this.itemSliderTemplate = itemSliderTemplate;
+        this.itemPopoverTemplate = itemPopoverTemplate;
+    }
+
+    repaint(entity) {
+        this.el.querySelector(".js-icon").classList.add("fa-" + entity.icon);
+        this.el.querySelector(".js-label").innerText = entity.label;
+        this.el.querySelector(".js-inventory-weight").innerText = entity.inventory.weight / 1000;
+        this.el.querySelector(".js-inventory-capacity").innerText = entity.inventory.capacity / 1000;
+
+        let capacityBar = this.el.querySelector(".js-capacity-bar");
+
+        let capacityBarPrimary = capacityBar.querySelectorAll(".progress-bar")[0];
+        let capacityBarSecondary = capacityBar.querySelectorAll(".progress-bar")[1];
+
+        if (entity.inventory.weight < entity.inventory.capacity) {
+            capacityBarPrimary.classList.add("bg-primary");
+        } else {
+            capacityBarPrimary.classList.add("bg-danger");
+        }
+
+        capacityBarPrimary.style.width = (entity.inventory.weight / entity.inventory.capacity * 100) + "%";
+        capacityBarSecondary.style.width = 0;
+
+        this.el.querySelector(".js-item-sliders").innerHTML = "";
+    }
+}

@@ -218,7 +218,9 @@ var eventBus = new EventBus();
 new TransferController(
     eventBus,
     new TransferModal(
-        document.getElementById("transferModal")
+        document.getElementById("transferModal"),
+        document.getElementById("transfer-item-slider"),
+        document.getElementById("item-popover")
     ),
     JSON.parse(document.getElementById("entities").value)
 );
