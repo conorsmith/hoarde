@@ -1,4 +1,4 @@
-class TransferInventoryWeight {
+class TransferInventoryWeightView {
     constructor(el) {
         this.el = el;
     }

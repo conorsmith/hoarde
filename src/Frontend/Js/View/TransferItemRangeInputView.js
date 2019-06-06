@@ -1,4 +1,4 @@
-class TransferItemRangeInput {
+class TransferItemRangeInputView {
     constructor(el) {
         this.el = el;
     }

@@ -1,4 +1,4 @@
-class TransferError {
+class TransferErrorView {
     constructor(el) {
         this.el = el;
     }

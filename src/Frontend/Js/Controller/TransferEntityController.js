@@ -20,18 +20,18 @@ class TransferEntityController {
 
         new TransferCapacityBarController(
             this.eventBus,
-            this.view.capacityBar,
+            this.view.capacityBarView,
             this.model.transfer
         );
 
         new TransferInventoryWeightController(
             this.eventBus,
-            this.view.inventoryWeight,
+            this.view.inventoryWeightView,
             this.model.transfer
         );
 
         this.model.transfer.itemsFrom.forEach(function (transferItem) {
-            let itemSlider = TransferItemSlider.fromTemplate(
+            let itemSliderView = TransferItemSliderView.fromTemplate(
                 controller.view.el.querySelector(".js-item-sliders"),
                 controller.view.itemSliderTemplate.content.cloneNode(true),
                 controller.view.itemPopoverTemplate.content.cloneNode(true),
@@ -41,13 +41,13 @@ class TransferEntityController {
 
             new TransferItemRangeInputController(
                 controller.eventBus,
-                itemSlider.itemRangeInput,
+                itemSliderView.itemRangeInputView,
                 transferItem
             );
 
             new TransferItemCounterController(
                 controller.eventBus,
-                itemSlider.itemCounter,
+                itemSliderView.itemCounterView,
                 transferItem
             );
         });

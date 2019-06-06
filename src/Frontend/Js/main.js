@@ -217,7 +217,7 @@ var eventBus = new EventBus();
 
 new TransferController(
     eventBus,
-    new TransferModal(
+    new TransferModalView(
         document.getElementById("transferModal"),
         document.getElementById("transfer-item-slider"),
         document.getElementById("item-popover")

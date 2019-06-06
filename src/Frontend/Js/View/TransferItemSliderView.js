@@ -1,4 +1,4 @@
-class TransferItemSlider {
+class TransferItemSliderView {
     static fromTemplate(el, template, popoverTemplate, initialQuantity, transferItem) {
         const popoverRenderer = document.createElement("div");
         const itemSliderDatalistId = "item-slider-" + transferItem.entityId + "-" + transferItem.item.varietyId;
@@ -30,27 +30,27 @@ class TransferItemSlider {
 
         el.appendChild(template);
 
-        let itemRangeInput = new TransferItemRangeInput(
+        let itemRangeInputView = new TransferItemRangeInputView(
             el.lastElementChild.querySelector("input[type='range']")
         );
 
-        let itemCounter = new TransferItemCounter(
+        let itemCounterView = new TransferItemCounterView(
             el.lastElementChild.querySelector(".js-item-counter")
         );
 
-        itemCounter.repaint(transferItem);
+        itemCounterView.repaint(transferItem);
 
-        return new TransferItemSlider(
+        return new TransferItemSliderView(
             el.lastElementChild,
-            itemRangeInput,
-            itemCounter
+            itemRangeInputView,
+            itemCounterView
         )
     }
 
-    constructor(el, itemRangeInput, itemCounter) {
+    constructor(el, itemRangeInputView, itemCounterView) {
         this.el = el;
-        this.itemRangeInput = itemRangeInput;
-        this.itemCounter = itemCounter;
+        this.itemRangeInputView = itemRangeInputView;
+        this.itemCounterView = itemCounterView;
     }
 
     repaint() {

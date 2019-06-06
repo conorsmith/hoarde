@@ -9,7 +9,7 @@ class TransferController {
 
         new TransferErrorController(
             this.eventBus,
-            this.view.error,
+            this.view.errorView,
             new Error("")
         );
 
@@ -21,7 +21,7 @@ class TransferController {
             controller.onShow(e);
         });
 
-        this.view.submitButton.el.addEventListener("click", function (e) {
+        this.view.submitButtonView.el.addEventListener("click", function (e) {
             controller.onClick(e);
         });
     }
@@ -59,7 +59,7 @@ class TransferController {
         let entities = this.findTransferringEntities(e.relatedTarget.dataset.sourceId);
         let transferEntities = TransferEntity.createPair(entities[0], entities[1]);
 
-        this.view.entities.forEach(function (entityView) {
+        this.view.entityViews.forEach(function (entityView) {
             let transferEntity = transferEntities.shift();
 
             new TransferEntityController(
