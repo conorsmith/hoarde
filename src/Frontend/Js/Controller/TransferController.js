@@ -4,8 +4,7 @@ class TransferController {
         this.view = view;
         this.entities = entities;
 
-        this.capacityBarControllers = [];
-        this.itemRangeInputControllers = [];
+        this.transferEntities = [];
 
         new TransferErrorController(
             this.eventBus,
@@ -57,10 +56,12 @@ class TransferController {
         const controller = this;
 
         let entities = this.findTransferringEntities(e.relatedTarget.dataset.sourceId);
-        let transferEntities = TransferEntity.createPair(entities[0], entities[1]);
+        let i = 0;
+
+        this.transferEntities = TransferEntity.createPair(entities[0], entities[1]);
 
         this.view.entityViews.forEach(function (entityView) {
-            let transferEntity = transferEntities.shift();
+            let transferEntity = controller.transferEntities[i++];
 
             new TransferEntityController(
                 controller.eventBus,
@@ -75,27 +76,25 @@ class TransferController {
     }
 
     createRequestBody() {
-        let body = {};
+        let body = [];
 
-        this.capacityBarControllers.forEach(function (capacityBar) {
-            const entityId = capacityBar.model.inventoryFrom.entityId;
+        this.transferEntities.forEach(function (transferEntity) {
+            let items = [];
 
-            body[entityId] = {
-                entityId: entityId,
-                items: []
-            }
-        });
+            transferEntity.transfer.itemsFrom.forEach(function (transferItem) {
+                items.push({
+                    varietyId: transferItem.varietyId,
+                    quantity: transferItem.quantity
+                });
+            });
 
-        this.itemRangeInputControllers.forEach(function (itemRangeInputController) {
-            const entityId = itemRangeInputController.model.entityId;
-
-            body[entityId].items.push({
-                varietyId: itemRangeInputController.model.varietyId,
-                quantity: itemRangeInputController.model.quantity
+            body.push({
+                entityId: transferEntity.entity.id,
+                items: items
             });
         });
 
-        return Object.values(body);
+        return body;
     }
 
     onClick(e) {
