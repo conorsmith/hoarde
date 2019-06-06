@@ -31,11 +31,8 @@ class TransferController {
     }
 
     onShow(e) {
-        const controller = this;
-
         let source = {};
         let destination = {};
-        let i = 0;
 
         this.entities.forEach(function (entity) {
             if (entity.id === e.relatedTarget.dataset.sourceId) {
@@ -47,27 +44,11 @@ class TransferController {
 
         this.transfers = Transfer.createPair(source, destination);
 
-        this.view.entityViews.forEach(function (entityView) {
-            let transfer = controller.transfers[i++];
-
-            controller.entityControllers.push(new TransferEntityController(
-                controller.eventBus,
-                entityView,
-                transfer,
-                controller.entities
-            ));
-
-            entityView.repaint(transfer.entityFrom);
-        });
-
-        this.eventBus.dispatchEvent("transfer.initialise");
+        this.initialiseEntities();
     }
 
     onSwitchEntity(e) {
-        const controller = this;
-
         let selectedEntity;
-        let i = 0;
 
         this.entities.forEach(function (entity) {
             if (entity.id === e.detail.selectedEntityId) {
@@ -86,6 +67,14 @@ class TransferController {
                 selectedEntity
             );
         }
+
+        this.initialiseEntities();
+    }
+
+    initialiseEntities() {
+        const controller = this;
+
+        let i = 0;
 
         this.entityControllers.forEach(function (entityController) {
             entityController.destroy();
