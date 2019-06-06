@@ -4,6 +4,7 @@ class TransferEntityView {
         this.itemSliderTemplate = itemSliderTemplate;
         this.itemPopoverTemplate = itemPopoverTemplate;
 
+        this.entitySelectorView = new TransferEntitySelectorView(this.el.querySelector(".js-entity-selector"))
         this.inventoryWeightView = new TransferInventoryWeightView(this.el.querySelector(".js-inventory-weight"));
         this.capacityBarView = new TransferCapacityBarView(this.el.querySelector(".js-capacity-bar"));
     }

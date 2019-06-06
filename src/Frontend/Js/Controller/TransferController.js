@@ -5,6 +5,7 @@ class TransferController {
         this.entities = entities;
 
         this.transfers = [];
+        this.entityControllers = [];
 
         new TransferErrorController(
             this.eventBus,
@@ -22,6 +23,10 @@ class TransferController {
 
         this.view.submitButtonView.el.addEventListener("click", function (e) {
             controller.onClick(e);
+        });
+
+        this.eventBus.addEventListener("transfer.switchEntity", function (e) {
+            controller.onSwitchEntity(e);
         });
     }
 
@@ -45,11 +50,58 @@ class TransferController {
         this.view.entityViews.forEach(function (entityView) {
             let transfer = controller.transfers[i++];
 
-            new TransferEntityController(
+            controller.entityControllers.push(new TransferEntityController(
                 controller.eventBus,
                 entityView,
-                transfer
+                transfer,
+                controller.entities
+            ));
+
+            entityView.repaint(transfer.entityFrom);
+        });
+
+        this.eventBus.dispatchEvent("transfer.initialise");
+    }
+
+    onSwitchEntity(e) {
+        const controller = this;
+
+        let selectedEntity;
+        let i = 0;
+
+        this.entities.forEach(function (entity) {
+            if (entity.id === e.detail.selectedEntityId) {
+                selectedEntity = entity;
+            }
+        });
+
+        if (this.transfers[0].entityFrom.id === e.detail.currentEntityId) {
+            this.transfers = Transfer.createPair(
+                selectedEntity,
+                this.transfers[1].entityFrom
+            )
+        } else if (this.transfers[1].entityFrom.id === e.detail.currentEntityId) {
+            this.transfers = Transfer.createPair(
+                this.transfers[0].entityFrom,
+                selectedEntity
             );
+        }
+
+        this.entityControllers.forEach(function (entityController) {
+            entityController.destroy();
+        });
+
+        this.entityControllers = [];
+
+        this.view.entityViews.forEach(function (entityView) {
+            let transfer = controller.transfers[i++];
+
+            controller.entityControllers.push(new TransferEntityController(
+                controller.eventBus,
+                entityView,
+                transfer,
+                controller.entities
+            ));
 
             entityView.repaint(transfer.entityFrom);
         });

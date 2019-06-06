@@ -22,10 +22,18 @@
                style="margin-bottom: 0.6rem;"
           >
 
-            <div style="margin-right: 1rem; font-weight: 900;">
-              <i class="fas fa-fw js-icon"></i>
-              <span class="js-label"></span>
+            <div class="dropdown">
+              <a href="#"
+                 class="transfer-entity dropdown-toggle"
+                 data-toggle="dropdown"
+                 style="margin-right: 1rem; font-weight: 900; display: block;"
+              >
+                <i class="fas fa-fw js-icon"></i>
+                <span class="js-label"></span>
+              </a>
+              <div class="dropdown-menu js-entity-selector"></div>
             </div>
+
             <div class="align-self-end"
                  style="margin-left: 1rem; font-size: 0.8rem; text-align: right;"
             >

@@ -25,6 +25,12 @@
     margin-bottom: 0;
 }
 
+.modal-body .transfer-entity,
+.modal-body .transfer-entity:hover {
+    color: #212529;
+    text-decoration: none;
+}
+
 .modal-body .item-slider {
     margin-bottom: 1rem;
 }

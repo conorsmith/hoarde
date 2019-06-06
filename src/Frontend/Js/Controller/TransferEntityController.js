@@ -1,8 +1,16 @@
 class TransferEntityController {
-    constructor(eventBus, view, model) {
+    constructor(eventBus, view, model, entities) {
         this.eventBus = eventBus;
         this.view = view;
         this.model = model;
+        this.entities = entities;
+
+        this.entitySelectorController = new TransferEntitySelectorController(
+            this.eventBus,
+            this.view.entitySelectorView,
+            this.model,
+            this.entities
+        );
 
         this.addEventListeners(this);
     }
@@ -11,6 +19,10 @@ class TransferEntityController {
         this.eventBus.addEventListener("transfer.initialise", function (e) {
             controller.onInitialise(e);
         });
+    }
+
+    destroy() {
+        this.entitySelectorController.destroy();
     }
 
     onInitialise(e) {

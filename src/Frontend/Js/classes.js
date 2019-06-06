@@ -7,6 +7,10 @@ class EventBus {
         this.bus.addEventListener(event, callback);
     }
 
+    removeEventListener(event, callback) {
+        this.bus.removeEventListener(event, callback);
+    }
+
     dispatchEvent(eventName, detail = {}) {
         this.bus.dispatchEvent(new CustomEvent(eventName, {
             detail: detail
