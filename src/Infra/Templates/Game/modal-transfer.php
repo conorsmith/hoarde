@@ -1,5 +1,5 @@
 <div class="modal" tabindex="-1" role="dialog" id="transferModal">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
     <div class="modal-content">
 
       <div class="modal-header">
@@ -26,6 +26,7 @@
               <a href="#"
                  class="transfer-entity dropdown-toggle"
                  data-toggle="dropdown"
+                 data-boundary="window"
                  style="margin-right: 1rem; font-weight: 900; display: block;"
               >
                 <i class="fas fa-fw js-icon"></i>
