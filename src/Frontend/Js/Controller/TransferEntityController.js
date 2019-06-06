@@ -1,9 +1,8 @@
 class TransferEntityController {
-    constructor(eventBus, view, model, transfer) {
+    constructor(eventBus, view, model) {
         this.eventBus = eventBus;
         this.view = view;
         this.model = model;
-        this.transfer = transfer;
 
         this.addEventListeners(this);
     }
@@ -17,21 +16,21 @@ class TransferEntityController {
     onInitialise(e) {
         const controller = this;
 
-        this.view.repaint(this.model);
+        this.view.repaint(this.model.entity);
 
         new TransferCapacityBarController(
             this.eventBus,
             this.view.capacityBar,
-            this.transfer
+            this.model.transfer
         );
 
         new TransferInventoryWeightController(
             this.eventBus,
             this.view.inventoryWeight,
-            this.transfer
+            this.model.transfer
         );
 
-        this.transfer.itemsFrom.forEach(function (transferItem) {
+        this.model.transfer.itemsFrom.forEach(function (transferItem) {
             let itemSlider = TransferItemSlider.fromTemplate(
                 controller.view.el.querySelector(".js-item-sliders"),
                 controller.view.itemSliderTemplate.content.cloneNode(true),

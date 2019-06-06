@@ -26,7 +26,7 @@ class TransferController {
         });
     }
 
-    findTransferingEntities(sourceId) {
+    findTransferringEntities(sourceId) {
         let source = {};
 
         this.entities.forEach(function (entity) {
@@ -56,18 +56,16 @@ class TransferController {
     onShow(e) {
         const controller = this;
 
-        let transferingEntities = this.findTransferingEntities(e.relatedTarget.dataset.sourceId);
-        let transferEntities = TransferEntity.createPair(transferingEntities[0], transferingEntities[1]);
+        let entities = this.findTransferringEntities(e.relatedTarget.dataset.sourceId);
+        let transferEntities = TransferEntity.createPair(entities[0], entities[1]);
 
         this.view.entities.forEach(function (entityView) {
-
             let transferEntity = transferEntities.shift();
 
             new TransferEntityController(
                 controller.eventBus,
                 entityView,
-                transferEntity.entity,
-                transferEntity.transfer
+                transferEntity
             );
 
             entityView.repaint(transferEntity.entity);
