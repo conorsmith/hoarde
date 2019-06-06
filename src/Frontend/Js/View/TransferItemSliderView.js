@@ -3,7 +3,7 @@ class TransferItemSliderView {
         const popoverRenderer = document.createElement("div");
         const itemSliderDatalistId = "item-slider-" + transferItem.entityId + "-" + transferItem.item.varietyId;
 
-        popoverTemplate.querySelector(".tmpl-description").innerText = transferItem.item.description;
+        popoverTemplate.querySelector(".tmpl-description").innerHTML = transferItem.item.description;
         popoverTemplate.querySelector(".tmpl-weight").innerText = transferItem.item.weight > 1000
             ? (transferItem.item.weight / 1000) + " kg"
             : transferItem.item.weight + " g";

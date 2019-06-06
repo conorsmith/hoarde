@@ -310,6 +310,30 @@ final class Entity
                     ->createItemWithQuantity(1),
             ],
             [
+                'rolls' => range(804, 804),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_11))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(803, 803),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_8))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(802, 802),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_4))
+                    ->createItemWithQuantity(1),
+            ],
+            [
+                'rolls' => range(801, 801),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_3))
+                    ->createItemWithQuantity(1),
+            ],
+            [
                 'rolls' => array_merge(range(1, 10), range(290, 330)),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_SOUP))

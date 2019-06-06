@@ -27,6 +27,22 @@ final class VarietyRepositoryConfig implements VarietyRepository
     public const SHOVEL = "75d861d5-b6b7-4cd2-ad4a-a56db4db1fcf";
     public const BUCKET = "6722e875-6d19-404c-a1bd-e49fb3470cd7";
     public const ROPE = "0646f8e6-32b9-476f-86f5-834dc7160d95";
+    public const DRIL_FIGURINE_1 = "32b0c544-d393-4256-bcde-125298d59b63";
+    public const DRIL_FIGURINE_2 = "4747e2e7-8b99-497c-8944-24667fca681b";
+    public const DRIL_FIGURINE_3 = "7674f722-ddce-4089-999c-0d47382be6d8";
+    public const DRIL_FIGURINE_4 = "97d9cc1f-35c9-4ad9-8e56-9349c696693e";
+    public const DRIL_FIGURINE_5 = "eb6059ab-9ace-4259-a763-96272e7bd0c6";
+    public const DRIL_FIGURINE_6 = "270bb4a5-1eaf-4885-bb42-3cfe004caaa2";
+    public const DRIL_FIGURINE_7 = "363da664-2f05-4a43-842b-1dcf9ad02745";
+    public const DRIL_FIGURINE_8 = "26619339-8298-499e-abf8-1cbdf8b151a6";
+    public const DRIL_FIGURINE_9 = "4acf8e15-fdba-4dbd-8206-812bfc5a0174";
+    public const DRIL_FIGURINE_10 = "21d18270-471b-45a3-91f8-ef002f76f6f0";
+    public const DRIL_FIGURINE_11 = "ce2ade49-a367-4cdd-b815-5505f593a6d9";
+    public const DRIL_FIGURINE_12 = "22419ffb-2faa-409b-ae8d-081f4969e0e2";
+    public const DRIL_FIGURINE_13 = "b2949529-b2b4-45db-9dc6-cece114418ba";
+
+    private const DESCRIPTION_TEMPLATE_DRIL_FIGURINE = "A commemorative figurine of Twitter user @dril. Part of a set"
+        . " of 12. The base is engraved with a tweet:\n\n";
 
     private const VARIETIES = [
         self::HUMAN => [
@@ -163,7 +179,124 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 600,
             'icon'        => "fill",
             'description' => "A galvanised steel bucket with a capacity of 10 litres.",
-        ]
+        ],
+        self::DRIL_FIGURINE_1 => [
+            'label'       => "Dril Figurine #1",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "\"im not owned!  im not owned!!\", i continue to insist as i slowly shrink and transform into a"
+                . " corn cob",
+        ],
+        self::DRIL_FIGURINE_2 => [
+            'label'       => "Dril Figurine #2",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "Food $200\n"
+                . "Data $150\n"
+                . "Rent $800\n"
+                . "Candles $3,600\n"
+                . "Utility $150\n"
+                . "someone who is good at the economy please help me budget this. my family is dying",
+        ],
+        self::DRIL_FIGURINE_3 => [
+            'label'       => "Dril Figurine #3",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "drunk driving may kill a lot of people, but it also helps a lot of people get to work on time, so,"
+                . " it;s impossible to say if its bad or not,",
+        ],
+        self::DRIL_FIGURINE_4 => [
+            'label'       => "Dril Figurine #4",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "the wise man bowed his head solemnly and spoke: \"theres actually zero difference between good & bad"
+                . " things. you imbecile. you fucking moron\"",
+        ],
+        self::DRIL_FIGURINE_5 => [
+            'label'       => "Dril Figurine #5",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "it is with a heavy heart that i must announce that the celebs are at it again",
+        ],
+        self::DRIL_FIGURINE_6 => [
+            'label'       => "Dril Figurine #6",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "user named \" beavis_sinatra \" has been terrorizing me since 2004, by sending me pictures of cups"
+                . " that are too close to the edge of the table",
+        ],
+        self::DRIL_FIGURINE_7 => [
+            'label'       => "Dril Figurine #7",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "if your grave doesnt say \"rest in peace\" on it you are automatically drafted into the skeleton war",
+        ],
+        self::DRIL_FIGURINE_8 => [
+            'label'       => "Dril Figurine #8",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "so long suckers! i rev up my motorcylce and create a huge cloud of smoke. when the cloud dissipates"
+                . " im lying completely dead on the pavement",
+        ],
+        self::DRIL_FIGURINE_9 => [
+            'label'       => "Dril Figurine #9",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "another day volunteering at the betsy ross museum. everyone keeps asking me if they can fuck the"
+                . " flag. buddy, they wont even let me fuck it",
+        ],
+        self::DRIL_FIGURINE_10 => [
+            'label'       => "Dril Figurine #10",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "\"Is Wario A Libertarian\" - the greatest thread in the history of forums, locked by a moderator"
+                . " after 12,239 pages of heated debate,",
+        ],
+        self::DRIL_FIGURINE_11 => [
+            'label'       => "Dril Figurine #11",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "who the fuck is scraeming \"LOG OFF\" at my house. show yourself, coward. i will never log off",
+        ],
+        self::DRIL_FIGURINE_12 => [
+            'label'       => "Dril Figurine #12",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "big bird was obviously just a man in a suit. but the other ones were too small to contain men. so"
+                . " what the fuck",
+        ],
+        self::DRIL_FIGURINE_13 => [
+            'label'       => "Dril Figurine #13",
+            'resources'   => [],
+            'weight'      => 140,
+            'icon'        => "street-view",
+            'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
+                . "its the weekend baby. youknow what that means. its time to drink precisely one beer and call 911",
+        ],
     ];
 
     private $resourceRepository;

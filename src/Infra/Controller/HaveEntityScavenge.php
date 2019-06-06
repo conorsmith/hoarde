@@ -77,7 +77,7 @@ final class HaveEntityScavenge
                     'resourceLabel' => implode(", ", array_map(function (Resource $resource) {
                         return $resource->getLabel();
                     }, $item->getVariety()->getResources())),
-                    'description'   => $item->getVariety()->getDescription(),
+                    'description'   => nl2br($item->getVariety()->getDescription()),
                 ];
             }
         }
