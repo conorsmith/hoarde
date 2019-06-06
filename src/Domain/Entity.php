@@ -239,6 +239,12 @@ final class Entity
 
         $rollTable = [
             [
+                'rolls' => range(996, 1000),
+                'item'  => $varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))
+                    ->createItemWithQuantity(1),
+            ],
+            [
                 'rolls' => range(980, 989),
                 'item'  => $varietyRepository
                     ->find(Uuid::fromString(VarietyRepositoryConfig::COKE_ZERO))
@@ -317,15 +323,6 @@ final class Entity
                     ->createItemWithQuantity($generator->generateInt(1, 2)),
             ],
         ];
-
-        if (!$this->hasStorage($gameRepository, $entityRepository)) {
-            $rollTable[] = [
-                'rolls' => range(996, 1000),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))
-                    ->createItemWithQuantity(1),
-            ];
-        }
 
         if ($this->needsPringles()) {
             $rollTable[] = [

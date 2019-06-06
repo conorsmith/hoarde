@@ -52,6 +52,7 @@ final class ShowGame
         $human = null;
         $crate = null;
         $well = null;
+        $crates = [];
 
         foreach ($entityIds as $entityId) {
             $entity = $this->entityRepo->find($entityId);
@@ -59,6 +60,7 @@ final class ShowGame
                 $human = $entity;
             } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
                 $crate = $entity;
+                $crates[] = $entity;
             } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
                 $well = $entity;
             }
@@ -67,8 +69,11 @@ final class ShowGame
         $body = $this->renderGameTemplate($game, $human, [
             'entity'          => $this->presentEntity($human),
             'crate'           => $this->presentEntity($crate),
+            'crates'          => array_map(function ($crate) {
+                return $this->presentEntity($crate);
+            }, $crates),
             'well'            => $this->presentEntity($well),
-            'encodedEntities' => $this->presentEncodedEntities([$human, $crate, $well]),
+            'encodedEntities' => $this->presentEncodedEntities(array_merge([$human, $well], $crates)),
         ]);
 
         $response = new Response;

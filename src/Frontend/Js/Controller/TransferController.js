@@ -25,40 +25,22 @@ class TransferController {
         });
     }
 
-    findTransferringEntities(sourceId) {
+    onShow(e) {
+        const controller = this;
+
         let source = {};
-
-        this.entities.forEach(function (entity) {
-            if (entity.id === sourceId) {
-                source = entity;
-            }
-        });
-
         let destination = {};
+        let i = 0;
 
         this.entities.forEach(function (entity) {
-            if ((
-                source.varietyId === "fde2146a-c29d-4262-b96f-ec7b696eccad"
-                && entity.varietyId === "59593b72-3845-491e-9721-4452a337019b"
-            ) || (
-                source.varietyId === "59593b72-3845-491e-9721-4452a337019b"
-                && entity.varietyId === "fde2146a-c29d-4262-b96f-ec7b696eccad"
-            )
-            ) {
+            if (entity.id === e.relatedTarget.dataset.sourceId) {
+                source = entity;
+            } else if (entity.id === e.relatedTarget.dataset.destinationId) {
                 destination = entity;
             }
         });
 
-        return [source, destination];
-    }
-
-    onShow(e) {
-        const controller = this;
-
-        let entities = this.findTransferringEntities(e.relatedTarget.dataset.sourceId);
-        let i = 0;
-
-        this.transfers = Transfer.createPair(entities[0], entities[1]);
+        this.transfers = Transfer.createPair(source, destination);
 
         this.view.entityViews.forEach(function (entityView) {
             let transfer = controller.transfers[i++];

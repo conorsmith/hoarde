@@ -159,6 +159,7 @@
                                   data-toggle="modal"
                                   data-target="#transferModal"
                                   data-source-id="<?=$entity->id?>"
+                                  data-destination-id="<?=$crate->id?>"
                               <?=($isIntact ? "" : "disabled")?>
                           >Transfer Items</button>
 
@@ -170,7 +171,7 @@
             </div>
         </div>
 
-        <?php if ($crate) : ?>
+        <?php foreach ($crates as $crate) : ?>
 
           <div class="col-lg-4 mb-3">
             <div class="card">
@@ -197,6 +198,7 @@
                           data-toggle="modal"
                           data-target="#transferModal"
                           data-source-id="<?=$crate->id?>"
+                          data-destination-id="<?=$entity->id?>"
                       <?=($isIntact ? "" : "disabled")?>
                   >Transfer Items</button>
 
@@ -206,7 +208,7 @@
             </div>
           </div>
 
-        <?php endif ?>
+        <?php endforeach ?>
 
         <?php if ($well) : ?>
 
