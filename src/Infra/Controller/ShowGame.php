@@ -199,17 +199,11 @@ final class ShowGame
             $items[] = (object) $this->presentItem($item);
         }
 
-        return (object)[
+        $presentation = (object) [
             'id'                         => $entity->getId(),
             'varietyId'                  => $entity->getVarietyId(),
             'label'                      => $entity->getLabel(),
             'icon'                       => $entity->getIcon(),
-            'inventory'                  => (object)[
-                'weight'       => $entity->getInventoryWeight(),
-                'capacity'     => $entity->getInventoryCapacity(),
-                'isAtCapacity' => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
-                'items'        => $items,
-            ],
             'isHuman'                    => $entity->getVarietyId()->equals(
                 Uuid::fromString(VarietyRepositoryConfig::HUMAN)
             ),
@@ -217,6 +211,17 @@ final class ShowGame
             'remainingConstructionSteps' => $entity->getConstruction()->getRemainingSteps(),
             'requiredConstructionSteps'  => $entity->getConstruction()->getRequiredSteps(),
         ];
+
+        if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
+            $presentation->inventory = (object)[
+                'weight'       => $entity->getInventoryWeight(),
+                'capacity'     => $entity->getInventoryCapacity(),
+                'isAtCapacity' => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
+                'items'        => $items,
+            ];
+        }
+
+        return $presentation;
     }
 
     private function presentItem(Item $item): array
