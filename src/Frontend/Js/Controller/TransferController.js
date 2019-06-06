@@ -98,14 +98,30 @@ class TransferController {
         let transferingEntities = this.findTransferingEntities(e.relatedTarget.dataset.sourceId);
         let transfers = [transferA, transferB];
 
+        let i = 0;
+
         this.view.entities.forEach(function (entityView) {
             let entity = transferingEntities.shift();
+
+            entity.inventory.items.forEach(function (item) {
+                const transferItem = new TransferItem(
+                    entity.id,
+                    item.varietyId,
+                    item.weight,
+                    0,
+                    item
+                );
+
+                transfers.forEach(function (transfer) {
+                    transfer.addItem(transferItem);
+                });
+            });
 
             new TransferEntityController(
                 controller.eventBus,
                 entityView,
                 entity,
-                transfers
+                transfers[i++]
             );
 
             entityView.repaint(entity);
