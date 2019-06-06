@@ -3,6 +3,9 @@ class TransferEntity {
         this.el = el;
         this.itemSliderTemplate = itemSliderTemplate;
         this.itemPopoverTemplate = itemPopoverTemplate;
+
+        this.inventoryWeight = new TransferInventoryWeight(this.el.querySelector(".js-inventory-weight"));
+        this.capacityBar = new TransferCapacityBar(this.el.querySelector(".js-capacity-bar"));
     }
 
     repaint(entity) {

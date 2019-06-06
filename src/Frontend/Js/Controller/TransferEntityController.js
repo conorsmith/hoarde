@@ -19,6 +19,18 @@ class TransferEntityController {
 
         this.view.repaint(this.model);
 
+        new TransferCapacityBarController(
+            this.eventBus,
+            this.view.capacityBar,
+            this.transfer
+        );
+
+        new TransferInventoryWeightController(
+            this.eventBus,
+            this.view.inventoryWeight,
+            this.transfer
+        );
+
         this.transfer.itemsFrom.forEach(function (transferItem) {
             let itemSlider = TransferItemSlider.fromTemplate(
                 controller.view.el.querySelector(".js-item-sliders"),

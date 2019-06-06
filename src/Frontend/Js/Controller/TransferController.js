@@ -71,30 +71,6 @@ class TransferController {
         const transferA = new Transfer(inventoryA, inventoryB);
         const transferB = new Transfer(inventoryB, inventoryA);
 
-        this.capacityBarControllers.push(new TransferCapacityBarController(
-            this.eventBus,
-            this.view.capacityBars[0],
-            transferA
-        ));
-
-        new TransferInventoryWeightController(
-            this.eventBus,
-            this.view.inventoryWeights[0],
-            transferA
-        );
-
-        this.capacityBarControllers.push(new TransferCapacityBarController(
-            this.eventBus,
-            this.view.capacityBars[1],
-            transferB
-        ));
-
-        new TransferInventoryWeightController(
-            this.eventBus,
-            this.view.inventoryWeights[1],
-            transferB
-        );
-
         let transferingEntities = this.findTransferingEntities(e.relatedTarget.dataset.sourceId);
         let transfers = [transferA, transferB];
 
