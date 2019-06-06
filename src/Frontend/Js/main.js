@@ -290,6 +290,10 @@ scavengeModal.querySelector(".js-scavenge-submit").onclick = function (e) {
         return;
     }
 
+    const template = document.getElementById("spinner").content.cloneNode(true);
+    this.innerText = "";
+    this.appendChild(template);
+
     var haulInputs = scavengeModalView.findHaulInputs();
     var inventoryInputs = scavengeModalView.findInventoryInputs();
 
