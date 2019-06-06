@@ -126,10 +126,41 @@
 
                     <div class="actions">
 
-                      <button type="button"
-                              class="btn btn-light btn-block js-scavenge"
-                          <?=($isIntact ? "" : "disabled")?>
-                      >Scavenge</button>
+                      <div class="btn-group btn-flex">
+                        <button type="button"
+                                class="btn btn-light btn-block js-scavenge"
+                                data-length="1"
+                            <?=(!$isIntact ? "disabled" : "")?>
+                        >
+                          Scavenge
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-light dropdown-toggle"
+                                data-toggle="dropdown"
+                            <?=(!$isIntact ? "disabled" : "")?>
+                        ></button>
+
+                        <div class="dropdown-menu dropdown-menu-right w-100">
+
+                          <a href="#"
+                             class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
+                             data-length="1"
+                          >
+                            Short Scavenge
+                            <span class="badge">1 turn</span>
+                          </a>
+
+                          <a href="#"
+                             class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
+                             data-length="3"
+                          >
+                            Long Scavenge
+                            <span class="badge">3 turns</span>
+                          </a>
+
+                        </div>
+                      </div>
 
                     </div>
 

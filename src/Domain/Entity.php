@@ -233,148 +233,21 @@ final class Entity
         $this->afterAction();
     }
 
-    public function scavenge(
-        VarietyRepository $varietyRepository,
-        GameRepository $gameRepository,
-        EntityRepository $entityRepository
-    ): ScavengingHaul {
-        $this->beforeAction();
+    public function scavenge(Scavenge $scavenge): ScavengingHaul
+    {
+        for ($i = 0; $i < $scavenge->getLength(); $i++) {
+            $this->beforeAction();
 
-        $generator = (new Factory)->getLowStrengthGenerator();
-
-        $rollTable = [
-            [
-                'rolls' => range(996, 1000),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(980, 989),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::COKE_ZERO))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(970, 979),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::PRINGLE))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(965, 969),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::CHERRY_COKE_ZERO))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(960, 964),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::VANILLA_COKE_ZERO))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(955, 959),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::PEACH_COKE_ZERO))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(950, 954),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::GINGER_COKE_ZERO))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(940, 944),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_DREW))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(907, 909),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::BUCKET))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(904, 906),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::ROPE))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(901, 903),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::SHOVEL))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(804, 804),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_11))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(803, 803),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_8))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(802, 802),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_4))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => range(801, 801),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_3))
-                    ->createItemWithQuantity(1),
-            ],
-            [
-                'rolls' => array_merge(range(1, 10), range(290, 330)),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_SOUP))
-                    ->createItemWithQuantity($generator->generateInt(1, 2)),
-            ],
-            [
-                'rolls' => range(140, 300),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::WATER_BOTTLE))
-                    ->createItemWithQuantity($generator->generateInt(1, 3)),
-            ],
-            [
-                'rolls' => range(1, 170),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_STEW))
-                    ->createItemWithQuantity($generator->generateInt(1, 2)),
-            ],
-        ];
-
-        if ($this->needsPringles()) {
-            $rollTable[] = [
-                'rolls' => range(350, 510),
-                'item'  => $varietyRepository
-                    ->find(Uuid::fromString(VarietyRepositoryConfig::PRINGLE))
-                    ->createItemWithQuantity(1),
-            ];
-        }
-
-        $scavengedItems = [];
-
-        $d1000 = $generator->generateInt(1, 1000);
-
-        foreach ($rollTable as $rollTableEntry) {
-            if (in_array($d1000, $rollTableEntry['rolls'])) {
-                $scavengedItems[] = $rollTableEntry['item'];
+            if ($i + 1 === $scavenge->getLength()) {
+                $haul = $scavenge->roll();
             }
+
+            $this->afterAction();
         }
 
-        $haul = new ScavengingHaul(Uuid::uuid4(), $scavengedItems);
-
-        $this->afterAction();
+        if (!$this->isIntact) {
+            return ScavengingHaul::empty();
+        }
 
         return $haul;
     }
@@ -466,7 +339,7 @@ final class Entity
         }
     }
 
-    private function needsPringles(): bool
+    public function needsPringles(): bool
     {
         return array_key_exists("5234c112-05be-4b15-80df-3c2b67e88262", $this->resourceNeeds);
     }

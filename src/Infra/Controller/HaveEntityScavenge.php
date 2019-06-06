@@ -7,6 +7,8 @@ use Aura\Session\Segment;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\Resource;
+use ConorSmith\Hoarde\Domain\RollTable;
+use ConorSmith\Hoarde\Domain\Scavenge;
 use ConorSmith\Hoarde\Domain\ScavengingHaulRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Psr\Http\Message\ResponseInterface;
@@ -47,17 +49,32 @@ final class HaveEntityScavenge
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
+        $length = intval(json_decode($request->getBody()->getContents(), true)['length']);
+
+        if (!in_array($length, [1, 3])) {
+            $response = new Response;
+            $response = $response->withStatus(400);
+            $response->getBody()->write(json_encode([
+                'message' => "Invalid scavenge length",
+            ]));
+            return $response;
+        }
+
         $gameId = Uuid::fromString($args['gameId']);
 
         $game = $this->gameRepo->find($gameId);
         $entityIds = $this->gameRepo->findEntityIds($gameId);
         $entity = $this->entityRepo->find($entityIds[0]);
 
-        $haul = $entity->scavenge($this->varietyRepo, $this->gameRepo, $this->entityRepo);
+        $rollTable = (new RollTable($this->varietyRepo))->forEntity($entity, $length);
+        $haul = $entity->scavenge(new Scavenge($rollTable, $length));
+
         $this->entityRepo->save($entity);
         $this->scavengedHaulRepo->save($haul);
 
-        $game->proceedToNextTurn();
+        for ($i = 0; $i < $length; $i++) {
+            $game->proceedToNextTurn();
+        }
         $this->gameRepo->save($game);
 
         $transformedHaul = [

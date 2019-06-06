@@ -42,7 +42,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
     public const DRIL_FIGURINE_13 = "b2949529-b2b4-45db-9dc6-cece114418ba";
 
     private const DESCRIPTION_TEMPLATE_DRIL_FIGURINE = "A commemorative figurine of Twitter user @dril. Part of a set"
-        . " of 12. The base is engraved with a tweet:\n\n";
+        . " of 13. The base is engraved with a tweet:\n\n";
 
     private const VARIETIES = [
         self::HUMAN => [

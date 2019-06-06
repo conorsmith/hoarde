@@ -3,10 +3,16 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Domain;
 
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class ScavengingHaul
 {
+    public static function empty(): self
+    {
+        return new ScavengingHaul(Uuid::uuid4(), []);
+    }
+
     /** @var UuidInterface */
     private $id;
 
@@ -19,7 +25,12 @@ final class ScavengingHaul
         $this->items = [];
 
         foreach ($items as $item) {
-            $this->items[strval($item->getVariety()->getId())] = $item;
+            $itemKey = strval($item->getVariety()->getId());
+            if (array_key_exists($itemKey, $this->items)) {
+                $this->items[$itemKey]->add($item->getQuantity());
+            } else {
+                $this->items[$itemKey] = $item;
+            }
         }
     }
 
