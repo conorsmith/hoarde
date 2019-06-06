@@ -16,21 +16,21 @@ class TransferEntityController {
     onInitialise(e) {
         const controller = this;
 
-        this.view.repaint(this.model.entity);
+        this.view.repaint(this.model.entityFrom);
 
         new TransferCapacityBarController(
             this.eventBus,
             this.view.capacityBarView,
-            this.model.transfer
+            this.model
         );
 
         new TransferInventoryWeightController(
             this.eventBus,
             this.view.inventoryWeightView,
-            this.model.transfer
+            this.model
         );
 
-        this.model.transfer.itemsFrom.forEach(function (transferItem) {
+        this.model.itemsFrom.forEach(function (transferItem) {
             let itemSliderView = TransferItemSliderView.fromTemplate(
                 controller.view.el.querySelector(".js-item-sliders"),
                 controller.view.itemSliderTemplate.content.cloneNode(true),

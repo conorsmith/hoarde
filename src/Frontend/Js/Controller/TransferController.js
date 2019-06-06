@@ -4,7 +4,7 @@ class TransferController {
         this.view = view;
         this.entities = entities;
 
-        this.transferEntities = [];
+        this.transfers = [];
 
         new TransferErrorController(
             this.eventBus,
@@ -58,18 +58,18 @@ class TransferController {
         let entities = this.findTransferringEntities(e.relatedTarget.dataset.sourceId);
         let i = 0;
 
-        this.transferEntities = TransferEntity.createPair(entities[0], entities[1]);
+        this.transfers = Transfer.createPair(entities[0], entities[1]);
 
         this.view.entityViews.forEach(function (entityView) {
-            let transferEntity = controller.transferEntities[i++];
+            let transfer = controller.transfers[i++];
 
             new TransferEntityController(
                 controller.eventBus,
                 entityView,
-                transferEntity
+                transfer
             );
 
-            entityView.repaint(transferEntity.entity);
+            entityView.repaint(transfer.entityFrom);
         });
 
         this.eventBus.dispatchEvent("transfer.initialise");
@@ -78,10 +78,10 @@ class TransferController {
     createRequestBody() {
         let body = [];
 
-        this.transferEntities.forEach(function (transferEntity) {
+        this.transfers.forEach(function (transfer) {
             let items = [];
 
-            transferEntity.transfer.itemsFrom.forEach(function (transferItem) {
+            transfer.itemsFrom.forEach(function (transferItem) {
                 items.push({
                     varietyId: transferItem.varietyId,
                     quantity: transferItem.quantity
@@ -89,7 +89,7 @@ class TransferController {
             });
 
             body.push({
-                entityId: transferEntity.entity.id,
+                entityId: transfer.entityFrom.id,
                 items: items
             });
         });
