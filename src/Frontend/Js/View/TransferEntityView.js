@@ -10,7 +10,12 @@ class TransferEntityView {
     }
 
     repaint(entity) {
+        if (this.previousIcon !== undefined) {
+            this.el.querySelector(".js-icon").classList.remove("fa-" + this.previousIcon);
+        }
         this.el.querySelector(".js-icon").classList.add("fa-" + entity.icon);
+        this.previousIcon = entity.icon;
+
         this.el.querySelector(".js-label").innerText = entity.label;
         this.el.querySelector(".js-inventory-weight").innerText = entity.inventory.weight / 1000;
         this.el.querySelector(".js-inventory-capacity").innerText = entity.inventory.capacity / 1000;
