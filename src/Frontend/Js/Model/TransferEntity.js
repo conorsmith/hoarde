@@ -1,19 +1,7 @@
 class TransferEntity {
     static createPair(entityA, entityB) {
-        const inventoryA = new TransferInventory(
-            entityA.id,
-            entityA.inventory.weight,
-            entityA.inventory.capacity
-        );
-
-        const inventoryB = new TransferInventory(
-            entityB.id,
-            entityB.inventory.weight,
-            entityB.inventory.capacity
-        );
-
-        const transferA = new Transfer(inventoryA, inventoryB);
-        const transferB = new Transfer(inventoryB, inventoryA);
+        const transferA = new Transfer(entityA, entityB);
+        const transferB = new Transfer(entityB, entityA);
 
         [entityA, entityB].forEach(function (entity) {
             entity.inventory.items.forEach(function (item) {

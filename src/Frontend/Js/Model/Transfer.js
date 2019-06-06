@@ -1,16 +1,16 @@
 class Transfer {
-    constructor(inventoryFrom, inventoryTo) {
-        this.inventoryFrom = inventoryFrom;
-        this.inventoryTo = inventoryTo;
+    constructor(entityFrom, entityTo) {
+        this.entityFrom = entityFrom;
+        this.entityTo = entityTo;
         this.itemsFrom = [];
         this.itemsTo = [];
     }
 
     addItem(item) {
-        if (this.inventoryFrom.entityId === item.entityId) {
+        if (this.entityFrom.id === item.entityId) {
             this.itemsFrom.push(item);
 
-        } else if (this.inventoryTo.entityId === item.entityId) {
+        } else if (this.entityTo.id === item.entityId) {
             this.itemsTo.push(item);
         }
     }
@@ -26,6 +26,14 @@ class Transfer {
             transferWeight += item.weight * item.quantity;
         });
 
-        return this.inventoryFrom.weight + transferWeight;
+        return this.entityFrom.inventory.weight + transferWeight;
+    }
+
+    getOldInventoryWeight() {
+        return this.entityFrom.inventory.weight;
+    }
+
+    getInventoryCapacity() {
+        return this.entityFrom.inventory.capacity;
     }
 }

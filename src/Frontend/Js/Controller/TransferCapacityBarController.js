@@ -15,8 +15,8 @@ class TransferCapacityBarController {
 
     onItemModified(e) {
         const newWeight = this.model.getNewInventoryWeight();
-        const oldWeight = this.model.inventoryFrom.weight;
-        const capacity = this.model.inventoryFrom.capacity;
+        const oldWeight = this.model.getOldInventoryWeight();
+        const capacity = this.model.getInventoryCapacity();
 
         if (newWeight > capacity) {
             this.view.repaint(
