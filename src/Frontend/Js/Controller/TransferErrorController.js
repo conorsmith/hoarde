@@ -8,6 +8,10 @@ class TransferErrorController {
     }
 
     addEventListeners(controller) {
+        this.eventBus.addEventListener("transfer.initialise", function (e) {
+            controller.onInitialise(e);
+        });
+
         this.eventBus.addEventListener("transfer.submitRequest", function (e) {
             controller.onSubmitRequest(e);
         });
@@ -15,6 +19,11 @@ class TransferErrorController {
         this.eventBus.addEventListener("transfer.submitResponse", function (e) {
             controller.onSubmitResponse(e);
         });
+    }
+
+    onInitialise(e) {
+        this.model = new Error("");
+        this.view.repaint(this.model);
     }
 
     onSubmitRequest(e) {
