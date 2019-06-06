@@ -3,7 +3,7 @@ class TransferModal {
         this.el = el;
 
         this.entities = Array.from(this.el.querySelectorAll(".js-inventory")).map(function (entity) {
-            return new TransferEntity(entity, itemSliderTemplate, itemPopoverTemplate);
+            return new TransferEntityView(entity, itemSliderTemplate, itemPopoverTemplate);
         });
 
         this.submitButton = new TransferSubmitButton(

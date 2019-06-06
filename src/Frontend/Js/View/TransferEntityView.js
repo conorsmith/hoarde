@@ -1,4 +1,4 @@
-class TransferEntity {
+class TransferEntityView {
     constructor(el, itemSliderTemplate, itemPopoverTemplate) {
         this.el = el;
         this.itemSliderTemplate = itemSliderTemplate;
