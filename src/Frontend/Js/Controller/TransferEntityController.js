@@ -50,6 +50,11 @@ class TransferEntityController {
                 itemSliderView.itemCounterView,
                 transferItem
             );
+
+            $(itemSliderView.el).find("[data-toggle='popover']").popover({
+                trigger: "focus",
+                html: true
+            });
         });
     }
 }
