@@ -147,6 +147,11 @@ final class Entity
         return $this->getInventoryWeight() >= $this->getInventoryCapacity();
     }
 
+    public function relabel(string $label): void
+    {
+        $this->label = $label;
+    }
+
     private function beforeAction(): void
     {
         $this->consumeResources();

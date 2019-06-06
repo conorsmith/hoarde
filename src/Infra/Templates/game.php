@@ -177,9 +177,19 @@
             <div class="card">
               <div class="card-body">
 
-                <h5 class="card-title">
+                <h5 class="card-title d-flex justify-content-between">
+                    <div>
                       <i class="fas fa-fw fa-<?=$crate->icon?>"></i>
-                    <?=$crate->label?>
+                      <?=$crate->label?>
+                    </div>
+                    <a href="#"
+                       style="display: block; font-size: 1rem; color: #888;"
+                       data-toggle="modal"
+                       data-target="#settingsModal"
+                       data-entity-id="<?=$crate->id?>"
+                    >
+                      <i class="fas fa-cog"></i>
+                    </a>
                 </h5>
 
                 <p><strong>Inventory</strong></p>
@@ -265,6 +275,7 @@
     </div>
 
     <?=$this->renderTemplate("Game/modal-drop.php")?>
+    <?=$this->renderTemplate("Game/modal-settings.php")?>
 
     <?=$this->renderTemplate("Game/modal-scavenge.php", [
         'entity'               => $entity,

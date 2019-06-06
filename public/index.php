@@ -35,6 +35,7 @@ $haveEntityConstruct = new ConorSmith\Hoarde\Infra\Controller\HaveEntityConstruc
 $showGame = new ConorSmith\Hoarde\Infra\Controller\ShowGame($gameRepo, $entityRepo, $resourceRepo, $sessionSegment);
 $transferItems = new ConorSmith\Hoarde\Infra\Controller\TransferItems($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
 $fetchWater = new ConorSmith\Hoarde\Infra\Controller\FetchWater($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
+$updateEntitySettings = new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings($gameRepo, $entityRepo, $sessionSegment);
 $showNotFoundPage = new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage;
 
 $router = new League\Route\Router;
@@ -56,6 +57,8 @@ $router->post("/{gameId}/drop", $haveEntityDropItem);
 $router->post("/{gameId}/transfer", $transferItems);
 $router->post("/{gameId}/fetch-water", $fetchWater);
 $router->post("/{gameId}/construct", $haveEntityConstruct);
+
+$router->post("/{gameId}/{entityId}/settings", $updateEntitySettings);
 
 try {
     $response = $router->dispatch(Zend\Diactoros\ServerRequestFactory::fromGlobals(

@@ -29,6 +29,35 @@ $("#dropModal").on("show.bs.modal", function (e) {
     }
 });
 
+var entities = JSON.parse(document.getElementById("entities").value);
+
+$("#settingsModal").on("show.bs.modal", function (e) {
+    let entity;
+    let labelInput = e.target.querySelector("input[name='label']");
+
+    entities.forEach(function (potentialEntity) {
+        if (potentialEntity.id === e.relatedTarget.dataset.entityId) {
+            entity = potentialEntity;
+        }
+    });
+
+    e.target.querySelector(".js-settings-title").innerHTML = entity.label + " Settings";
+    labelInput.value = entity.label;
+
+    e.target.querySelector(".js-settings-submit").addEventListener("click", function (e) {
+        var form = document.createElement("form");
+        form.setAttribute("action", "/" + gameId + "/" + entity.id + "/settings");
+        form.setAttribute("method", "POST");
+        form.setAttribute("hidden", true);
+
+        form.appendChild(labelInput);
+
+        document.body.appendChild(form);
+
+        form.submit();
+    });
+});
+
 document.getElementById("js-drop-slider").addEventListener("input", function (e) {
     var submit = document.getElementById("dropModal").querySelector(".js-drop-submit");
     submit.innerHTML = "Drop " + e.target.value;
