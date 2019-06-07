@@ -40,13 +40,11 @@
           <?php if ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::HUMAN) : ?>
               <?=$this->renderTemplate("Game/entity-human.php", [
                   'entity'                => $entity,
-                  'defaultTransferEntity' => count($crates) ? $crates[0] : null,
                   'isIntact'              => $isIntact,
               ])?>
           <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::WOODEN_CRATE) : ?>
               <?=$this->renderTemplate("Game/entity-crate.php", [
                   'entity'                => $entity,
-                  'defaultTransferEntity' => $human,
                   'isIntact'              => $isIntact,
               ])?>
           <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::WELL) : ?>

@@ -53,25 +53,28 @@ final class ShowGame
 
         $crates = [];
         $entities = [];
+        $human = null;
 
         foreach ($entityIds as $entityId) {
             $entity = $this->entityRepo->find($entityId);
             $entities[] = $entity;
             if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
                 $crates[] = $entity;
+            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
+                $human = $entity;
             }
         }
 
         $body = $this->renderTemplate("game.php", [
-            'human'           => $this->presentEntity($entity),
-            'entities'        => array_map(function (Entity $entity) {
-                return $this->presentEntity($entity);
+            'human'           => $this->presentEntity($human, $entities),
+            'entities'        => array_map(function (Entity $entity) use ($entities) {
+                return $this->presentEntity($entity, $entities);
             }, $entities),
             'isIntact'        => $entity->isIntact(),
             'alert'           => $this->presentAlert($this->session),
             'game'            => $this->presentGame($game),
-            'crates'          => array_map(function ($crate) {
-                return $this->presentEntity($crate);
+            'crates'          => array_map(function ($crate) use ($entities) {
+                return $this->presentEntity($crate, $entities);
             }, $crates),
             'encodedEntities' => $this->presentEncodedEntities($entities),
         ]);
@@ -108,7 +111,7 @@ final class ShowGame
 
         foreach ($entities as $entity) {
             if (!is_null($entity)) {
-                $presentedEntities[] = $this->presentEntity($entity);
+                $presentedEntities[] = $this->presentEntity($entity, $entities);
             }
         }
 
@@ -123,12 +126,40 @@ final class ShowGame
         ];
     }
 
-    private function presentEntity(?Entity $entity): ?stdClass
+    private function presentEntity(?Entity $entity, iterable $entities): ?stdClass
     {
         if (is_null($entity)) {
             return null;
         }
 
+        $presentation = $this->transformEntityForPresentation($entity);
+
+        if ($presentation->inventory) {
+
+            $presentation->inventory->defaultTransferEntity = null;
+
+            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
+                foreach ($entities as $otherEntity) {
+                    if ($otherEntity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
+                        $presentation->inventory->defaultTransferEntity
+                            = $this->transformEntityForPresentation($otherEntity);
+                    }
+                }
+            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
+                foreach ($entities as $otherEntity) {
+                    if ($otherEntity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
+                        $presentation->inventory->defaultTransferEntity
+                            = $this->transformEntityForPresentation($otherEntity);
+                    }
+                }
+            }
+        }
+
+        return $presentation;
+    }
+
+    private function transformEntityForPresentation(Entity $entity): stdClass
+    {
         $resourceNeeds = [];
 
         foreach ($entity->getResourceNeeds() as $resourceNeed) {
@@ -156,12 +187,12 @@ final class ShowGame
         ];
 
         if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            $presentation->inventory = (object)[
-                'weight'           => $entity->getInventoryWeight(),
-                'capacity'         => $entity->getInventoryCapacity(),
-                'isAtCapacity'     => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
-                'weightPercentage' => $entity->getInventoryWeight() / $entity->getInventoryCapacity() * 100,
-                'items'            => $items,
+            $presentation->inventory = (object) [
+                'weight'                => $entity->getInventoryWeight(),
+                'capacity'              => $entity->getInventoryCapacity(),
+                'isAtCapacity'          => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
+                'weightPercentage'      => $entity->getInventoryWeight() / $entity->getInventoryCapacity() * 100,
+                'items'                 => $items,
             ];
         }
 
