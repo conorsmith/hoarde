@@ -306,7 +306,7 @@
         'entity'               => $entity,
         'entityOverencumbered' => $entityOverencumbered,
         'inventoryWeight'      => $inventoryWeight,
-        'inventory'            => $inventory,
+        'inventory'            => $entity->inventory->items,
     ])?>
 
     <?=$this->renderTemplate("Game/modal-transfer.php", [
@@ -317,7 +317,7 @@
     ])?>
 
     <input type="hidden" id="gameId" value="<?=$game->id?>" />
-    <input type="hidden" id="inventoryItems" value='<?=json_encode($inventory)?>' />
+    <input type="hidden" id="inventoryItems" value='<?=json_encode($entity->inventory->items)?>' />
     <input type="hidden" id="entities" value='<?=$encodedEntities?>' />
 
     <?=$this->renderTemplate("Game/template-scavenge-item-slider.php")?>

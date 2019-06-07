@@ -108,11 +108,6 @@ final class ShowGame
 
     private function renderGameTemplate(Game $game, Entity $entity, array $variables): string
     {
-        $inventory = [];
-        foreach ($entity->getInventory() as $item) {
-            $inventory[] = $this->presentItem($item);
-        }
-
         $isIntact = $entity->isIntact();
 
         $inventoryWeight = $entity->getInventoryWeight() / $entity->getInventoryCapacity() * 100;

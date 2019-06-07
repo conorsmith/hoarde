@@ -61,39 +61,42 @@
                     <?php foreach ($inventory as $item) : ?>
                         <div class="item-slider d-flex">
                             <div class="align-self-center" style="margin-right: 1rem; white-space: nowrap;">
-                                <i class="fas fa-fw fa-<?=$item['icon']?>"
+                                <i class="fas fa-fw fa-<?=$item->icon?>"
                                    data-toggle="popover"
-                                   title="<?=$item['label']?>"
+                                   title="<?=$item->label?>"
                                    data-content='
-                                      <p><?=$item['description']?></p>
-                                      <div><span class="popover-label">Weight:</span> <?=$item['weight'] >= 1000
-                                         ? ($item['weight'] / 1000)." kg"
-                                         : $item['weight'] . " g" ?>
+                                      <p><?=$item->description?></p>
+                                      <div><span class="popover-label">Weight:</span> <?=$item->weight >= 1000
+                                         ? ($item->weight / 1000)." kg"
+                                         : $item->weight . " g" ?>
                                       </div>
-                                      <div><span class="popover-label">Resource:</span> <?=$item['resourceLabel']?></div>
+                                      <div><span class="popover-label">Resource:</span> <?=$item->resourceLabel?></div>
                                    '
                                    data-placement="top"
                                    tabindex="0"
                                 ></i>
-                                <?=$item['label']?>
+                                <?=$item->label?>
                             </div>
                             <div class="flex-fill" style="height: 32px;">
                                 <input type="range"
                                        min="0"
-                                       max="<?=$item['quantity']?>"
-                                       value="<?=$item['quantity']?>"
-                                       list="scavenge-tickmarks-<?=$item['id']?>"
+                                       max="<?=$item->quantity?>"
+                                       value="<?=$item->quantity?>"
+                                       list="scavenge-tickmarks-<?=$item->id?>"
                                        style="width: 100%"
-                                       data-variety-id="<?=$item['id']?>"
+                                       data-variety-id="<?=$item->id?>"
                                 >
-                                <datalist id="scavenge-tickmarks-<?=$item['id']?>">
-                                    <?php for ($i = 0; $i <= $item['quantity']; $i++) : ?>
+                                <datalist id="scavenge-tickmarks-<?=$item->id?>">
+                                    <?php for ($i = 0; $i <= $item->quantity; $i++) : ?>
                                     <option value="<?=$i?>">
                                         <?php endfor ?>
                                 </datalist>
                             </div>
                             <div class="align-self-center" style="width: 1rem; margin-left: 1rem;">
-                                <div class="js-scavenge-inventory-quantity" data-variety-id="<?=$item['id']?>" style="text-align: right;"><?=$item['quantity']?></div>
+                                <div class="js-scavenge-inventory-quantity"
+                                     data-variety-id="<?=$item->id?>"
+                                     style="text-align: right;"
+                                ><?=$item->quantity?></div>
                             </div>
                         </div>
                     <?php endforeach ?>
