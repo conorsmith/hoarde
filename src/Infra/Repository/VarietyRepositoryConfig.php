@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Repository;
 
 use ConorSmith\Hoarde\Domain\ActionRepository;
+use ConorSmith\Hoarde\Domain\ResourceContent;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\Variety;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
@@ -63,7 +64,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::WATER_BOTTLE => [
             'label'       => "Water Bottle",
             'resources'   => [
-                ResourceRepositoryConfig::WATER,
+                ResourceRepositoryConfig::WATER => 500,
             ],
             'weight'      => 500,
             'icon'        => "tint",
@@ -75,7 +76,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::COKE_ZERO => [
             'label'       => "Coke Zero",
             'resources'   => [
-                ResourceRepositoryConfig::WATER,
+                ResourceRepositoryConfig::WATER => 500,
             ],
             'weight'      => 500,
             'icon'        => "tint",
@@ -87,7 +88,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::CHERRY_COKE_ZERO => [
             'label'       => "Cherry Coke Zero",
             'resources'   => [
-                ResourceRepositoryConfig::WATER,
+                ResourceRepositoryConfig::WATER => 500,
             ],
             'weight'      => 500,
             'icon'        => "tint",
@@ -99,7 +100,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::VANILLA_COKE_ZERO => [
             'label'       => "Vanilla Coke Zero",
             'resources'   => [
-                ResourceRepositoryConfig::WATER,
+                ResourceRepositoryConfig::WATER => 500,
             ],
             'weight'      => 500,
             'icon'        => "tint",
@@ -111,7 +112,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::PEACH_COKE_ZERO => [
             'label'       => "Peach Coke Zero",
             'resources'   => [
-                ResourceRepositoryConfig::WATER,
+                ResourceRepositoryConfig::WATER => 500,
             ],
             'weight'      => 500,
             'icon'        => "tint",
@@ -123,7 +124,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::GINGER_COKE_ZERO => [
             'label'       => "Ginger Coke Zero",
             'resources'   => [
-                ResourceRepositoryConfig::WATER,
+                ResourceRepositoryConfig::WATER => 500,
             ],
             'weight'      => 500,
             'icon'        => "tint",
@@ -135,7 +136,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::TINNED_STEW => [
             'label'       => "Tinned Stew",
             'resources'   => [
-                ResourceRepositoryConfig::FOOD,
+                ResourceRepositoryConfig::FOOD => 600,
             ],
             'weight'      => 600,
             'icon'        => "utensils",
@@ -147,7 +148,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::TINNED_DREW => [
             'label'       => "Tinned Drew",
             'resources'   => [
-                ResourceRepositoryConfig::FOOD,
+                ResourceRepositoryConfig::FOOD => 600,
             ],
             'weight'      => 600,
             'icon'        => "utensils",
@@ -159,8 +160,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::TINNED_SOUP => [
             'label'       => "Tinned Soup",
             'resources'   => [
-                ResourceRepositoryConfig::FOOD,
-                ResourceRepositoryConfig::WATER,
+                ResourceRepositoryConfig::FOOD  => 600,
+                ResourceRepositoryConfig::WATER => 500,
             ],
             'weight'      => 600,
             'icon'        => "utensils",
@@ -172,7 +173,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::PRINGLE => [
             'label'       => "Pringle",
             'resources'   => [
-                ResourceRepositoryConfig::PRINGLES,
+                ResourceRepositoryConfig::PRINGLES => 1,
             ],
             'weight'      => 1,
             'icon'        => "moon",
@@ -183,9 +184,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         ],
         self::WOODEN_CRATE => [
             'label'       => "Wooden Crate",
-            'resources'   => [
-                ResourceRepositoryConfig::STORAGE,
-            ],
+            'resources'   => [],
             'weight'      => 4000,
             'icon'        => "box",
             'description' => "A sturdy crate crafted from wood in which items could be protected from the elements.",
@@ -362,12 +361,19 @@ final class VarietyRepositoryConfig implements VarietyRepository
             }
         }
 
+        $resourceContents = [];
+
+        foreach (self::VARIETIES[strval($id)]['resources'] as $resourceId => $amount) {
+            $resourceContents[] = new ResourceContent(
+                $this->resourceRepository->find(Uuid::fromString($resourceId)),
+                $amount
+            );
+        }
+
         return new Variety(
             $id,
             self::VARIETIES[strval($id)]['label'],
-            array_map(function (string $resourceId) {
-                return $this->resourceRepository->find(Uuid::fromString($resourceId));
-            }, self::VARIETIES[strval($id)]['resources']),
+            $resourceContents,
             self::VARIETIES[strval($id)]['weight'],
             self::VARIETIES[strval($id)]['icon'],
             self::VARIETIES[strval($id)]['description'],

@@ -15,7 +15,7 @@ final class Variety
     private $label;
 
     /** @var array */
-    private $resources;
+    private $resourceContents;
 
     /** @var int */
     private $weight;
@@ -32,7 +32,7 @@ final class Variety
     public function __construct(
         UuidInterface $id,
         string $label,
-        iterable $resources,
+        iterable $resourceContents,
         int $weight,
         string $icon,
         string $description,
@@ -44,15 +44,15 @@ final class Variety
         $this->icon = $icon;
         $this->description = $description;
 
-        $this->resources = [];
+        $this->resourceContents = [];
         $this->actions = [];
 
-        foreach ($resources as $resource) {
-            if (!$resource instanceof Resource) {
+        foreach ($resourceContents as $resourceContent) {
+            if (!$resourceContent instanceof ResourceContent) {
                 throw new DomainException;
             }
 
-            $this->resources[strval($resource->getId())] = $resource;
+            $this->resourceContents[strval($resourceContent->getResource()->getId())] = $resourceContent;
         }
 
         foreach ($actions as $action) {
@@ -76,7 +76,12 @@ final class Variety
 
     public function getResources(): iterable
     {
-        return $this->resources;
+        return array_map(
+            function (ResourceContent $resourceContent) {
+                return $resourceContent->getResource();
+            },
+            $this->resourceContents
+        );
     }
 
     public function getWeight(): int
