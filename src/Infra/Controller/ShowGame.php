@@ -68,7 +68,8 @@ final class ShowGame
             }
         }
 
-        $body = $this->renderGameTemplate($game, $human, [
+        $body = $this->renderTemplate("game.php", [
+            'isIntact'        => $entity->isIntact(),
             'alert'           => $this->presentAlert($this->session),
             'game'            => $this->presentGame($game),
             'entity'          => $this->presentEntity($human),
@@ -104,45 +105,6 @@ final class ShowGame
         }
 
         return null;
-    }
-
-    private function renderGameTemplate(Game $game, Entity $entity, array $variables): string
-    {
-        $isIntact = $entity->isIntact();
-
-        $variables = array_merge(
-            compact([
-                "gameId",
-                "danger",
-                "warning",
-                "success",
-                "info",
-                "turnIndex",
-                "resources",
-                "inventory",
-                "isIntact",
-                "inventoryWeight",
-                "entityOverencumbered",
-            ]),
-            $variables
-        );
-
-        return $this->renderTemplate("game.php", $variables);
-    }
-
-    private function renderTemplate(string $path, array $variables = []): string
-    {
-        extract($variables);
-
-        ob_start();
-
-        include __DIR__ . "/../Templates/{$path}";
-
-        $body = ob_get_contents();
-
-        ob_end_clean();
-
-        return $body;
     }
 
     private function presentEncodedEntities(iterable $entities): string
@@ -263,5 +225,20 @@ final class ShowGame
             'lastConsumedItem' => $lastConsumedItem,
             'items'            => $items,
         ];
+    }
+
+    private function renderTemplate(string $path, array $variables = []): string
+    {
+        extract($variables);
+
+        ob_start();
+
+        include __DIR__ . "/../Templates/{$path}";
+
+        $body = ob_get_contents();
+
+        ob_end_clean();
+
+        return $body;
     }
 }
