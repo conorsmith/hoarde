@@ -171,7 +171,7 @@ final class Entity
         }
     }
 
-    public function useItem(UuidInterface $id): Item
+    public function consumeItem(UuidInterface $id): Item
     {
         $this->beforeAction();
 

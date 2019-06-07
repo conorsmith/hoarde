@@ -81,7 +81,7 @@ final class HaveEntityConsumeResource
             return $response;
         }
 
-        $usedItem = $entity->useItem($chosenItem->getVariety()->getId());
+        $consumedItem = $entity->consumeItem($chosenItem->getVariety()->getId());
         $this->entityRepo->save($entity);
 
         $game->proceedToNextTurn();

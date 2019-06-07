@@ -13,7 +13,6 @@ use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use Zend\Diactoros\Response;
 
 final class HaveEntityUseItem
@@ -67,7 +66,7 @@ final class HaveEntityUseItem
         }
 
         if ($itemId->equals(Uuid::fromString(VarietyRepositoryConfig::SHOVEL))) {
-            $usedItem = $this->varietyRepo->find($itemId)
+            $consumedItem = $this->varietyRepo->find($itemId)
                 ->createItemWithQuantity(1);
 
             $hasRope = false;
@@ -117,7 +116,7 @@ final class HaveEntityUseItem
             $this->entityRepo->save($entity);
 
         } else {
-            $usedItem = $entity->useItem($itemId);
+            $consumedItem = $entity->consumeItem($itemId);
             $this->entityRepo->save($entity);
         }
 
@@ -126,8 +125,8 @@ final class HaveEntityUseItem
                 Uuid::uuid4(),
                 $gameId,
                 Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE),
-                $usedItem->getVariety()->getLabel(),
-                $usedItem->getVariety()->getIcon(),
+                $consumedItem->getVariety()->getLabel(),
+                $consumedItem->getVariety()->getIcon(),
                 true,
                 Construction::constructed(),
                 [],
