@@ -303,10 +303,7 @@
     <?=$this->renderTemplate("Game/modal-settings.php")?>
 
     <?=$this->renderTemplate("Game/modal-scavenge.php", [
-        'entity'               => $entity,
-        'entityOverencumbered' => $entity->inventory->isAtCapacity,
-        'inventoryWeight'      => $entity->inventory->weightPercentage,
-        'inventory'            => $entity->inventory->items,
+        'entity' => $entity,
     ])?>
 
     <?=$this->renderTemplate("Game/modal-transfer.php", [

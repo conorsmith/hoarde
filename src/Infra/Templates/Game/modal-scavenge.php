@@ -45,9 +45,9 @@
                         >
                             <div class="progress-bar
                                         js-scavenge-inventory-progress
-                                        <?=$entityOverencumbered ? "bg-danger" : "bg-primary"?>
+                                        <?=$entity->inventory->isAtCapacity ? "bg-danger" : "bg-primary"?>
                                  "
-                                 style="width: <?=$inventoryWeight?>%;"
+                                 style="width: <?=$entity->inventory->weightPercentage?>%;"
                             ></div>
                             <div class="progress-bar js-scavenge-inventory-haul-progress"></div>
                         </div>
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="js-scavenge-inventory-items" style="display: none; margin-top: 1.6rem;">
-                    <?php foreach ($inventory as $item) : ?>
+                    <?php foreach ($entity->inventory->items as $item) : ?>
                         <div class="item-slider d-flex">
                             <div class="align-self-center" style="margin-right: 1rem; white-space: nowrap;">
                                 <i class="fas fa-fw fa-<?=$item->icon?>"
