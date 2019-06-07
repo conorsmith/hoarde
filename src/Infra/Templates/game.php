@@ -30,14 +30,8 @@
       </ol>
     </nav>
 
-    <?php if (!is_null($danger)) : ?>
-      <div class="alert alert-danger"><?=$danger?></div>
-    <?php elseif (!is_null($warning)) : ?>
-      <div class="alert alert-warning"><?=$warning?></div>
-    <?php elseif (!is_null($success)) : ?>
-      <div class="alert alert-success"><?=$success?></div>
-    <?php elseif (!is_null($info)) : ?>
-      <div class="alert alert-info"><?=$info?></div>
+    <?php if (!is_null($alert)) : ?>
+      <div class="alert alert-<?=$alert->classSuffix?>"><?=$alert->message?></div>
     <?php endif ?>
 
   <div class="row justify-content-center">

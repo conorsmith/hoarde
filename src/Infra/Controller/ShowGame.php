@@ -68,6 +68,7 @@ final class ShowGame
         }
 
         $body = $this->renderGameTemplate($game, $human, [
+            'alert'           => $this->presentAlert($this->session),
             'game'            => $this->presentGame($game),
             'entity'          => $this->presentEntity($human),
             'crate'           => $this->presentEntity($crate),
@@ -83,13 +84,29 @@ final class ShowGame
         return $response;
     }
 
+    private function presentAlert(Segment $session): ?stdClass
+    {
+        $alertLevels = [
+            "danger"  => "danger",
+            "warning" => "warning",
+            "success" => "success",
+            "info"    => "info",
+        ];
+
+        foreach ($alertLevels as $alertLevel => $classSuffix) {
+            if ($session->getFlash($alertLevel)) {
+                return (object) [
+                    'message'     => $session->getFlash($alertLevel),
+                    'classSuffix' => $classSuffix,
+                ];
+            }
+        }
+
+        return null;
+    }
+
     private function renderGameTemplate(Game $game, Entity $entity, array $variables): string
     {
-        $danger = $this->session->getFlash("danger");
-        $warning = $this->session->getFlash("warning");
-        $success = $this->session->getFlash("success");
-        $info = $this->session->getflash("info");
-
         $resources = [];
         foreach ($entity->getResourceNeeds() as $resourceNeed) {
             $resource = $this->resourceRepo->find($resourceNeed->getResource()->getId());
