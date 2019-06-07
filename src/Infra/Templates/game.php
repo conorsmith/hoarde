@@ -65,14 +65,7 @@
         'entity' => $human,
     ])?>
 
-    <?php if (count($crates) > 0) : ?>
-      <?=$this->renderTemplate("Game/modal-transfer.php", [
-          'entities' => [
-              $human,
-              $crates[0],
-          ],
-      ])?>
-    <?php endif ?>
+    <?=$this->renderTemplate("Game/modal-transfer.php")?>
 
     <input type="hidden" id="gameId" value="<?=$game->id?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($human->inventory->items)?>' />

@@ -9,10 +9,9 @@
         </button>
       </div>
 
-      <?php foreach ($entities as $entity) : ?>
+      <?php for ($i = 0; $i < 2; $i++) : ?>
 
-        <div class="modal-body js-inventory"
-             data-entity-id="<?=$entity->id?>">
+        <div class="modal-body js-inventory">
 
           <div class="alert alert-danger js-error"
                style="display: none; margin-bottom: 1rem;"
@@ -57,7 +56,7 @@
 
         </div>
 
-      <?php endforeach ?>
+      <?php endfor ?>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

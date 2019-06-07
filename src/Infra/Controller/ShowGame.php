@@ -15,6 +15,7 @@ use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 use stdClass;
 use Zend\Diactoros\Response;
 
@@ -51,32 +52,32 @@ final class ShowGame
         $game = $this->gameRepo->find($gameId);
         $entityIds = $this->gameRepo->findEntityIds($gameId);
 
-        $crates = [];
-        $entities = [];
         $human = null;
+        $entities = [];
 
         foreach ($entityIds as $entityId) {
             $entity = $this->entityRepo->find($entityId);
+
             $entities[] = $entity;
-            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-                $crates[] = $entity;
-            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
+
+            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
                 $human = $entity;
             }
         }
 
+        if (is_null($human)) {
+            throw new RuntimeException("Game is missing human entity");
+        }
+
         $body = $this->renderTemplate("game.php", [
             'human'           => $this->presentEntity($human, $entities),
+            'isIntact'        => $human->isIntact(),
+            'alert'           => $this->presentAlert($this->session),
+            'game'            => $this->presentGame($game),
             'entities'        => array_map(function (Entity $entity) use ($entities) {
                 return $this->presentEntity($entity, $entities);
             }, $entities),
-            'isIntact'        => $entity->isIntact(),
-            'alert'           => $this->presentAlert($this->session),
-            'game'            => $this->presentGame($game),
-            'crates'          => array_map(function ($crate) use ($entities) {
-                return $this->presentEntity($crate, $entities);
-            }, $crates),
-            'encodedEntities' => $this->presentEncodedEntities($entities),
+            'encodedEntities' => $this->jsonEncodeEntities($entities),
         ]);
 
         $response = new Response;
@@ -103,19 +104,6 @@ final class ShowGame
         }
 
         return null;
-    }
-
-    private function presentEncodedEntities(iterable $entities): string
-    {
-        $presentedEntities = [];
-
-        foreach ($entities as $entity) {
-            if (!is_null($entity)) {
-                $presentedEntities[] = $this->presentEntity($entity, $entities);
-            }
-        }
-
-        return json_encode($presentedEntities);
     }
 
     private function presentGame(Game $game): stdClass
@@ -251,6 +239,19 @@ final class ShowGame
             'lastConsumedItem' => $lastConsumedItem,
             'items'            => $items,
         ];
+    }
+
+    private function jsonEncodeEntities(iterable $entities): string
+    {
+        $presentation = [];
+
+        foreach ($entities as $entity) {
+            if (!is_null($entity)) {
+                $presentation[] = $this->transformEntityForPresentation($entity);
+            }
+        }
+
+        return json_encode($presentation);
     }
 
     private function renderTemplate(string $path, array $variables = []): string
