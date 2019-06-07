@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Infra\Repository;
 
-use ConorSmith\Hoarde\Domain\Action;
+use ConorSmith\Hoarde\Domain\ActionRepository;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\Variety;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
@@ -336,14 +336,19 @@ final class VarietyRepositoryConfig implements VarietyRepository
         ],
     ];
 
+    /** @var ResourceRepository */
     private $resourceRepository;
 
-    public function __construct(ResourceRepository $resourceRepository)
+    /** @var ActionRepository */
+    private $actionRepository;
+
+    public function __construct(ResourceRepository $resourceRepository, ActionRepository $actionRepository)
     {
         $this->resourceRepository = $resourceRepository;
+        $this->actionRepository = $actionRepository;
     }
 
-        public function find(UuidInterface $id): ?Variety
+    public function find(UuidInterface $id): ?Variety
     {
         if (!array_key_exists(strval($id), self::VARIETIES)) {
             return null;
@@ -353,34 +358,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
 
         if (array_key_exists('actions', self::VARIETIES[strval($id)])) {
             foreach (self::VARIETIES[strval($id)]['actions'] as $actionId) {
-                if ($actionId === ActionRepositoryConfig::CONSUME) {
-                    $actions[] = new Action(
-                        Uuid::fromString(ActionRepositoryConfig::CONSUME),
-                        "Consume",
-                        "drumstick-bite",
-                        [
-                            Uuid::fromString(self::HUMAN),
-                        ]
-                    );
-                } elseif ($actionId === ActionRepositoryConfig::DIG) {
-                    $actions[] = new Action(
-                        Uuid::fromString(ActionRepositoryConfig::DIG),
-                        "Dig",
-                        "tools",
-                        [
-                            Uuid::fromString(self::HUMAN),
-                        ]
-                    );
-                } elseif ($actionId === ActionRepositoryConfig::PLACE) {
-                    $actions[] = new Action(
-                        Uuid::fromString(ActionRepositoryConfig::PLACE),
-                        "Place",
-                        "people-carry",
-                        [
-                            Uuid::fromString(self::HUMAN),
-                        ]
-                    );
-                }
+                $actions[] = $this->actionRepository->find(Uuid::fromString($actionId));
             }
         }
 

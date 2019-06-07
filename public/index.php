@@ -18,7 +18,7 @@ $db = Doctrine\DBAL\DriverManager::getConnection([
 
 $gameRepo = new ConorSmith\Hoarde\Infra\Repository\GameRepositoryDb($db);
 $resourceRepo = new ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
-$varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig($resourceRepo);
+$varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig($resourceRepo, new ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig);
 $entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $varietyRepo, $resourceRepo);
 $scavengingHaulRepo = new \ConorSmith\Hoarde\Infra\Repository\ScavengingHaulRepositoryDb($db, $varietyRepo);
 
