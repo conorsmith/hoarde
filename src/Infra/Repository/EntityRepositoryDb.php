@@ -18,9 +18,15 @@ use Throwable;
 final class EntityRepositoryDb implements EntityRepository
 {
     private const RESOURCE_MAXIMUMS_FOR_ENTITY = [
-        "9972c015-842a-4601-8fb2-c900e1a54177" => 5,
-        "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => 10,
-        "5234c112-05be-4b15-80df-3c2b67e88262" => 12,
+        ResourceRepositoryConfig::WATER    => 5,
+        ResourceRepositoryConfig::FOOD     => 10,
+        ResourceRepositoryConfig::PRINGLES => 12,
+    ];
+
+    private const RESOURCE_AMOUNTS_FOR_ENTITY = [
+        ResourceRepositoryConfig::WATER    => 100,
+        ResourceRepositoryConfig::FOOD     => 60,
+        ResourceRepositoryConfig::PRINGLES => 1,
     ];
 
     private const CONSTRUCTION_MAXIMUMS_FOR_ENTITY = [
@@ -85,6 +91,7 @@ final class EntityRepositoryDb implements EntityRepository
                 $this->resourceRepository->find(Uuid::fromString($row['resource_id'])),
                 intval($row['level']),
                 self::RESOURCE_MAXIMUMS_FOR_ENTITY[$row['resource_id']],
+                self::RESOURCE_AMOUNTS_FOR_ENTITY[$row['resource_id']],
                 is_null($row['last_consumed_variety_id'])
                     ? null
                     : Uuid::fromString($row['last_consumed_variety_id'])

@@ -16,6 +16,9 @@ final class ResourceNeed
     /** @var int */
     private $maximumLevel;
 
+    /** @var int */
+    private $amountPerLevel;
+
     /** @var ?UuidInterface */
     private $lastConsumedVarietyId;
 
@@ -23,11 +26,13 @@ final class ResourceNeed
         Resource $resource,
         int $currentLevel,
         int $maximumLevel,
+        int $amountPerLevel,
         ?UuidInterface $lastConsumedVarietyId
     ) {
         $this->resource = $resource;
         $this->currentLevel = $currentLevel;
         $this->maximumLevel = $maximumLevel;
+        $this->amountPerLevel = $amountPerLevel;
         $this->lastConsumedVarietyId = $lastConsumedVarietyId;
     }
 
@@ -73,6 +78,7 @@ final class ResourceNeed
             $this->resource,
             $newLevel,
             $this->maximumLevel,
+            $this->amountPerLevel,
             $this->lastConsumedVarietyId
         );
     }
@@ -81,9 +87,7 @@ final class ResourceNeed
     {
         $resourceContent = $variety->findResourceContent($this->resource);
 
-        $amountPerLevel = 100;
-
-        $levelsReplenished = intval(floor($resourceContent->getAmount() / $amountPerLevel));
+        $levelsReplenished = intval(floor($resourceContent->getAmount() / $this->amountPerLevel));
 
         return new self(
             $this->resource,
@@ -92,6 +96,7 @@ final class ResourceNeed
                 $this->maximumLevel
             ),
             $this->maximumLevel,
+            $this->amountPerLevel,
             $variety->getId()
         );
     }

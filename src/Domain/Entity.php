@@ -199,8 +199,8 @@ final class Entity
         if (!$this->needsPringles()) {
             $resourceRepository = new ResourceRepositoryConfig;
 
-            $this->resourceNeeds["5234c112-05be-4b15-80df-3c2b67e88262"] = new ResourceNeed(
-                $resourceRepository->find(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262")),
+            $this->resourceNeeds[ResourceRepositoryConfig::PRINGLES] = new ResourceNeed(
+                $resourceRepository->find(Uuid::fromString(ResourceRepositoryConfig::PRINGLES)),
                 12,
                 12,
                 Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262")
@@ -357,16 +357,18 @@ final class Entity
         $this->isIntact = true;
 
         $this->resourceNeeds = [
-            "6f5cc44d-db25-454a-b3fb-4ab3f61ce179" => new ResourceNeed(
-                $resourceRepository->find(Uuid::fromString("6f5cc44d-db25-454a-b3fb-4ab3f61ce179")),
+            ResourceRepositoryConfig::FOOD => new ResourceNeed(
+                $resourceRepository->find(Uuid::fromString(ResourceRepositoryConfig::FOOD)),
                 3,
                 0, // Hack
+                60,
                 null
             ),
-            "9972c015-842a-4601-8fb2-c900e1a54177" => new ResourceNeed(
-                $resourceRepository->find(Uuid::fromString("9972c015-842a-4601-8fb2-c900e1a54177")),
+            ResourceRepositoryConfig::WATER => new ResourceNeed(
+                $resourceRepository->find(Uuid::fromString(ResourceRepositoryConfig::WATER)),
                 3,
                 0, // Hack
+                100,
                 null
             )
         ];
