@@ -181,10 +181,14 @@ final class ShowGame
         if ($presentation->inventory) {
 
             if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
-                $presentation->inventory->initialTransferEntityId = $this->getFirstEntityOfVariety(
+                $crate = $this->getFirstEntityOfVariety(
                     $entities,
                     Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE)
-                )->getId();
+                );
+
+                if (!is_null($crate)) {
+                    $presentation->inventory->initialTransferEntityId = $crate->getId();
+                }
 
             } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
                 $presentation->inventory->initialTransferEntityId = $this->getFirstEntityOfVariety(
