@@ -10,6 +10,7 @@ use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\Item;
 use ConorSmith\Hoarde\Domain\Resource;
+use ConorSmith\Hoarde\Domain\ResourceNeed;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
@@ -107,44 +108,6 @@ final class ShowGame
 
     private function renderGameTemplate(Game $game, Entity $entity, array $variables): string
     {
-        $resources = [];
-        foreach ($entity->getResourceNeeds() as $resourceNeed) {
-            $resource = $this->resourceRepo->find($resourceNeed->getResource()->getId());
-
-            $items = [];
-
-            $lastConsumedVarietyId = $resourceNeed->getLastConsumedVarietyId();
-            $lastConsumedItem = null;
-
-            if (!is_null($lastConsumedVarietyId)) {
-                foreach ($entity->getInventory() as $item) {
-                    if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
-                        $lastConsumedItem = (object) $this->presentItem($item);
-                    }
-                }
-            }
-
-            foreach ($entity->getInventory() as $item) {
-                foreach ($item->getVariety()->getResources() as $itemResource) {
-                    if ($itemResource->getId()->equals($resource->getId())
-                        && !$item->getVariety()->getId()->equals($lastConsumedVarietyId)
-                    ) {
-                        $items[] = (object) $this->presentItem($item);
-                    }
-                }
-            }
-
-            $resources[] = [
-                'id'               => $resource->getId(),
-                'label'            => $resource->getLabel(),
-                'level'            => $resourceNeed->getCurrentLevel(),
-                'segmentWidth'     => 100 / $resourceNeed->getMaximumLevel(),
-                'noItems'          => is_null($lastConsumedItem) && count($items) === 0,
-                'lastConsumedItem' => $lastConsumedItem,
-                'items'            => $items,
-            ];
-        }
-
         $inventory = [];
         foreach ($entity->getInventory() as $item) {
             $inventory[] = $this->presentItem($item);
@@ -217,6 +180,12 @@ final class ShowGame
             return null;
         }
 
+        $resourceNeeds = [];
+
+        foreach ($entity->getResourceNeeds() as $resourceNeed) {
+            $resourceNeeds[] = $this->presentResourceNeed($entity, $resourceNeed);
+        }
+
         $items = [];
 
         foreach ($entity->getInventory() as $item) {
@@ -234,6 +203,7 @@ final class ShowGame
             'isConstructed'              => $entity->getConstruction()->isConstructed(),
             'remainingConstructionSteps' => $entity->getConstruction()->getRemainingSteps(),
             'requiredConstructionSteps'  => $entity->getConstruction()->getRequiredSteps(),
+            'resourceNeeds'              => $resourceNeeds,
         ];
 
         if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
@@ -261,6 +231,44 @@ final class ShowGame
                 return $resource->getLabel();
             }, $item->getVariety()->getResources())),
             'description'   => nl2br($item->getVariety()->getDescription()),
+        ];
+    }
+
+    private function presentResourceNeed(Entity $entity, ResourceNeed $resourceNeed): stdClass
+    {
+        $resource = $this->resourceRepo->find($resourceNeed->getResource()->getId());
+
+        $items = [];
+
+        $lastConsumedVarietyId = $resourceNeed->getLastConsumedVarietyId();
+        $lastConsumedItem = null;
+
+        if (!is_null($lastConsumedVarietyId)) {
+            foreach ($entity->getInventory() as $item) {
+                if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
+                    $lastConsumedItem = (object) $this->presentItem($item);
+                }
+            }
+        }
+
+        foreach ($entity->getInventory() as $item) {
+            foreach ($item->getVariety()->getResources() as $itemResource) {
+                if ($itemResource->getId()->equals($resource->getId())
+                    && !$item->getVariety()->getId()->equals($lastConsumedVarietyId)
+                ) {
+                    $items[] = (object) $this->presentItem($item);
+                }
+            }
+        }
+
+        return (object) [
+            'id'               => $resource->getId(),
+            'label'            => $resource->getLabel(),
+            'level'            => $resourceNeed->getCurrentLevel(),
+            'segmentWidth'     => 100 / $resourceNeed->getMaximumLevel(),
+            'noItems'          => is_null($lastConsumedItem) && count($items) === 0,
+            'lastConsumedItem' => $lastConsumedItem,
+            'items'            => $items,
         ];
     }
 }
