@@ -79,9 +79,18 @@ final class ResourceNeed
 
     public function replenish(Variety $variety): self
     {
+        $resourceContent = $variety->findResourceContent($this->resource);
+
+        $amountPerLevel = 100;
+
+        $levelsReplenished = intval(floor($resourceContent->getAmount() / $amountPerLevel));
+
         return new self(
             $this->resource,
-            $this->maximumLevel,
+            min(
+                $this->currentLevel + $levelsReplenished,
+                $this->maximumLevel
+            ),
             $this->maximumLevel,
             $variety->getId()
         );

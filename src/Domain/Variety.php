@@ -108,4 +108,13 @@ final class Variety
     {
         return new Item($this, $quantity);
     }
+
+    public function findResourceContent(Resource $resource): ?ResourceContent
+    {
+        if (!array_key_exists(strval($resource->getId()), $this->resourceContents)) {
+            return null;
+        }
+
+        return $this->resourceContents[strval($resource->getId())];
+    }
 }
