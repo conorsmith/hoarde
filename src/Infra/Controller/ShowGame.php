@@ -110,9 +110,6 @@ final class ShowGame
     {
         $isIntact = $entity->isIntact();
 
-        $inventoryWeight = $entity->getInventoryWeight() / $entity->getInventoryCapacity() * 100;
-        $entityOverencumbered = $entity->isOverencumbered();
-
         $variables = array_merge(
             compact([
                 "gameId",
@@ -202,11 +199,12 @@ final class ShowGame
         ];
 
         if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            $presentation->inventory = (object) [
-                'weight'       => $entity->getInventoryWeight(),
-                'capacity'     => $entity->getInventoryCapacity(),
-                'isAtCapacity' => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
-                'items'        => $items,
+            $presentation->inventory = (object)[
+                'weight'           => $entity->getInventoryWeight(),
+                'capacity'         => $entity->getInventoryCapacity(),
+                'isAtCapacity'     => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
+                'weightPercentage' => $entity->getInventoryWeight() / $entity->getInventoryCapacity() * 100,
+                'items'            => $items,
             ];
         }
 
