@@ -194,7 +194,8 @@ final class ShowGame
         ];
     }
 
-    private function presentEntity(?Entity $entity) {
+    private function presentEntity(?Entity $entity): ?stdClass
+    {
         if (is_null($entity)) {
             return null;
         }
@@ -219,7 +220,7 @@ final class ShowGame
         ];
 
         if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            $presentation->inventory = (object)[
+            $presentation->inventory = (object) [
                 'weight'       => $entity->getInventoryWeight(),
                 'capacity'     => $entity->getInventoryCapacity(),
                 'isAtCapacity' => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
