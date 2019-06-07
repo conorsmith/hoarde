@@ -1,5 +1,7 @@
 
 var gameId = document.getElementById("gameId").value;
+var entities = JSON.parse(document.getElementById("entities").value);
+
 var useButtons = document.getElementsByClassName("js-use");
 var consumeButtons = document.getElementsByClassName("js-consume");
 var infoButtons = document.getElementsByClassName("js-info");
@@ -14,22 +16,29 @@ $(function () {
 });
 
 $("#dropModal").on("show.bs.modal", function (e) {
-    var button = e.relatedTarget;
-    e.target.dataset.itemId = button.dataset.itemId;
-    e.target.dataset.entityId = button.dataset.entityId;
-    e.target.querySelector(".js-drop-title").innerHTML = "Drop " + button.dataset.itemLabel;
+    let button = e.relatedTarget;
+
+    let entity = entities.find(function (entity) {
+        return entity.id === button.dataset.entityId;
+    });
+
+    let item = entity.inventory.items.find(function (item) {
+        return item.varietyId === button.dataset.itemId;
+    });
+
+    e.target.dataset.itemId = item.varietyId;
+    e.target.dataset.entityId = entity.id;
+    e.target.querySelector(".js-drop-title").innerHTML = "Drop " + item.label;
     e.target.querySelector(".js-drop-submit").innerHTML = "Drop 0";
     document.getElementById("js-drop-slider").value = 0;
-    document.getElementById("js-drop-slider").max = button.dataset.itemQuantity;
+    document.getElementById("js-drop-slider").max = item.quantity;
     document.getElementById("js-drop-tickmarks").innerHTML = "";
-    for (var i = 0; i <= button.dataset.itemQuantity; i++) {
+    for (var i = 0; i <= item.quantity; i++) {
         var tickmark = document.createElement("option");
         tickmark.value = i;
         document.getElementById("js-drop-tickmarks").appendChild(tickmark);
     }
 });
-
-var entities = JSON.parse(document.getElementById("entities").value);
 
 $("#settingsModal").on("show.bs.modal", function (e) {
     let entity;

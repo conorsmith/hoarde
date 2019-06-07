@@ -57,8 +57,6 @@
                    data-target="#dropModal"
                    data-entity-id="<?=$entity->id?>"
                    data-item-id="<?=$item->varietyId?>"
-                   data-item-label="<?=$item->label?>"
-                   data-item-quantity="<?=$item->quantity?>"
                 >
                     <i class="fas fa-fw fa-trash"></i>
                     Drop
