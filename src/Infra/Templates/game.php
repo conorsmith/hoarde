@@ -177,14 +177,14 @@
 
                     <div class="actions">
 
-                      <?php if ($crate) : ?>
+                      <?php if (count($crates) > 0) : ?>
 
                           <button type="button"
                                   class="btn btn-light btn-block js-transfer"
                                   data-toggle="modal"
                                   data-target="#transferModal"
                                   data-source-id="<?=$entity->id?>"
-                                  data-destination-id="<?=$crate->id?>"
+                                  data-destination-id="<?=$crates[0]->id?>"
                               <?=($isIntact ? "" : "disabled")?>
                           >Transfer Items</button>
 
@@ -306,12 +306,14 @@
         'entity' => $entity,
     ])?>
 
-    <?=$this->renderTemplate("Game/modal-transfer.php", [
-        'entities' => [
-            $entity,
-            $crate,
-        ],
-    ])?>
+    <?php if (count($crates) > 0) : ?>
+      <?=$this->renderTemplate("Game/modal-transfer.php", [
+          'entities' => [
+              $entity,
+              $crates[0],
+          ],
+      ])?>
+    <?php endif ?>
 
     <input type="hidden" id="gameId" value="<?=$game->id?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($entity->inventory->items)?>' />

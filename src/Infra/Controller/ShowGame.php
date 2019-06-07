@@ -61,7 +61,6 @@ final class ShowGame
             if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
                 $human = $entity;
             } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-                $crate = $entity;
                 $crates[] = $entity;
             } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
                 $well = $entity;
@@ -73,7 +72,6 @@ final class ShowGame
             'alert'           => $this->presentAlert($this->session),
             'game'            => $this->presentGame($game),
             'entity'          => $this->presentEntity($human),
-            'crate'           => $this->presentEntity($crate),
             'crates'          => array_map(function ($crate) {
                 return $this->presentEntity($crate);
             }, $crates),
