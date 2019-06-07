@@ -20,10 +20,10 @@
 
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb d-flex justify-content-between">
-        <div class="text-muted align-self-center">Turn <?=$turnIndex?></div>
+        <div class="text-muted align-self-center">Turn <?=$game->turnIndex?></div>
         <div class="text-muted align-self-center" style="font-weight: 900; font-size: 0.8rem;">HOARDE</div>
         <div>
-          <form method="POST" action="/<?=$gameId?>/restart">
+          <form method="POST" action="/<?=$game->id?>/restart">
             <button type="submit" class="btn btn-link btn-sm">Restart</button>
           </form>
         </div>
@@ -322,7 +322,7 @@
         ],
     ])?>
 
-    <input type="hidden" id="gameId" value="<?=$gameId?>" />
+    <input type="hidden" id="gameId" value="<?=$game->id?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($inventory)?>' />
     <input type="hidden" id="entities" value='<?=$encodedEntities?>' />
 

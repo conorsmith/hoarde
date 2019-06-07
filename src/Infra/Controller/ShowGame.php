@@ -14,6 +14,7 @@ use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
+use stdClass;
 use Zend\Diactoros\Response;
 
 final class ShowGame
@@ -67,6 +68,7 @@ final class ShowGame
         }
 
         $body = $this->renderGameTemplate($game, $human, [
+            'game'            => $this->presentGame($game),
             'entity'          => $this->presentEntity($human),
             'crate'           => $this->presentEntity($crate),
             'crates'          => array_map(function ($crate) {
@@ -83,14 +85,10 @@ final class ShowGame
 
     private function renderGameTemplate(Game $game, Entity $entity, array $variables): string
     {
-        $gameId = $game->getId();
-
         $danger = $this->session->getFlash("danger");
         $warning = $this->session->getFlash("warning");
         $success = $this->session->getFlash("success");
         $info = $this->session->getflash("info");
-
-        $turnIndex = $game->getTurnIndex();
 
         $resources = [];
         foreach ($entity->getResourceNeeds() as $resourceNeed) {
@@ -186,6 +184,14 @@ final class ShowGame
         }
 
         return json_encode($presentedEntities);
+    }
+
+    private function presentGame(Game $game): stdClass
+    {
+        return (object) [
+            'id'        => $game->getId(),
+            'turnIndex' => $game->getTurnIndex(),
+        ];
     }
 
     private function presentEntity(?Entity $entity) {
