@@ -51,32 +51,29 @@ final class ShowGame
         $game = $this->gameRepo->find($gameId);
         $entityIds = $this->gameRepo->findEntityIds($gameId);
 
-        $human = null;
-        $crate = null;
-        $well = null;
         $crates = [];
+        $entities = [];
 
         foreach ($entityIds as $entityId) {
             $entity = $this->entityRepo->find($entityId);
-            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
-                $human = $entity;
-            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
+            $entities[] = $entity;
+            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
                 $crates[] = $entity;
-            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-                $well = $entity;
             }
         }
 
         $body = $this->renderTemplate("game.php", [
+            'human'           => $this->presentEntity($entity),
+            'entities'        => array_map(function (Entity $entity) {
+                return $this->presentEntity($entity);
+            }, $entities),
             'isIntact'        => $entity->isIntact(),
             'alert'           => $this->presentAlert($this->session),
             'game'            => $this->presentGame($game),
-            'entity'          => $this->presentEntity($human),
             'crates'          => array_map(function ($crate) {
                 return $this->presentEntity($crate);
             }, $crates),
-            'well'            => $this->presentEntity($well),
-            'encodedEntities' => $this->presentEncodedEntities(array_merge([$human, $well], $crates)),
+            'encodedEntities' => $this->presentEncodedEntities($entities),
         ]);
 
         $response = new Response;

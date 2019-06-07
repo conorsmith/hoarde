@@ -36,31 +36,27 @@
 
   <div class="row justify-content-center">
 
-      <?=$this->renderTemplate("Game/entity-human.php", [
-          'entity'                => $entity,
-          'defaultTransferEntity' => count($crates) ? $crates[0] : null,
-          'isIntact'              => $isIntact,
-      ])?>
-
-      <?php foreach ($crates as $crate) : ?>
-
-          <?=$this->renderTemplate("Game/entity-crate.php", [
-              'entity'                => $crate,
-              'defaultTransferEntity' => $entity,
-              'isIntact'              => $isIntact,
-          ])?>
-
+      <?php foreach ($entities as $entity) : ?>
+          <?php if ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::HUMAN) : ?>
+              <?=$this->renderTemplate("Game/entity-human.php", [
+                  'entity'                => $entity,
+                  'defaultTransferEntity' => count($crates) ? $crates[0] : null,
+                  'isIntact'              => $isIntact,
+              ])?>
+          <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::WOODEN_CRATE) : ?>
+              <?=$this->renderTemplate("Game/entity-crate.php", [
+                  'entity'                => $entity,
+                  'defaultTransferEntity' => $human,
+                  'isIntact'              => $isIntact,
+              ])?>
+          <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::WELL) : ?>
+              <?=$this->renderTemplate("Game/entity-well.php", [
+                  'entity'   => $entity,
+                  'actor'    => $human,
+                  'isIntact' => $isIntact,
+              ])?>
+          <?php endif ?>
       <?php endforeach ?>
-
-      <?php if ($well) : ?>
-
-          <?=$this->renderTemplate("Game/entity-well.php", [
-              'entity'   => $well,
-              'actor'    => $entity,
-              'isIntact' => $isIntact,
-          ])?>
-
-      <?php endif ?>
 
     </div>
 
@@ -68,20 +64,20 @@
     <?=$this->renderTemplate("Game/modal-settings.php")?>
 
     <?=$this->renderTemplate("Game/modal-scavenge.php", [
-        'entity' => $entity,
+        'entity' => $human,
     ])?>
 
     <?php if (count($crates) > 0) : ?>
       <?=$this->renderTemplate("Game/modal-transfer.php", [
           'entities' => [
-              $entity,
+              $human,
               $crates[0],
           ],
       ])?>
     <?php endif ?>
 
     <input type="hidden" id="gameId" value="<?=$game->id?>" />
-    <input type="hidden" id="inventoryItems" value='<?=json_encode($entity->inventory->items)?>' />
+    <input type="hidden" id="inventoryItems" value='<?=json_encode($human->inventory->items)?>' />
     <input type="hidden" id="entities" value='<?=$encodedEntities?>' />
 
     <?=$this->renderTemplate("Game/template-scavenge-item-slider.php")?>
