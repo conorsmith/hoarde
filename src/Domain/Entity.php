@@ -152,6 +152,11 @@ final class Entity
         $this->label = $label;
     }
 
+    public function hasInventory(): bool
+    {
+        return !$this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WELL));
+    }
+
     private function beforeAction(): void
     {
         $this->consumeResources();

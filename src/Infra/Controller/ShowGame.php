@@ -15,6 +15,7 @@ use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 use stdClass;
 use Zend\Diactoros\Response;
@@ -56,10 +57,10 @@ final class ShowGame
         $entities = [];
 
         foreach ($entityIds as $entityId) {
-            $entity = $this->entityRepo->find($entityId);
+            $entities[] = $this->entityRepo->find($entityId);
+        }
 
-            $entities[] = $entity;
-
+        foreach ($entities as $entity) {
             if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
                 $human = $entity;
             }
@@ -116,34 +117,6 @@ final class ShowGame
 
     private function presentEntity(Entity $entity, iterable $entities): stdClass
     {
-        $presentation = $this->transformEntityForPresentation($entity);
-
-        if ($presentation->inventory) {
-
-            $presentation->inventory->defaultTransferEntity = null;
-
-            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
-                foreach ($entities as $otherEntity) {
-                    if ($otherEntity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-                        $presentation->inventory->defaultTransferEntity
-                            = $this->transformEntityForPresentation($otherEntity);
-                    }
-                }
-            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-                foreach ($entities as $otherEntity) {
-                    if ($otherEntity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
-                        $presentation->inventory->defaultTransferEntity
-                            = $this->transformEntityForPresentation($otherEntity);
-                    }
-                }
-            }
-        }
-
-        return $presentation;
-    }
-
-    private function transformEntityForPresentation(Entity $entity): stdClass
-    {
         $resourceNeeds = [];
 
         foreach ($entity->getResourceNeeds() as $resourceNeed) {
@@ -170,7 +143,7 @@ final class ShowGame
             'resourceNeeds'              => $resourceNeeds,
         ];
 
-        if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
+        if ($entity->hasInventory()) {
             $presentation->inventory = (object) [
                 'weight'                => $entity->getInventoryWeight(),
                 'capacity'              => $entity->getInventoryCapacity(),
@@ -180,7 +153,37 @@ final class ShowGame
             ];
         }
 
+        if ($presentation->inventory) {
+
+            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
+                $presentation->inventory->initialTransferEntityId = $this->getFirstEntityOfVariety(
+                    $entities,
+                    Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE)
+                )->getId();
+
+            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
+                $presentation->inventory->initialTransferEntityId = $this->getFirstEntityOfVariety(
+                    $entities,
+                    Uuid::fromString(VarietyRepositoryConfig::HUMAN)
+                )->getId();
+
+            } else {
+                $presentation->inventory->initialTransferEntityId = null;
+            }
+        }
+
         return $presentation;
+    }
+
+    private function getFirstEntityOfVariety(iterable $entities, UuidInterface $varietyId): ?Entity
+    {
+        foreach ($entities as $entity) {
+            if ($entity->getVarietyId()->equals($varietyId)) {
+                return $entity;
+            }
+        }
+
+        return null;
     }
 
     private function presentItem(Item $item): ?stdClass
@@ -243,7 +246,7 @@ final class ShowGame
 
         foreach ($entities as $entity) {
             if (!is_null($entity)) {
-                $presentation[] = $this->transformEntityForPresentation($entity);
+                $presentation[] = $this->presentEntity($entity, $entities);
             }
         }
 

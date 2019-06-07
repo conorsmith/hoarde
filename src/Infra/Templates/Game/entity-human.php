@@ -140,14 +140,14 @@
 
             <div class="actions">
 
-                <?php if ($entity->inventory->defaultTransferEntity) : ?>
+                <?php if ($entity->inventory->initialTransferEntityId) : ?>
 
                     <button type="button"
                             class="btn btn-light btn-block js-transfer"
                             data-toggle="modal"
                             data-target="#transferModal"
                             data-source-id="<?=$entity->id?>"
-                            data-destination-id="<?=$entity->inventory->defaultTransferEntity->id?>"
+                            data-destination-id="<?=$entity->inventory->initialTransferEntityId?>"
                         <?=($isIntact ? "" : "disabled")?>
                     >Transfer Items</button>
 

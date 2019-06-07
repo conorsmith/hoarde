@@ -33,7 +33,7 @@
                         data-toggle="modal"
                         data-target="#transferModal"
                         data-source-id="<?=$entity->id?>"
-                        data-destination-id="<?=$entity->inventory->defaultTransferEntity->id?>"
+                        data-destination-id="<?=$entity->inventory->initialTransferEntityId?>"
                     <?=($isIntact ? "" : "disabled")?>
                 >Transfer Items</button>
 
