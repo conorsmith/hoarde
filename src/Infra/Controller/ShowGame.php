@@ -114,12 +114,8 @@ final class ShowGame
         ];
     }
 
-    private function presentEntity(?Entity $entity, iterable $entities): ?stdClass
+    private function presentEntity(Entity $entity, iterable $entities): stdClass
     {
-        if (is_null($entity)) {
-            return null;
-        }
-
         $presentation = $this->transformEntityForPresentation($entity);
 
         if ($presentation->inventory) {
