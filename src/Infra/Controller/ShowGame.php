@@ -157,7 +157,7 @@ final class ShowGame
         $items = [];
 
         foreach ($entity->getInventory() as $item) {
-            $items[] = (object) $this->presentItem($item);
+            $items[] = $this->presentItem($item);
         }
 
         $presentation = (object) [
@@ -187,9 +187,9 @@ final class ShowGame
         return $presentation;
     }
 
-    private function presentItem(Item $item): array
+    private function presentItem(Item $item): ?stdClass
     {
-        return [
+        return (object) [
             'id'            => $item->getVariety()->getId(),
             'varietyId'     => $item->getVariety()->getId(),
             'label'         => $item->getVariety()->getLabel(),
@@ -215,7 +215,7 @@ final class ShowGame
         if (!is_null($lastConsumedVarietyId)) {
             foreach ($entity->getInventory() as $item) {
                 if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
-                    $lastConsumedItem = (object) $this->presentItem($item);
+                    $lastConsumedItem = $this->presentItem($item);
                 }
             }
         }
@@ -225,7 +225,7 @@ final class ShowGame
                 if ($itemResource->getId()->equals($resource->getId())
                     && !$item->getVariety()->getId()->equals($lastConsumedVarietyId)
                 ) {
-                    $items[] = (object) $this->presentItem($item);
+                    $items[] = $this->presentItem($item);
                 }
             }
         }
