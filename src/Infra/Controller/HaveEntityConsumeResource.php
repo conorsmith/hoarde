@@ -81,11 +81,8 @@ final class HaveEntityConsumeResource
             return $response;
         }
 
-        $consumedItem = $entity->consumeItem($chosenItem->getVariety()->getId());
+        $entity->consumeItem($chosenItem->getVariety()->getId());
         $this->entityRepo->save($entity);
-
-        $game->proceedToNextTurn();
-        $this->gameRepo->save($game);
 
         if (!$entity->isIntact()) {
             $this->session->setFlash("danger", "{$entity->getLabel()} has expired");

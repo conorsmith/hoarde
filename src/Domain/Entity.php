@@ -173,8 +173,6 @@ final class Entity
 
     public function consumeItem(UuidInterface $id): Item
     {
-        $this->beforeAction();
-
         $item = $this->inventory[strval($id)];
 
         foreach ($item->getVariety()->getResources() as $resource) {
@@ -187,8 +185,6 @@ final class Entity
         }
 
         $this->removeQuantityFromItem(1, $item);
-
-        $this->afterAction();
 
         return $item;
     }

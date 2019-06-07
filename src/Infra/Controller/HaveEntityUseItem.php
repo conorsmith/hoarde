@@ -115,6 +115,9 @@ final class HaveEntityUseItem
 
             $this->entityRepo->save($entity);
 
+            $game->proceedToNextTurn();
+            $this->gameRepo->save($game);
+
         } else {
             $consumedItem = $entity->consumeItem($itemId);
             $this->entityRepo->save($entity);
@@ -134,10 +137,10 @@ final class HaveEntityUseItem
             );
 
             $this->entityRepo->save($crate);
-        }
 
-        $game->proceedToNextTurn();
-        $this->gameRepo->save($game);
+            $game->proceedToNextTurn();
+            $this->gameRepo->save($game);
+        }
 
         if (!$entity->isIntact()) {
             $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
