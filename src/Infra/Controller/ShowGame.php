@@ -12,6 +12,7 @@ use ConorSmith\Hoarde\Domain\Item;
 use ConorSmith\Hoarde\Domain\Resource;
 use ConorSmith\Hoarde\Domain\ResourceNeed;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
+use ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
@@ -126,7 +127,31 @@ final class ShowGame
         $items = [];
 
         foreach ($entity->getInventory() as $item) {
-            $items[] = $this->presentItem($item);
+            $presentedItem = $this->presentItem($item);
+            $presentedItem->actions = [];
+
+            foreach ($item->getVariety()->getActions() as $action) {
+                if ($action->canBePerformedBy($entity->getVarietyId())) {
+                    switch (strval($action->getId())) {
+                        case ActionRepositoryConfig::CONSUME:
+                        case ActionRepositoryConfig::DIG:
+                        case ActionRepositoryConfig::PLACE:
+                            $jsClass = "js-use";
+                            break;
+                        default:
+                            $jsClass = "";
+                    }
+
+                    $presentedItem->actions[] = (object)[
+                        'id'      => $action->getId(),
+                        'label'   => $action->getLabel(),
+                        'icon'    => $action->getIcon(),
+                        'jsClass' => $jsClass,
+                    ];
+                }
+            }
+
+            $items[] = $presentedItem;
         }
 
         $presentation = (object) [

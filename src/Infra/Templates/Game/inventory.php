@@ -40,16 +40,16 @@
 
                 <h6 class="dropdown-header"><?=$item->label?></h6>
 
-                <?php if ($entity->isHuman) : ?>
+                <?php foreach ($item->actions as $action) : ?>
                     <a href="#"
-                       class="dropdown-item js-use"
+                       class="dropdown-item <?=$action->jsClass?>"
                        data-entity-id="<?=$entity->id?>"
                        data-item-id="<?=$item->varietyId?>"
                     >
-                        <i class="fas fa-fw fa-hand-pointer"></i>
-                        Use
+                        <i class="fas fa-fw fa-<?=$action->icon?>"></i>
+                        <?=$action->label?>
                     </a>
-                <?php endif ?>
+                <?php endforeach ?>
 
                 <a href="#"
                    class="dropdown-item"

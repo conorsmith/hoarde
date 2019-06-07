@@ -26,13 +26,17 @@ final class Variety
     /** @var string */
     private $description;
 
+    /** @var iterable */
+    private $actions;
+
     public function __construct(
         UuidInterface $id,
         string $label,
         iterable $resources,
         int $weight,
         string $icon,
-        string $description
+        string $description,
+        iterable $actions
     ) {
         $this->id = $id;
         $this->label = $label;
@@ -41,6 +45,7 @@ final class Variety
         $this->description = $description;
 
         $this->resources = [];
+        $this->actions = [];
 
         foreach ($resources as $resource) {
             if (!$resource instanceof Resource) {
@@ -48,6 +53,14 @@ final class Variety
             }
 
             $this->resources[strval($resource->getId())] = $resource;
+        }
+
+        foreach ($actions as $action) {
+            if (!$action instanceof Action) {
+                throw new DomainException;
+            }
+
+            $this->actions[strval($action->getId())] = $action;
         }
     }
 
@@ -79,6 +92,11 @@ final class Variety
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    public function getActions(): iterable
+    {
+        return $this->actions;
     }
 
     public function createItemWithQuantity(int $quantity): Item

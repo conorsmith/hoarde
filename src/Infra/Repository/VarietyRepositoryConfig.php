@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Infra\Repository;
 
+use ConorSmith\Hoarde\Domain\Action;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\Variety;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
@@ -67,6 +68,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 500,
             'icon'        => "tint",
             'description' => "A bottle of water that is probably still drinkable.",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::COKE_ZERO => [
             'label'       => "Coke Zero",
@@ -76,6 +80,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 500,
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola!",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::CHERRY_COKE_ZERO => [
             'label'       => "Cherry Coke Zero",
@@ -85,6 +92,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 500,
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola, now flavoured with sweet cherry!",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::VANILLA_COKE_ZERO => [
             'label'       => "Vanilla Coke Zero",
@@ -94,6 +104,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 500,
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola, now flavoured with creamy vanilla!",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::PEACH_COKE_ZERO => [
             'label'       => "Peach Coke Zero",
@@ -103,6 +116,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 500,
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola, now flavoured with overpowering peach!",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::GINGER_COKE_ZERO => [
             'label'       => "Ginger Coke Zero",
@@ -112,6 +128,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 500,
             'icon'        => "tint",
             'description' => "A refreshing sugar-free cola, a real spicy boy!",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::TINNED_STEW => [
             'label'       => "Tinned Stew",
@@ -121,6 +140,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 600,
             'icon'        => "utensils",
             'description' => "A steel can for storing food. The faded label indicates it to be some variety of stew.",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::TINNED_DREW => [
             'label'       => "Tinned Drew",
@@ -130,6 +152,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 600,
             'icon'        => "utensils",
             'description' => "A steel can for storing food. The label is thoroughly worn, but it indicates that the can contains... drew?",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::TINNED_SOUP => [
             'label'       => "Tinned Soup",
@@ -140,6 +165,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 600,
             'icon'        => "utensils",
             'description' => "A steel can for storing food. The faded label indicates it to be some variety of soup.",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::PRINGLE => [
             'label'       => "Pringle",
@@ -149,6 +177,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 1,
             'icon'        => "moon",
             'description' => "A delicious stackable potato crisp, but be warned: once you pop, you cannot stop.",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
+            ],
         ],
         self::WOODEN_CRATE => [
             'label'       => "Wooden Crate",
@@ -158,6 +189,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 4000,
             'icon'        => "box",
             'description' => "A sturdy crate crafted from wood in which items could be protected from the elements.",
+            'actions'     => [
+                ActionRepositoryConfig::PLACE,
+            ],
         ],
         self::SHOVEL => [
             'label'       => "Shovel",
@@ -165,6 +199,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 3000,
             'icon'        => "tools",
             'description' => "A tool for digging, lifting, and moving bulk materials.",
+            'actions'     => [
+                ActionRepositoryConfig::DIG,
+            ],
         ],
         self::ROPE => [
             'label'       => "Rope",
@@ -306,10 +343,45 @@ final class VarietyRepositoryConfig implements VarietyRepository
         $this->resourceRepository = $resourceRepository;
     }
 
-    public function find(UuidInterface $id): ?Variety
+        public function find(UuidInterface $id): ?Variety
     {
         if (!array_key_exists(strval($id), self::VARIETIES)) {
             return null;
+        }
+
+        $actions = [];
+
+        if (array_key_exists('actions', self::VARIETIES[strval($id)])) {
+            foreach (self::VARIETIES[strval($id)]['actions'] as $actionId) {
+                if ($actionId === ActionRepositoryConfig::CONSUME) {
+                    $actions[] = new Action(
+                        Uuid::fromString(ActionRepositoryConfig::CONSUME),
+                        "Consume",
+                        "drumstick-bite",
+                        [
+                            Uuid::fromString(self::HUMAN),
+                        ]
+                    );
+                } elseif ($actionId === ActionRepositoryConfig::DIG) {
+                    $actions[] = new Action(
+                        Uuid::fromString(ActionRepositoryConfig::DIG),
+                        "Dig",
+                        "tools",
+                        [
+                            Uuid::fromString(self::HUMAN),
+                        ]
+                    );
+                } elseif ($actionId === ActionRepositoryConfig::PLACE) {
+                    $actions[] = new Action(
+                        Uuid::fromString(ActionRepositoryConfig::PLACE),
+                        "Place",
+                        "people-carry",
+                        [
+                            Uuid::fromString(self::HUMAN),
+                        ]
+                    );
+                }
+            }
         }
 
         return new Variety(
@@ -320,7 +392,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
             }, self::VARIETIES[strval($id)]['resources']),
             self::VARIETIES[strval($id)]['weight'],
             self::VARIETIES[strval($id)]['icon'],
-            self::VARIETIES[strval($id)]['description']
+            self::VARIETIES[strval($id)]['description'],
+            $actions
         );
     }
 }
