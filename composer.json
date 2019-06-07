@@ -1,5 +1,6 @@
 {
     "require": {
+        "ext-json": "*",
         "symfony/var-dumper": "^4.2",
         "doctrine/dbal": "^2.9",
         "ramsey/uuid": "^3.8",
