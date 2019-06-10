@@ -223,10 +223,9 @@ for (var i = 0; i < constructButtons.length; i++) {
     constructButtons[i].onclick = function (e) {
         e.preventDefault();
 
-        var entityId = e.currentTarget.dataset.entityId;
-        var varietyId = e.currentTarget.dataset.itemId;
-
         document.getElementById("constructModal").dataset.entityId = e.currentTarget.dataset.entityId;
+        document.getElementById("constructModal").dataset.toolVarietyId = e.currentTarget.dataset.itemId;
+        document.getElementById("constructModal").dataset.actionId = e.currentTarget.dataset.actionId;
 
         $("#constructModal").modal();
     }
@@ -290,6 +289,7 @@ new ConstructController(
     ),
     JSON.parse(document.getElementById("entities").value),
     JSON.parse(document.getElementById("constructions").value),
+    JSON.parse(document.getElementById("actions").value),
     gameId
 );
 

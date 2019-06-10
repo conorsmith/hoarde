@@ -18,7 +18,8 @@ $db = Doctrine\DBAL\DriverManager::getConnection([
 
 $gameRepo = new ConorSmith\Hoarde\Infra\Repository\GameRepositoryDb($db);
 $resourceRepo = new ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
-$varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig($resourceRepo, new ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig);
+$actionRepo = new ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
+$varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig($resourceRepo, $actionRepo);
 $entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $varietyRepo, $resourceRepo);
 $scavengingHaulRepo = new \ConorSmith\Hoarde\Infra\Repository\ScavengingHaulRepositoryDb($db, $varietyRepo);
 
@@ -32,7 +33,7 @@ $haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
 $haveEntityAddHaulToInventory = new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory($gameRepo, $entityRepo, $scavengingHaulRepo, $varietyRepo, $sessionSegment);
 $haveEntityDropItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem($gameRepo, $entityRepo, $sessionSegment);
 $haveEntityConstruct = new ConorSmith\Hoarde\Infra\Controller\HaveEntityConstruct($gameRepo, $entityRepo, $sessionSegment);
-$showGame = new ConorSmith\Hoarde\Infra\Controller\ShowGame($gameRepo, $entityRepo, $resourceRepo, $sessionSegment);
+$showGame = new ConorSmith\Hoarde\Infra\Controller\ShowGame($gameRepo, $entityRepo, $resourceRepo, $actionRepo, $sessionSegment);
 $transferItems = new ConorSmith\Hoarde\Infra\Controller\TransferItems($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
 $fetchWater = new ConorSmith\Hoarde\Infra\Controller\FetchWater($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
 $updateEntitySettings = new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings($gameRepo, $entityRepo, $sessionSegment);

@@ -10,6 +10,7 @@ class ConstructionView {
         this.el.querySelector(".tmpl-label").innerText = construction.label;
         this.el.querySelector(".tmpl-turns").innerText = construction.turns;
 
+        this.el.querySelector(".tmpl-button-action").innerText = construction.action.label;
         this.el.querySelector(".tmpl-button-label").innerText = construction.label;
 
         this.el.querySelector(".tmpl-collapse-target").dataset.target = "#collapse-" + construction.id;

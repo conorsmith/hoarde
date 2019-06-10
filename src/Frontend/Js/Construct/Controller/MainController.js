@@ -1,9 +1,10 @@
 class MainController {
-    constructor(eventBus, view, entities, constructions, gameId) {
+    constructor(eventBus, view, entities, constructions, actions, gameId) {
         this.eventBus = eventBus;
         this.view = view;
         this.entities = entities;
         this.constructions = constructions;
+        this.actions = actions;
         this.gameId = gameId;
 
         this.addEventListeners(this);
@@ -22,13 +23,29 @@ class MainController {
             return entity.id === e.currentTarget.dataset.entityId;
         });
 
-        this.view.clearConstructions();
+        let availableConstructions = this.constructions.filter(function (construction) {
+            let requiresSelectedTool = false;
 
-        this.constructions.forEach(function (construction) {
+            construction.tools.forEach(function (tool) {
+                if (tool.id === e.currentTarget.dataset.toolVarietyId) {
+                    requiresSelectedTool = true;
+                }
+            });
+
+            return requiresSelectedTool;
+        });
+
+        let action = this.actions.find(function (action) {
+            return action.id === e.currentTarget.dataset.actionId;
+        });
+
+        this.view.repaint(action);
+
+        availableConstructions.forEach(function (construction) {
             new ConstructionController(
                 controller.eventBus,
                 controller.view.createConstructionView(),
-                new Construction(construction, entity, controller.gameId)
+                new Construction(construction, entity, action, controller.entities, controller.gameId)
             );
         });
     }

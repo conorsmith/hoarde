@@ -90,6 +90,14 @@
     outline: none;
 }
 
+.construction-card {
+    margin-bottom: 1rem;
+}
+
+.construction-card:last-child {
+    margin-bottom: 0;
+}
+
 @keyframes rotating {
     from {
         -ms-transform: rotate(0deg);

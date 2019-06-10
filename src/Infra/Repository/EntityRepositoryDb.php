@@ -30,7 +30,8 @@ final class EntityRepositoryDb implements EntityRepository
     ];
 
     private const CONSTRUCTION_MAXIMUMS_FOR_ENTITY = [
-        VarietyRepositoryConfig::WELL => 10,
+        VarietyRepositoryConfig::WELL         => 10,
+        VarietyRepositoryConfig::WOODEN_CRATE => 3,
     ];
 
     /** @var Connection */

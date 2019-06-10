@@ -1,5 +1,5 @@
 <template id="construction-card">
-    <div class="card">
+    <div class="card construction-card">
         <div class="card-body">
             <h5 class="card-title d-flex align-items-center justify-content-between tmpl-collapse-target"
                 style="margin-bottom: 0;"
@@ -28,7 +28,7 @@
                 </ul>
                 <div style="margin-top: 1rem;">
                     <button class="btn btn-primary btn-block">
-                        Start Digging <span class="tmpl-button-label"></span>
+                        <span class="tmpl-button-action"></span> <span class="tmpl-button-label"></span>
                     </button>
                 </div>
             </div>

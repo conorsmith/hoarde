@@ -7,5 +7,6 @@ use Ramsey\Uuid\UuidInterface;
 
 interface ActionRepository
 {
+    public function all(): iterable;
     public function find(UuidInterface $id): ?Action;
 }

@@ -122,6 +122,20 @@ final class Entity
         return $this->inventory;
     }
 
+    public function hasItemInInventory(UuidInterface $varietyId): bool
+    {
+        return array_key_exists(strval($varietyId), $this->inventory);
+    }
+
+    public function hasItemsAmountingToAtLeast(UuidInterface $varietyId, int $minimumQuantity): bool
+    {
+        if (!array_key_exists(strval($varietyId), $this->inventory)) {
+            return false;
+        }
+
+        return $this->inventory[strval($varietyId)]->getQuantity() >= $minimumQuantity;
+    }
+
     public function getInventoryWeight(): int
     {
         $weight = 0;
@@ -227,11 +241,16 @@ final class Entity
 
     public function hasToolsFor(Entity $target): bool
     {
-        if (!$target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            return false;
+        if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
+            return array_key_exists(VarietyRepositoryConfig::SHOVEL, $this->inventory);
         }
 
-        return array_key_exists(VarietyRepositoryConfig::SHOVEL, $this->inventory);
+        if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
+            return array_key_exists(VarietyRepositoryConfig::HAMMER, $this->inventory)
+                && array_key_exists(VarietyRepositoryConfig::HAND_SAW, $this->inventory);
+        }
+
+        return false;
     }
 
     public function construct(Entity $target): void

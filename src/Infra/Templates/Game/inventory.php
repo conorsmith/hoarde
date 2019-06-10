@@ -45,6 +45,7 @@
                        class="dropdown-item <?=$action->jsClass?>"
                        data-entity-id="<?=$entity->id?>"
                        data-item-id="<?=$item->varietyId?>"
+                       data-action-id="<?=$action->id?>"
                     >
                         <i class="fas fa-fw fa-<?=$action->icon?>"></i>
                         <?=$action->label?>

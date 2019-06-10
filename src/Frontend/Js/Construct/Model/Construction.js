@@ -1,7 +1,10 @@
 class Construction {
-    constructor(construction, entity, gameId) {
+    constructor(construction, entity, action, localEntities, gameId) {
+        const model = this;
+
         this.gameId = gameId;
         this.entityId = entity.id;
+        this.action = action;
 
         this.id = construction.id;
         this.label = construction.label;
@@ -31,18 +34,41 @@ class Construction {
                 return item.id === material.id;
             });
 
+            let isAvailable = true;
+
             if (materialsFromEntitysInventory === undefined
                 || materialsFromEntitysInventory.quantity < material.quantity
             ) {
-                isConstructable = false;
+                let totalQuantity = 0;
+
+                if (materialsFromEntitysInventory !== undefined) {
+                    totalQuantity += materialsFromEntitysInventory.quantity;
+                }
+
+                localEntities.forEach(function (entity) {
+                    if (entity.id !== model.entityId
+                        && entity.inventory !== undefined
+                    ) {
+                        entity.inventory.items.forEach(function (item) {
+                            if (item.id === material.id) {
+                                totalQuantity += item.quantity;
+                            }
+                        });
+                    }
+                });
+
+                isAvailable = totalQuantity >= material.quantity;
+
+                if (totalQuantity < material.quantity) {
+                    isConstructable = false;
+                }
             }
 
             return {
                 label: material.label,
                 icon: material.icon,
                 quantity: material.quantity,
-                isAvailable: materialsFromEntitysInventory !== undefined
-                    && materialsFromEntitysInventory.quantity >= material.quantity
+                isAvailable: isAvailable
             };
         });
 

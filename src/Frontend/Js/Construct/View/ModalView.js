@@ -4,7 +4,8 @@ class ModalView {
         this.constructionCardTemplate = constructionCardTemplate;
     }
 
-    clearConstructions() {
+    repaint(action) {
+        this.el.querySelector(".modal-title").innerText = action.label;
         this.el.querySelector(".modal-body").innerHTML = "";
     }
 
@@ -13,6 +14,6 @@ class ModalView {
             this.constructionCardTemplate.content.cloneNode(true)
         );
 
-        return new ConstructionView(this.el.querySelector(".modal-body .card"));
+        return new ConstructionView(this.el.querySelector(".modal-body").lastElementChild);
     }
 }

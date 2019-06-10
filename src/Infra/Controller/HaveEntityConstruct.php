@@ -13,6 +13,8 @@ use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+use RuntimeException;
 use Zend\Diactoros\Response;
 
 final class HaveEntityConstruct
@@ -51,6 +53,90 @@ final class HaveEntityConstruct
     }
 
     private function beginConstruction(Entity $actor, Game $game): ResponseInterface
+    {
+        $constructionVarietyId = Uuid::fromString($_POST['constructionVarietyId']);
+
+        if ($constructionVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
+            return $this->beginConstructingWell($actor, $game);
+
+        } elseif ($constructionVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
+            return $this->beginConstructingCrate($actor, $game);
+        }
+
+        throw new RuntimeException("Invalid construction");
+    }
+
+    private function beginConstructingCrate(Entity $actor, Game $game): ResponseInterface
+    {
+        $tools = [
+            VarietyRepositoryConfig::HAMMER,
+            VarietyRepositoryConfig::HAND_SAW,
+        ];
+
+        $materials = [
+            VarietyRepositoryConfig::TIMBER => 10,
+            VarietyRepositoryConfig::NAIL => 60,
+        ];
+
+        $meetsRequirements = true;
+
+        foreach ($tools as $tool) {
+            if (!$actor->hasItemInInventory(Uuid::fromString($tool))) {
+                $meetsRequirements = false;
+            }
+        }
+
+        foreach ($materials as $material => $quantity) {
+            if (!$actor->hasItemsAmountingToAtLeast(Uuid::fromString($material), $quantity)) {
+                $meetsRequirements = false;
+            }
+        }
+
+        if (!$meetsRequirements) {
+            $this->session->setFlash("danger", "Construction requirements not met.");
+
+            $response = new Response;
+            $response = $response->withHeader("Location", "/{$game->getId()}");
+            return $response;
+        }
+
+        $crate = new Entity(
+            Uuid::uuid4(),
+            $game->getId(),
+            Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE),
+            "Wooden Crate",
+            "box",
+            true,
+            new Construction(
+                false,
+                2,
+                3
+            ),
+            [],
+            []
+        );
+
+        $this->entityRepo->save($crate);
+
+        $actor->dropItem(Uuid::fromString(VarietyRepositoryConfig::NAIL), 60);
+        $actor->dropItem(Uuid::fromString(VarietyRepositoryConfig::TIMBER), 10);
+        $actor->wait();
+
+        $this->entityRepo->save($actor);
+
+        $game->proceedToNextTurn();
+        $this->gameRepo->save($game);
+
+        if (!$actor->isIntact()) {
+            $this->session->setFlash("danger", "{$actor->getLabel()} has expired");
+        }
+
+        $response = new Response;
+        $response = $response->withHeader("Location", "/{$game->getId()}");
+        return $response;
+    }
+
+    private function beginConstructingWell(Entity $actor, Game $game): ResponseInterface
     {
         $hasShovel = false;
         $hasRope = false;

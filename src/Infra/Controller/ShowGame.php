@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
+use ConorSmith\Hoarde\Domain\ActionRepository;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Game;
@@ -13,7 +14,6 @@ use ConorSmith\Hoarde\Domain\Resource;
 use ConorSmith\Hoarde\Domain\ResourceNeed;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
-use ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
@@ -33,6 +33,9 @@ final class ShowGame
     /** @var ResourceRepository */
     private $resourceRepo;
 
+    /** @var ActionRepository */
+    private $actionRepo;
+
     /** @var Segment */
     private $session;
 
@@ -40,11 +43,13 @@ final class ShowGame
         GameRepository $gameRepo,
         EntityRepository $entityRepo,
         ResourceRepository $resourceRepo,
+        ActionRepository $actionRepo,
         Segment $session
     ) {
         $this->gameRepo = $gameRepo;
         $this->entityRepo = $entityRepo;
         $this->resourceRepo = $resourceRepo;
+        $this->actionRepo = $actionRepo;
         $this->session = $session;
     }
 
@@ -77,6 +82,7 @@ final class ShowGame
                 return $this->presentEntity($entity, $entities);
             }, $entities),
             'encodedEntities' => $this->jsonEncodeEntities($entities),
+            'actions'         => $this->presentActions($this->actionRepo->all()),
             'constructions'   => [
                 (object) [
                     'id'        => VarietyRepositoryConfig::WELL,
@@ -104,7 +110,39 @@ final class ShowGame
                             'quantity' => 1,
                         ],
                     ],
-                ]
+                ],
+                (object) [
+                    'id'        => VarietyRepositoryConfig::WOODEN_CRATE,
+                    'label'     => "Wooden Crate",
+                    'icon'      => "box",
+                    'turns'     => 3,
+                    'tools'     => [
+                        (object) [
+                            'id'    => VarietyRepositoryConfig::HAMMER,
+                            'label' => "Claw Hammer",
+                            'icon'  => "hammer",
+                        ],
+                        (object) [
+                            'id'    => VarietyRepositoryConfig::HAND_SAW,
+                            'label' => "Hand Saw",
+                            'icon'  => "tools",
+                        ],
+                    ],
+                    'materials' => [
+                        (object) [
+                            'id'       => VarietyRepositoryConfig::TIMBER,
+                            'label'    => "Timber",
+                            'icon'     => "tree",
+                            'quantity' => 10,
+                        ],
+                        (object) [
+                            'id'       => VarietyRepositoryConfig::NAIL,
+                            'label'    => "Nail",
+                            'icon'     => "toolbox",
+                            'quantity' => 60,
+                        ],
+                    ],
+                ],
             ]
         ]);
 
@@ -174,6 +212,7 @@ final class ShowGame
                         case ActionRepositoryConfig::PLACE:
                             $jsClass = "js-use";
                             break;
+                        case ActionRepositoryConfig::CONSTRUCT:
                         case ActionRepositoryConfig::DIG:
                             $jsClass = "js-construct";
                             break;
@@ -243,7 +282,7 @@ final class ShowGame
 
     private function presentConstruction(Entity $entity, iterable $entities): stdClass
     {
-        if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
+        if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
             $human = $this->findHuman($entities);
             $actor = (object) [
                 'id'       => $human->getId(),
@@ -338,6 +377,20 @@ final class ShowGame
         }
 
         return json_encode($presentation);
+    }
+
+    private function presentActions(iterable $actions): iterable
+    {
+        $presentation = [];
+
+        foreach ($actions as $action) {
+            $presentation[] = (object) [
+                'id'    => $action->getId(),
+                'label' => $action->getLabel(),
+            ];
+        }
+
+        return $presentation;
     }
 
     private function renderTemplate(string $path, array $variables = []): string

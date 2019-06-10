@@ -25,6 +25,12 @@ class ConstructionController {
         actorIdInput.setAttribute("value", this.model.entityId);
         form.appendChild(actorIdInput);
 
+        let constructionVarietyId = document.createElement("input");
+        constructionVarietyId.setAttribute("type", "hidden");
+        constructionVarietyId.setAttribute("name", "constructionVarietyId");
+        constructionVarietyId.setAttribute("value", this.model.id);
+        form.appendChild(constructionVarietyId);
+
         document.body.appendChild(form);
 
         form.submit();
