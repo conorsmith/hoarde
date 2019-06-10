@@ -1,12 +1,14 @@
 
 var gameId = document.getElementById("gameId").value;
 var entities = JSON.parse(document.getElementById("entities").value);
+var constructions = JSON.parse(document.getElementById("constructions").value);
 
 var useButtons = document.getElementsByClassName("js-use");
 var consumeButtons = document.getElementsByClassName("js-consume");
 var infoButtons = document.getElementsByClassName("js-info");
 var fetchButtons = document.getElementsByClassName("js-fetch");
 var constructButtons = document.getElementsByClassName("js-construct");
+var constructContinueButtons = document.getElementsByClassName("js-construct-continue");
 
 $(function () {
     $('[data-toggle="popover"]').popover({
@@ -221,6 +223,19 @@ for (var i = 0; i < constructButtons.length; i++) {
     constructButtons[i].onclick = function (e) {
         e.preventDefault();
 
+        var entityId = e.currentTarget.dataset.entityId;
+        var varietyId = e.currentTarget.dataset.itemId;
+
+        document.getElementById("constructModal").dataset.entityId = e.currentTarget.dataset.entityId;
+
+        $("#constructModal").modal();
+    }
+}
+
+for (var i = 0; i < constructContinueButtons.length; i++) {
+    constructContinueButtons[i].onclick = function (e) {
+        e.preventDefault();
+
         const template = document.getElementById("spinner").content.cloneNode(true);
         this.innerText = "";
         this.appendChild(template);
@@ -254,6 +269,7 @@ for (var i = 0; i < constructButtons.length; i++) {
 var eventBus = new EventBus();
 
 import {TransferController, TransferModalView} from "./transfer.js";
+import {MainController as ConstructController, ModalView as ConstructModalView} from "./construct.js";
 
 new TransferController(
     eventBus,
@@ -263,6 +279,17 @@ new TransferController(
         document.getElementById("item-popover")
     ),
     JSON.parse(document.getElementById("entities").value),
+    gameId
+);
+
+new ConstructController(
+    eventBus,
+    new ConstructModalView(
+        document.getElementById("constructModal"),
+        document.getElementById("construction-card")
+    ),
+    JSON.parse(document.getElementById("entities").value),
+    JSON.parse(document.getElementById("constructions").value),
     gameId
 );
 

@@ -65,16 +65,22 @@
         'entity' => $human,
     ])?>
 
+    <?=$this->renderTemplate("Game/modal-construct.php", [
+        'constructions' => $constructions,
+    ])?>
+
     <?=$this->renderTemplate("Game/modal-transfer.php")?>
 
     <input type="hidden" id="gameId" value="<?=$game->id?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($human->inventory->items)?>' />
     <input type="hidden" id="entities" value='<?=$encodedEntities?>' />
+    <input type="hidden" id="constructions" value='<?=json_encode($constructions)?>' />
 
     <?=$this->renderTemplate("Game/template-scavenge-item-slider.php")?>
     <?=$this->renderTemplate("Game/template-spinner.php")?>
     <?=$this->renderTemplate("Game/template-transfer-item-slider.php")?>
     <?=$this->renderTemplate("Game/template-item-popover.php")?>
+    <?=$this->renderTemplate("Game/template-construction-card.php")?>
 
 </div>
 

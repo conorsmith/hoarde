@@ -13,6 +13,7 @@ use ConorSmith\Hoarde\Domain\Resource;
 use ConorSmith\Hoarde\Domain\ResourceNeed;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
+use ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
@@ -80,6 +81,35 @@ final class ShowGame
                 return $this->presentEntity($entity, $entities);
             }, $entities),
             'encodedEntities' => $this->jsonEncodeEntities($entities),
+            'constructions'   => [
+                (object) [
+                    'id'        => VarietyRepositoryConfig::WELL,
+                    'label'     => "Well",
+                    'icon'      => "tint",
+                    'turns'     => 10,
+                    'tools'     => [
+                        (object) [
+                            'id'    => VarietyRepositoryConfig::SHOVEL,
+                            'label' => "Shovel",
+                            'icon'  => "tools",
+                        ],
+                    ],
+                    'materials' => [
+                        (object) [
+                            'id'       => VarietyRepositoryConfig::ROPE,
+                            'label'    => "Rope",
+                            'icon'     => "tools",
+                            'quantity' => 1,
+                        ],
+                        (object) [
+                            'id'       => VarietyRepositoryConfig::BUCKET,
+                            'label'    => "Bucket",
+                            'icon'     => "fill",
+                            'quantity' => 1,
+                        ],
+                    ],
+                ]
+            ]
         ]);
 
         $response = new Response;
@@ -134,9 +164,11 @@ final class ShowGame
                 if ($action->canBePerformedBy($entity->getVarietyId())) {
                     switch (strval($action->getId())) {
                         case ActionRepositoryConfig::CONSUME:
-                        case ActionRepositoryConfig::DIG:
                         case ActionRepositoryConfig::PLACE:
                             $jsClass = "js-use";
+                            break;
+                        case ActionRepositoryConfig::DIG:
+                            $jsClass = "js-construct";
                             break;
                         default:
                             $jsClass = "";

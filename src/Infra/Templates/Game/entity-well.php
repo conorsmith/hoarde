@@ -24,7 +24,7 @@
                 </div>
 
                 <button type="button"
-                        class="btn btn-light btn-block js-construct"
+                        class="btn btn-light btn-block js-construct-continue"
                         data-actor-id="<?=$actor->id?>"
                         data-target-id="<?=$entity->id?>"
                     <?=($isIntact ? "" : "disabled")?>

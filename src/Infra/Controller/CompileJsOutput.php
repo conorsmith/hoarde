@@ -19,6 +19,9 @@ final class CompileJsOutput
         } elseif ($args['fileName'] === "transfer") {
             $output = $this->renderJsFiles("Transfer");
 
+        } elseif ($args['fileName'] === "construct") {
+            $output = $this->renderJsFiles("Construct");
+
         } else {
 
             ob_start();
