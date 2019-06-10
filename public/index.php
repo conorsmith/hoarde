@@ -43,7 +43,7 @@ $router = new League\Route\Router;
 $router->get("/", $showLandingPage);
 $router->post("/", $generateNewGame);
 
-$router->get("/main.js", new ConorSmith\Hoarde\Infra\Controller\CompileJsOutput);
+$router->get("/{fileName}.js", new ConorSmith\Hoarde\Infra\Controller\CompileJsOutput);
 $router->get("/main.css", new ConorSmith\Hoarde\Infra\Controller\CompileCssOutput);
 
 $router->get("/{gameId}", $showGame);

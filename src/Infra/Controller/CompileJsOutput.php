@@ -9,46 +9,79 @@ use Zend\Diactoros\Response;
 
 final class CompileJsOutput
 {
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $response = new Response;
 
-        $response->getBody()->write(
-            $this->renderJsFiles()
-        );
+        if ($args['fileName'] === "main") {
+            $output = $this->renderMainJsFiles();
+
+        } elseif ($args['fileName'] === "transfer") {
+            $output = $this->renderJsFiles("Transfer");
+
+        } else {
+
+            ob_start();
+
+            include __DIR__ . "/../Templates/not-found.php";
+
+            $body = ob_get_contents();
+
+            ob_end_clean();
+
+            $response = $response->withStatus(404);
+            $response->getBody()->write($body);
+
+            return $response;
+        }
+
+        $response->getBody()->write($output);
 
         $response = $response->withHeader("Content-Type", "text/javascript");
 
         return $response;
     }
 
-    private function renderJsFiles(): string
+    private function renderJsFiles(string $namespace): string
     {
         ob_start();
 
-        $controllers = scandir(__DIR__ . "/../../Frontend/Js/Controller");
+        $controllers = scandir(__DIR__ . "/../../Frontend/Js/{$namespace}/Controller");
 
         foreach ($controllers as $controller) {
             if (!in_array($controller, [".", ".."])) {
-                include __DIR__ . "/../../Frontend/Js/Controller/{$controller}";
+                include __DIR__ . "/../../Frontend/Js/{$namespace}/Controller/{$controller}";
             }
         }
 
-        $models = scandir(__DIR__ . "/../../Frontend/Js/Model");
+        $models = scandir(__DIR__ . "/../../Frontend/Js/{$namespace}/Model");
 
         foreach ($models as $model) {
             if (!in_array($model, [".", ".."])) {
-                include __DIR__ . "/../../Frontend/Js/Model/{$model}";
+                include __DIR__ . "/../../Frontend/Js/{$namespace}/Model/{$model}";
             }
         }
 
-        $views = scandir(__DIR__ . "/../../Frontend/Js/View");
+        $views = scandir(__DIR__ . "/../../Frontend/Js/{$namespace}/View");
 
         foreach ($views as $view) {
             if (!in_array($view, [".", ".."])) {
-                include __DIR__ . "/../../Frontend/Js/View/{$view}";
+                include __DIR__ . "/../../Frontend/Js/{$namespace}/View/{$view}";
             }
         }
+
+        include __DIR__ . "/../../Frontend/Js/{$namespace}/exports.js";
+
+        $output = ob_get_contents();
+
+        ob_end_clean();
+
+        return $output;
+    }
+
+    private function renderMainJsFiles(): string
+    {
+        ob_start();
 
         include __DIR__ . "/../../Frontend/Js/classes.js";
         include __DIR__ . "/../../Frontend/Js/main.js";

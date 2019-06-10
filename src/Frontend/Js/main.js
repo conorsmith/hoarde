@@ -253,6 +253,8 @@ for (var i = 0; i < constructButtons.length; i++) {
 
 var eventBus = new EventBus();
 
+import {TransferController, TransferModalView} from "./transfer.js";
+
 new TransferController(
     eventBus,
     new TransferModalView(
@@ -260,7 +262,8 @@ new TransferController(
         document.getElementById("transfer-item-slider"),
         document.getElementById("item-popover")
     ),
-    JSON.parse(document.getElementById("entities").value)
+    JSON.parse(document.getElementById("entities").value),
+    gameId
 );
 
 var scavengeModal = document.getElementById("scavengeModal");

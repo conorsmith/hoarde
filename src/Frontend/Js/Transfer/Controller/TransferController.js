@@ -1,8 +1,9 @@
 class TransferController {
-    constructor(eventBus, view, entities) {
+    constructor(eventBus, view, entities, gameId) {
         this.eventBus = eventBus;
         this.view = view;
         this.entities = entities;
+        this.gameId = gameId;
 
         this.transfers = [];
         this.entityControllers = [];
@@ -140,7 +141,7 @@ class TransferController {
             });
         };
 
-        xhr.open("POST", "/" + gameId + "/transfer");
+        xhr.open("POST", "/" + this.gameId + "/transfer");
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(JSON.stringify(this.createRequestBody()));
     }
