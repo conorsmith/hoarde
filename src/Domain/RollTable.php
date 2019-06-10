@@ -97,6 +97,16 @@ class RollTable
                     ->find(Uuid::fromString(VarietyRepositoryConfig::SHOVEL)),
             ],
             [
+                'rolls' => range(891, 900),
+                'item'  => $this->varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::HAND_SAW)),
+            ],
+            [
+                'rolls' => range(881, 890),
+                'item'  => $this->varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::HAMMER)),
+            ],
+            [
                 'rolls' => [813],
                 'item'  => $this->varietyRepository
                     ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_13)),
@@ -160,6 +170,18 @@ class RollTable
                 'rolls' => [801],
                 'item'  => $this->varietyRepository
                     ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_1)),
+            ],
+            [
+                'rolls' => range(421, 450),
+                'item'  => $this->varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::NAIL)),
+                'quantity' => [3, 11],
+            ],
+            [
+                'rolls' => range(401, 430),
+                'item'  => $this->varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::TIMBER)),
+                'quantity' => [1, 4],
             ],
             [
                 'rolls' => array_merge(range(1, 10), range(290, 330)),
@@ -226,6 +248,16 @@ class RollTable
                     ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_DREW)),
             ],
             [
+                'rolls' => range(914, 916),
+                'item'  => $this->varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::HAND_SAW)),
+            ],
+            [
+                'rolls' => range(911, 913),
+                'item'  => $this->varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::HAMMER)),
+            ],
+            [
                 'rolls' => range(907, 909),
                 'item'  => $this->varietyRepository
                     ->find(Uuid::fromString(VarietyRepositoryConfig::BUCKET)),
@@ -259,6 +291,18 @@ class RollTable
                 'rolls' => range(801, 801),
                 'item'  => $this->varietyRepository
                     ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_3)),
+            ],
+            [
+                'rolls' => range(421, 450),
+                'item'  => $this->varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::NAIL)),
+                'quantity' => [2, 6],
+            ],
+            [
+                'rolls' => range(401, 422),
+                'item'  => $this->varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::TIMBER)),
+                'quantity' => [1, 2],
             ],
             [
                 'rolls' => array_merge(range(1, 10), range(290, 330)),

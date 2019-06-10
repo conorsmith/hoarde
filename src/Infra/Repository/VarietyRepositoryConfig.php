@@ -27,6 +27,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
     public const PRINGLE = "275d6f62-16ff-4f5f-8ac6-149ec4cde1e2";
     public const WOODEN_CRATE = "59593b72-3845-491e-9721-4452a337019b";
     public const SHOVEL = "75d861d5-b6b7-4cd2-ad4a-a56db4db1fcf";
+    public const HAMMER = "328a1e58-ab91-4b35-87e9-527f4d7d130e";
+    public const HAND_SAW = "d38a3e6a-d508-4bf0-ae79-34d2a425dc47";
     public const BUCKET = "6722e875-6d19-404c-a1bd-e49fb3470cd7";
     public const ROPE = "0646f8e6-32b9-476f-86f5-834dc7160d95";
     public const DRIL_FIGURINE_1 = "32b0c544-d393-4256-bcde-125298d59b63";
@@ -42,6 +44,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
     public const DRIL_FIGURINE_11 = "ce2ade49-a367-4cdd-b815-5505f593a6d9";
     public const DRIL_FIGURINE_12 = "22419ffb-2faa-409b-ae8d-081f4969e0e2";
     public const DRIL_FIGURINE_13 = "b2949529-b2b4-45db-9dc6-cece114418ba";
+    public const TIMBER = "e2f811da-d77b-47b1-a167-1df513c2b04b";
+    public const NAIL = "2808d535-38cd-4254-952f-c79aa2e66cd0";
 
     private const DESCRIPTION_TEMPLATE_DRIL_FIGURINE = "A commemorative figurine of Twitter user @dril. Part of a set"
         . " of 13. The base is engraved with a tweet:\n\n";
@@ -332,6 +336,35 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "street-view",
             'description' => self::DESCRIPTION_TEMPLATE_DRIL_FIGURINE
                 . "its the weekend baby. youknow what that means. its time to drink precisely one beer and call 911",
+        ],
+        self::TIMBER => [
+            'label'       => "Timber",
+            'resources'   => [],
+            'weight'      => 1485,
+            'icon'        => "tree",
+            'description' => "A piece of timber, 1.8 metres long, 75 mm wide and 22 mm thick. This could be useful for"
+                . " constructing many objects.",
+        ],
+        self::NAIL => [
+            'label'       => "Nail",
+            'resources'   => [],
+            'weight'      => 2,
+            'icon'        => "toolbox",
+            'description' => "A 50 mm long nail, 2.4 mm in diametre. It&apos;s in fairly good condition.",
+        ],
+        self::HAMMER => [
+            'label'       => "Claw Hammer",
+            'resources'   => [],
+            'weight'      => 454,
+            'icon'        => "hammer",
+            'description' => "A tool for driving and pulling nails from objects.",
+        ],
+        self::HAND_SAW => [
+            'label'       => "Hand Saw",
+            'resources'   => [],
+            'weight'      => 360,
+            'icon'        => "tools",
+            'description' => "A tool for cutting wood.",
         ],
     ];
 
