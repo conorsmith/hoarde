@@ -350,7 +350,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'resources'   => [],
             'weight'      => 2,
             'icon'        => "toolbox",
-            'description' => "A 50 mm long nail, 2.4 mm in diametre. It&apos;s in fairly good condition.",
+            'description' => "A 50 mm long nail, 2.4 mm in diameter. It&apos;s in fairly good condition.",
         ],
         self::HAMMER => [
             'label'       => "Claw Hammer",
