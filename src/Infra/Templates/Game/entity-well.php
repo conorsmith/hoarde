@@ -23,12 +23,21 @@
                     <?php endfor; ?>
                 </div>
 
+                <?php if (!$entity->construction->actor->hasTools) : ?>
+                    <div class="alert alert-warning"
+                         style="font-size: 0.8rem;"
+                    >
+                      To continue construction, <?=$entity->construction->actor->label?> must have: <strong>Shovel</strong>
+                    </div>
+                <?php endif ?>
+
                 <button type="button"
                         class="btn btn-light btn-block js-construct-continue"
                         data-actor-id="<?=$entity->construction->actor->id?>"
                         data-target-id="<?=$entity->id?>"
                     <?=($isIntact && $entity->construction->actor->hasTools ? "" : "disabled")?>
                 >Continue Construction</button>
+
             <?php endif ?>
 
             <hr>

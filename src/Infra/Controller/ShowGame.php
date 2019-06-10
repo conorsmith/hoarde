@@ -247,6 +247,7 @@ final class ShowGame
             $human = $this->findHuman($entities);
             $actor = (object) [
                 'id'       => $human->getId(),
+                'label'    => $human->getLabel(),
                 'hasTools' => $human->hasToolsFor($entity),
             ];
         } else {
