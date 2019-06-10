@@ -225,6 +225,15 @@ final class Entity
         }
     }
 
+    public function hasToolsFor(Entity $target): bool
+    {
+        if (!$target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
+            return false;
+        }
+
+        return array_key_exists(VarietyRepositoryConfig::SHOVEL, $this->inventory);
+    }
+
     public function construct(Entity $target): void
     {
         $this->beforeAction();

@@ -62,11 +62,7 @@ final class ShowGame
             $entities[] = $this->entityRepo->find($entityId);
         }
 
-        foreach ($entities as $entity) {
-            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
-                $human = $entity;
-            }
-        }
+        $human = $this->findHuman($entities);
 
         if (is_null($human)) {
             throw new RuntimeException("Game is missing human entity");
@@ -115,6 +111,17 @@ final class ShowGame
         $response = new Response;
         $response->getBody()->write($body);
         return $response;
+    }
+
+    private function findHuman(iterable $entities): ?Entity
+    {
+        foreach ($entities as $entity) {
+            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
+                return $entity;
+            }
+        }
+
+        return null;
     }
 
     private function presentAlert(Segment $session): ?stdClass
@@ -194,9 +201,7 @@ final class ShowGame
             'isHuman'                    => $entity->getVarietyId()->equals(
                 Uuid::fromString(VarietyRepositoryConfig::HUMAN)
             ),
-            'isConstructed'              => $entity->getConstruction()->isConstructed(),
-            'remainingConstructionSteps' => $entity->getConstruction()->getRemainingSteps(),
-            'requiredConstructionSteps'  => $entity->getConstruction()->getRequiredSteps(),
+            'construction'               => $this->presentConstruction($entity, $entities),
             'resourceNeeds'              => $resourceNeeds,
         ];
 
@@ -234,6 +239,26 @@ final class ShowGame
         }
 
         return $presentation;
+    }
+
+    private function presentConstruction(Entity $entity, iterable $entities): stdClass
+    {
+        if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
+            $human = $this->findHuman($entities);
+            $actor = (object) [
+                'id'       => $human->getId(),
+                'hasTools' => $human->hasToolsFor($entity),
+            ];
+        } else {
+            $actor = null;
+        }
+
+        return (object) [
+            'isConstructed'  => $entity->getConstruction()->isConstructed(),
+            'remainingSteps' => $entity->getConstruction()->getRemainingSteps(),
+            'requiredSteps'  => $entity->getConstruction()->getRequiredSteps(),
+            'actor'          => $actor,
+        ];
     }
 
     private function getFirstEntityOfVariety(iterable $entities, UuidInterface $varietyId): ?Entity

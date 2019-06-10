@@ -50,7 +50,6 @@
           <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::WELL) : ?>
               <?=$this->renderTemplate("Game/entity-well.php", [
                   'entity'   => $entity,
-                  'actor'    => $human,
                   'isIntact' => $isIntact,
               ])?>
           <?php endif ?>
