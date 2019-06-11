@@ -35,6 +35,7 @@
                         class="btn btn-light btn-block js-construct-continue"
                         data-actor-id="<?=$entity->construction->actor->id?>"
                         data-target-id="<?=$entity->id?>"
+                        data-construction-variety-id="<?=$entity->varietyId?>"
                     <?=($isIntact && $entity->construction->actor->hasTools ? "" : "disabled")?>
                 >Continue Construction</button>
 

@@ -241,6 +241,7 @@ for (var i = 0; i < constructContinueButtons.length; i++) {
 
         var targetId = e.currentTarget.dataset.targetId;
         var actorId = e.currentTarget.dataset.actorId;
+        var constructionVarietyId = e.currentTarget.dataset.constructionVarietyId;
 
         var form = document.createElement("form");
         form.setAttribute("action", "/" + gameId + "/construct");
@@ -258,6 +259,12 @@ for (var i = 0; i < constructContinueButtons.length; i++) {
         actorIdInput.setAttribute("name", "actorId");
         actorIdInput.setAttribute("value", actorId);
         form.appendChild(actorIdInput);
+
+        var constructionVarietyIdInput = document.createElement("input");
+        constructionVarietyIdInput.setAttribute("type", "hidden");
+        constructionVarietyIdInput.setAttribute("name", "constructionVarietyId");
+        constructionVarietyIdInput.setAttribute("value", constructionVarietyId);
+        form.appendChild(constructionVarietyIdInput);
 
         document.body.appendChild(form);
 
