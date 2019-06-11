@@ -71,13 +71,69 @@ final class HaveEntityConstruct
         $constructionVarietyId = Uuid::fromString($_POST['constructionVarietyId']);
 
         if ($constructionVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            return $this->continueConstructingWell($actor, $game);
-
+            $tools = [
+                VarietyRepositoryConfig::SHOVEL,
+            ];
         } elseif ($constructionVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-            return $this->continueConstructingCrate($actor, $game);
+            $tools = [
+                VarietyRepositoryConfig::HAMMER,
+                VarietyRepositoryConfig::HAND_SAW,
+            ];
+        } else {
+            throw new RuntimeException("Invalid construction");
         }
 
-        throw new RuntimeException("Invalid construction");
+        $target = $this->entityRepo->find(Uuid::fromString($_POST['targetId']));
+
+        if (!$actor->getGameId()->equals($game->getId())
+            || !$target->getGameId()->equals($game->getId())
+        ) {
+            $response = new Response;
+            $response->withStatus(400);
+            $response->getBody()->write("HaveEntityConstruct request must be for an entity from this game");
+            return $response;
+        }
+
+        $meetsRequirements = true;
+
+        foreach ($tools as $tool) {
+            if (!$actor->hasItemInInventory(Uuid::fromString($tool))) {
+                $meetsRequirements = false;
+            }
+        }
+
+        if (!$meetsRequirements) {
+            $this->session->setFlash("danger", "Construction requirements not met.");
+
+            $response = new Response;
+            $response = $response->withHeader("Location", "/{$game->getId()}");
+            return $response;
+        }
+
+        $construction = $target->getConstruction();
+
+        if ($construction->isConstructed()) {
+            $response = new Response;
+            $response->withStatus(400);
+            $response->getBody()->write("Target entity has already been constructed");
+            return $response;
+        }
+
+        $actor->construct($target);
+
+        $this->entityRepo->save($actor);
+        $this->entityRepo->save($target);
+
+        $game->proceedToNextTurn();
+        $this->gameRepo->save($game);
+
+        if (!$actor->isIntact()) {
+            $this->session->setFlash("danger", "{$actor->getLabel()} has expired");
+        }
+
+        $response = new Response;
+        $response = $response->withHeader("Location", "/{$game->getId()}");
+        return $response;
     }
 
     private function beginConstructingCrate(Entity $actor, Game $game): ResponseInterface
@@ -200,105 +256,6 @@ final class HaveEntityConstruct
         $actor->wait();
 
         $this->entityRepo->save($actor);
-
-        $game->proceedToNextTurn();
-        $this->gameRepo->save($game);
-
-        if (!$actor->isIntact()) {
-            $this->session->setFlash("danger", "{$actor->getLabel()} has expired");
-        }
-
-        $response = new Response;
-        $response = $response->withHeader("Location", "/{$game->getId()}");
-        return $response;
-    }
-
-    private function continueConstructingCrate(Entity $actor, Game $game): ResponseInterface
-    {
-        $target = $this->entityRepo->find(Uuid::fromString($_POST['targetId']));
-
-        if (!$actor->getGameId()->equals($game->getId())
-            || !$target->getGameId()->equals($game->getId())
-        ) {
-            $response = new Response;
-            $response->withStatus(400);
-            $response->getBody()->write("HaveEntityConstruct request must be for an entity from this game");
-            return $response;
-        }
-
-        $tools = [
-            VarietyRepositoryConfig::HAMMER,
-            VarietyRepositoryConfig::HAND_SAW,
-        ];
-
-        $meetsRequirements = true;
-
-        foreach ($tools as $tool) {
-            if (!$actor->hasItemInInventory(Uuid::fromString($tool))) {
-                $meetsRequirements = false;
-            }
-        }
-
-        if (!$meetsRequirements) {
-            $this->session->setFlash("danger", "Construction requirements not met.");
-
-            $response = new Response;
-            $response = $response->withHeader("Location", "/{$game->getId()}");
-            return $response;
-        }
-
-        $construction = $target->getConstruction();
-
-        if ($construction->isConstructed()) {
-            $response = new Response;
-            $response->withStatus(400);
-            $response->getBody()->write("Target entity has already been constructed");
-            return $response;
-        }
-
-        $actor->construct($target);
-
-        $this->entityRepo->save($actor);
-        $this->entityRepo->save($target);
-
-        $game->proceedToNextTurn();
-        $this->gameRepo->save($game);
-
-        if (!$actor->isIntact()) {
-            $this->session->setFlash("danger", "{$actor->getLabel()} has expired");
-        }
-
-        $response = new Response;
-        $response = $response->withHeader("Location", "/{$game->getId()}");
-        return $response;
-    }
-
-    private function continueConstructingWell(Entity $actor, Game $game): ResponseInterface
-    {
-        $target = $this->entityRepo->find(Uuid::fromString($_POST['targetId']));
-
-        if (!$actor->getGameId()->equals($game->getId())
-            || !$target->getGameId()->equals($game->getId())
-        ) {
-            $response = new Response;
-            $response->withStatus(400);
-            $response->getBody()->write("HaveEntityConstruct request must be for an entity from this game");
-            return $response;
-        }
-
-        $construction = $target->getConstruction();
-
-        if ($construction->isConstructed()) {
-            $response = new Response;
-            $response->withStatus(400);
-            $response->getBody()->write("Target entity has already been constructed");
-            return $response;
-        }
-
-        $actor->construct($target);
-
-        $this->entityRepo->save($actor);
-        $this->entityRepo->save($target);
 
         $game->proceedToNextTurn();
         $this->gameRepo->save($game);
