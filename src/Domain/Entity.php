@@ -224,6 +224,10 @@ final class Entity
 
     public function dropItem(UuidInterface $id, int $quantity): Item
     {
+        if (!array_key_exists(strval($id), $this->inventory)) {
+            throw new DomainException;
+        }
+
         $item = $this->inventory[strval($id)];
         $this->removeQuantityFromItem($quantity, $item);
 

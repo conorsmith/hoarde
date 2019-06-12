@@ -56,9 +56,26 @@ final class EntityRepositoryDb implements EntityRepository
             'id' => $id,
         ]);
 
+        return $this->reconstituteEntity($row);
+    }
+
+    public function findInGame(UuidInterface $id, UuidInterface $gameId): ?Entity
+    {
+        $row = $this->db->fetchAssoc("SELECT * FROM entities WHERE id = :id AND game_id = :game_id", [
+            'id'      => $id,
+            'game_id' => $gameId,
+        ]);
+
+        return $this->reconstituteEntity($row);
+    }
+
+    private function reconstituteEntity($row): ?Entity
+    {
         if ($row === false) {
             return null;
         }
+
+        $id = Uuid::fromString($row['id']);
 
         return new Entity(
             $id,

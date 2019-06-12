@@ -8,6 +8,7 @@ use Ramsey\Uuid\UuidInterface;
 interface EntityRepository
 {
     public function find(UuidInterface $id): ?Entity;
+    public function findInGame(UuidInterface $id, UuidInterface $gameId): ?Entity;
     public function save(Entity $entity): void;
     public function delete(Entity $entity): void;
 }
