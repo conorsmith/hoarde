@@ -62,16 +62,17 @@ final class UseCase
             return Result::failed("{$targetVariety->getLabel()} cannot be constructed.");
         }
 
+        $otherEntities = $this->findOtherEntitiesInTheVicinity($actorId, $gameId);
+        $otherInventories = $this->mapInventories($otherEntities);
+
         $blueprint = $targetVariety->getBlueprint();
         $actorInventory = $actor->getInventory();
 
-        if (!$blueprint->canBeginConstruction($actorInventory)) {
+        if (!$blueprint->canBeginConstruction($actorInventory, $otherInventories)) {
             return Result::failed("Construction requirements not met.");
         }
 
-        foreach ($blueprint->getMaterials() as $varietyId => $quantity) {
-            $actorInventory->discardItem(Uuid::fromString($varietyId), $quantity);
-        }
+        $blueprint->discardUsedMaterials($actorInventory, $otherInventories);
 
         $target = new Entity(
             Uuid::uuid4(),
@@ -92,6 +93,9 @@ final class UseCase
         $unitOfWork->save($game);
         $unitOfWork->save($actor);
         $unitOfWork->save($target);
+        foreach ($otherEntities as $entity) {
+            $unitOfWork->save($entity);
+        }
         $unitOfWork->commit($this->unitOfWorkProcessor);
 
         if (!$actor->isIntact()) {
@@ -99,5 +103,32 @@ final class UseCase
         }
 
         return Result::succeeded();
+    }
+
+    private function findOtherEntitiesInTheVicinity(UuidInterface $actorId, UuidInterface $gameId): iterable
+    {
+        $entityIds = $this->gameRepository->findEntityIds($gameId);
+        $entities = [];
+
+        foreach ($entityIds as $entityId) {
+            if (!$entityId->equals($actorId)) {
+                $entities[] = $this->entityRepository->find($entityId);
+            }
+        }
+
+        return $entities;
+    }
+
+    private function mapInventories(iterable $entities): iterable
+    {
+        $inventories = [];
+
+        foreach ($entities as $entity) {
+            if ($entity->hasInventory()) {
+                $inventories[] = $entity->getInventory();
+            }
+        }
+
+        return $inventories;
     }
 }

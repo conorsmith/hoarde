@@ -52,10 +52,10 @@ final class Blueprint
         return $this->inventoryContainsTools($inventory);
     }
 
-    public function canBeginConstruction(Inventory $inventory): bool
+    public function canBeginConstruction(Inventory $actorInventory, iterable $otherInventories): bool
     {
-        return $this->inventoryContainsTools($inventory)
-            && $this->inventoryContainsMaterials($inventory);
+        return $this->inventoryContainsTools($actorInventory)
+            && $this->inventoriesContainsMaterials($actorInventory, $otherInventories);
     }
 
     private function inventoryContainsTools(Inventory $inventory): bool
@@ -69,14 +69,72 @@ final class Blueprint
         return true;
     }
 
-    private function inventoryContainsMaterials(Inventory $inventory): bool
+    private function inventoriesContainsMaterials(Inventory $actorInventory, iterable $otherInventories): bool
     {
+        $counters = [];
+
         foreach ($this->materials as $material => $quantity) {
-            if (!$inventory->containsItemAmountingToAtLeast(Uuid::fromString($material), $quantity)) {
+            $counters[$material] = 0;
+        }
+
+        $inventories = $this->mergeInventories($actorInventory, $otherInventories);
+
+        foreach ($this->materials as $material => $quantity) {
+            foreach ($inventories as $inventory) {
+                if ($inventory->containsItem(Uuid::fromString($material))) {
+                    $counters[$material] += $inventory->getItem(Uuid::fromString($material))->getQuantity();
+                }
+            }
+        }
+
+        foreach ($this->materials as $material => $quantity) {
+            if ($counters[$material] < $quantity) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    public function discardUsedMaterials(Inventory $actorInventory, iterable $otherInventories): void
+    {
+        $counters = [];
+
+        foreach ($this->materials as $material => $quantity) {
+            $counters[$material] = $quantity;
+        }
+
+        $inventories = $this->mergeInventories($actorInventory, $otherInventories);
+
+        foreach ($this->materials as $material => $quantity) {
+            foreach ($inventories as $inventory) {
+                $materialVarietyId = Uuid::fromString($material);
+
+                if ($counters[$material] > 0
+                    && $inventory->containsItem($materialVarietyId)
+                ) {
+                    $quantityAvailable = $inventory->getItem($materialVarietyId)->getQuantity();
+
+                    if ($quantityAvailable >= $counters[$material]) {
+                        $inventory->discardItem($materialVarietyId, $counters[$material]);
+                        $counters[$material] = 0;
+                    } else {
+                        $inventory->discardItem($materialVarietyId, $quantityAvailable);
+                        $counters[$material] -= $quantityAvailable;
+                    }
+                }
+            }
+        }
+    }
+
+    private function mergeInventories(Inventory $actorInventory, iterable $otherInventories): iterable
+    {
+        $inventories = [$actorInventory];
+
+        foreach ($otherInventories as $inventory) {
+            $inventories[] = $inventory;
+        }
+
+        return $inventories;
     }
 }
