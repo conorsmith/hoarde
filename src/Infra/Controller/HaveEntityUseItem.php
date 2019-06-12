@@ -51,77 +51,8 @@ final class HaveEntityUseItem
 
         $itemId = Uuid::fromString($_POST['item']);
 
-        if (in_array(strval($itemId), [
-            VarietyRepositoryConfig::BUCKET,
-            VarietyRepositoryConfig::ROPE,
-        ])) {
-            $this->session->setFlash(
-                "danger",
-                "That does nothing"
-            );
-
-            $response = new Response;
-            $response = $response->withHeader("Location", "/{$gameId}");
-            return $response;
-        }
-
-        if ($itemId->equals(Uuid::fromString(VarietyRepositoryConfig::SHOVEL))) {
-            $consumedItem = $this->varietyRepo->find($itemId)
-                ->createItemWithQuantity(1);
-
-            $hasRope = false;
-            $hasBucket = false;
-
-            foreach ($entity->getInventory() as $item) {
-                if ($item->getVariety()->getId()->equals(Uuid::fromString(VarietyRepositoryConfig::ROPE))) {
-                    $hasRope = true;
-                } elseif ($item->getVariety()->getId()->equals(Uuid::fromString(VarietyRepositoryConfig::BUCKET))) {
-                    $hasBucket = true;
-                }
-            }
-
-            if (!$hasRope || !$hasBucket) {
-                $this->session->setFlash(
-                    "danger",
-                    "Cannot dig a well without a rope and bucket"
-                );
-
-                $response = new Response;
-                $response = $response->withHeader("Location", "/{$gameId}");
-                return $response;
-            }
-
-            $well = new Entity(
-                Uuid::uuid4(),
-                $gameId,
-                Uuid::fromString(VarietyRepositoryConfig::WELL),
-                "Well",
-                "tint",
-                true,
-                new Construction(
-                    false,
-                    9,
-                    10
-                ),
-                [],
-                []
-            );
-
-            $this->entityRepo->save($well);
-
-            $entity->dropItem(Uuid::fromString(VarietyRepositoryConfig::ROPE), 1);
-            $entity->dropItem(Uuid::fromString(VarietyRepositoryConfig::BUCKET), 1);
-            $entity->wait();
-
-            $this->entityRepo->save($entity);
-
-            $game->proceedToNextTurn();
-            $this->gameRepo->save($game);
-
-        } else {
-            $consumedItem = $entity->consumeItem($itemId);
-            $this->entityRepo->save($entity);
-        }
+        $consumedItem = $entity->consumeItem($itemId);
+        $this->entityRepo->save($entity);
 
         if ($itemId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
             $crate = new Entity(
