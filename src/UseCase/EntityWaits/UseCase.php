@@ -37,7 +37,7 @@ final class UseCase
         $entity = $this->entityRepository->findInGame($entityId, $gameId);
 
         if (is_null($game)) {
-            return Result::failed("Game {$gameId} was not found.");
+            return Result::gameNotFound($gameId);
         }
 
         if (is_null($entity)) {

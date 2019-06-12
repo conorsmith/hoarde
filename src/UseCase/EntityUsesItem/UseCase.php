@@ -54,11 +54,11 @@ final class UseCase
         $itemVariety = $this->varietyRepository->find($itemVarietyId);
 
         if (is_null($game)) {
-            return Result::failed("Game {$gameId} was not found.");
+            return Result::gameNotFound($gameId);
         }
 
         if (is_null($entity)) {
-            return Result::failed("Entity {$entityId} was not found in game {$gameId}.");
+            return Result::entityNotFound($entityId, $gameId);
         }
 
         if (is_null($itemVariety)) {
