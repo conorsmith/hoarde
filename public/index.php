@@ -154,9 +154,11 @@ $router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Contr
 ));
 
 $router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityContinueConstruct(
-    $gameRepository,
-    $entityRepository,
-    $sessionSegment
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityContinuesConstructingEntity\UseCase(
+        $gameRepository,
+        $entityRepository
+    )
 ));
 
 $router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings(

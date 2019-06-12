@@ -36,7 +36,7 @@ final class UseCase
         }
 
         if (!$entity->hasInventory()) {
-            return Result::failed("{$entity->getLabel()} has no inventory.");
+            return Result::entityHasNoInventory($entity);
         }
 
         $resourceNeed = $entity->findResourceNeed($resourceId);
@@ -54,7 +54,7 @@ final class UseCase
         $this->entityRepository->save($entity);
 
         if (!$entity->isIntact()) {
-            return Result::failed("{$entity->getLabel()} has expired.");
+            return Result::actorExpired($entity);
         }
 
         return Result::succeeded();
