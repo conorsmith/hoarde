@@ -7,17 +7,15 @@ use Aura\Session\Segment;
 use ConorSmith\Hoarde\Domain\Construction;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
-use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 use Zend\Diactoros\Response;
 
-final class HaveEntityConstruct
+final class HaveEntityBeginConstruction
 {
     /** @var GameRepository */
     private $gameRepo;
@@ -45,15 +43,6 @@ final class HaveEntityConstruct
 
         $actor = $this->entityRepo->find(Uuid::fromString($args['actorId']));
 
-        if (array_key_exists('targetId', $args)) {
-            return $this->continueConstruction($actor, $game, Uuid::fromString($args['targetId']));
-        } else {
-            return $this->beginConstruction($actor, $game);
-        }
-    }
-
-    private function beginConstruction(Entity $actor, Game $game): ResponseInterface
-    {
         $constructionVarietyId = Uuid::fromString($_POST['constructionVarietyId']);
 
         if ($constructionVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
@@ -144,78 +133,6 @@ final class HaveEntityConstruct
         $actor->wait();
 
         $this->entityRepo->save($actor);
-
-        $game->proceedToNextTurn();
-        $this->gameRepo->save($game);
-
-        if (!$actor->isIntact()) {
-            $this->session->setFlash("danger", "{$actor->getLabel()} has expired");
-        }
-
-        $response = new Response;
-        $response = $response->withHeader("Location", "/{$game->getId()}");
-        return $response;
-    }
-
-    private function continueConstruction(Entity $actor, Game $game, UuidInterface $targetId): ResponseInterface
-    {
-        $constructionVarietyId = Uuid::fromString($_POST['constructionVarietyId']);
-
-        if ($constructionVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            $tools = [
-                VarietyRepositoryConfig::SHOVEL,
-            ];
-        } elseif ($constructionVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-            $tools = [
-                VarietyRepositoryConfig::HAMMER,
-                VarietyRepositoryConfig::HAND_SAW,
-            ];
-        } else {
-            throw new RuntimeException("Invalid construction");
-        }
-
-        $target = $this->entityRepo->find($targetId);
-
-        if (!$actor->getGameId()->equals($game->getId())
-            || !$target->getGameId()->equals($game->getId())
-        ) {
-            $response = new Response;
-            $response->withStatus(400);
-            $response->getBody()->write("HaveEntityConstruct request must be for an entity from this game");
-            return $response;
-        }
-
-        $actorInventory = $actor->getInventory();
-
-        $meetsRequirements = true;
-
-        foreach ($tools as $tool) {
-            if (!$actorInventory->containsItem(Uuid::fromString($tool))) {
-                $meetsRequirements = false;
-            }
-        }
-
-        if (!$meetsRequirements) {
-            $this->session->setFlash("danger", "Construction requirements not met.");
-
-            $response = new Response;
-            $response = $response->withHeader("Location", "/{$game->getId()}");
-            return $response;
-        }
-
-        $construction = $target->getConstruction();
-
-        if ($construction->isConstructed()) {
-            $response = new Response;
-            $response->withStatus(400);
-            $response->getBody()->write("Target entity has already been constructed");
-            return $response;
-        }
-
-        $actor->construct($target);
-
-        $this->entityRepo->save($actor);
-        $this->entityRepo->save($target);
 
         $game->proceedToNextTurn();
         $this->gameRepo->save($game);
