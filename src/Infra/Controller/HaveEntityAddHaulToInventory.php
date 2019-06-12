@@ -65,7 +65,7 @@ class HaveEntityAddHaulToInventory
         $inventory = $entity->getInventory();
 
         foreach ($modifiedInventory as $varietyId => $quantity) {
-            $inventory->reduceItemQuantityTo($varietyId, $quantity);
+            $inventory->reduceItemQuantityTo(Uuid::fromString($varietyId), $quantity);
         }
 
         if (!$haul->isRetrievableBy($entity)) {
