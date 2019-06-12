@@ -119,11 +119,6 @@ final class Entity
         return $this->resourceNeeds;
     }
 
-    public function getInventoryItems(): iterable
-    {
-        return $this->inventory->getItems();
-    }
-
     public function hasInventory(): bool
     {
         return !is_null($this->inventory);
@@ -136,27 +131,6 @@ final class Entity
         }
 
         return $this->inventory;
-    }
-
-    public function getInventoryWeight(): int
-    {
-        $weight = 0;
-
-        foreach ($this->inventory->getItems() as $item) {
-            $weight += $item->getWeight();
-        }
-
-        return $weight;
-    }
-
-    public function getInventoryCapacity(): int
-    {
-        return $this->inventory->getCapacity();
-    }
-
-    public function isOverencumbered(): bool
-    {
-        return $this->inventory->getWeight() >= $this->inventory->getCapacity();
     }
 
     public function relabel(string $label): void

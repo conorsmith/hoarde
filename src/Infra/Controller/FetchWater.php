@@ -63,7 +63,7 @@ final class FetchWater
             return $response;
         }
 
-        $availableCapacity = $entity->getInventoryCapacity() - $entity->getInventoryWeight();
+        $availableCapacity = $entity->getInventory()->getCapacity() - $entity->getInventory()->getWeight();
         $waterBottlesRetrieved = min(
             intval(floor($availableCapacity / 500)),
             20 // 10 litre bucket -> 500 ml water bottles

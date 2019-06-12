@@ -201,7 +201,7 @@ final class ShowGame
 
         $items = [];
 
-        foreach ($entity->getInventoryItems() as $item) {
+        foreach ($entity->getInventory()->getItems() as $item) {
             $presentedItem = $this->presentItem($item);
             $presentedItem->actions = [];
 
@@ -245,11 +245,12 @@ final class ShowGame
         ];
 
         if ($entity->hasInventory()) {
+            $inventory = $entity->getInventory();
             $presentation->inventory = (object) [
-                'weight'                => $entity->getInventoryWeight(),
-                'capacity'              => $entity->getInventoryCapacity(),
-                'isAtCapacity'          => $entity->getInventoryWeight() === $entity->getInventoryCapacity(),
-                'weightPercentage'      => $entity->getInventoryWeight() / $entity->getInventoryCapacity() * 100,
+                'weight'                => $inventory->getWeight(),
+                'capacity'              => $inventory->getCapacity(),
+                'isAtCapacity'          => $inventory->getWeight() === $inventory->getCapacity(),
+                'weightPercentage'      => $inventory->getWeight() / $inventory->getCapacity() * 100,
                 'items'                 => $items,
             ];
         }
@@ -338,14 +339,14 @@ final class ShowGame
         $lastConsumedItem = null;
 
         if (!is_null($lastConsumedVarietyId)) {
-            foreach ($entity->getInventoryItems() as $item) {
+            foreach ($entity->getInventory()->getItems() as $item) {
                 if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
                     $lastConsumedItem = $this->presentItem($item);
                 }
             }
         }
 
-        foreach ($entity->getInventoryItems() as $item) {
+        foreach ($entity->getInventory()->getItems() as $item) {
             foreach ($item->getVariety()->getResources() as $itemResource) {
                 if ($itemResource->getId()->equals($resource->getId())
                     && !$item->getVariety()->getId()->equals($lastConsumedVarietyId)
