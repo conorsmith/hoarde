@@ -37,7 +37,7 @@ final class Entity
     private $resourceNeeds;
 
     /** @var array */
-    private $inventory;
+    private $inventoryItems;
 
     public function __construct(
         UuidInterface $id,
@@ -48,7 +48,7 @@ final class Entity
         bool $isIntact,
         Construction $construction,
         iterable $resourceNeeds,
-        iterable $inventory
+        iterable $inventoryItems
     ) {
         $this->id = $id;
         $this->gameId = $gameId;
@@ -58,7 +58,7 @@ final class Entity
         $this->isIntact = $isIntact;
         $this->construction = $construction;
         $this->resourceNeeds = [];
-        $this->inventory = [];
+        $this->inventoryItems = [];
 
         foreach ($resourceNeeds as $resourceNeed) {
             if (!$resourceNeed instanceof ResourceNeed) {
@@ -68,12 +68,12 @@ final class Entity
             $this->resourceNeeds[strval($resourceNeed->getResource()->getId())] = $resourceNeed;
         }
 
-        foreach ($inventory as $item) {
+        foreach ($inventoryItems as $item) {
             if (!$item instanceof Item) {
                 throw new DomainException;
             }
 
-            $this->inventory[strval($item->getVariety()->getId())] = $item;
+            $this->inventoryItems[strval($item->getVariety()->getId())] = $item;
         }
     }
 
@@ -119,28 +119,28 @@ final class Entity
 
     public function getInventory(): iterable
     {
-        return $this->inventory;
+        return $this->inventoryItems;
     }
 
     public function hasItemInInventory(UuidInterface $varietyId): bool
     {
-        return array_key_exists(strval($varietyId), $this->inventory);
+        return array_key_exists(strval($varietyId), $this->inventoryItems);
     }
 
     public function hasItemsAmountingToAtLeast(UuidInterface $varietyId, int $minimumQuantity): bool
     {
-        if (!array_key_exists(strval($varietyId), $this->inventory)) {
+        if (!array_key_exists(strval($varietyId), $this->inventoryItems)) {
             return false;
         }
 
-        return $this->inventory[strval($varietyId)]->getQuantity() >= $minimumQuantity;
+        return $this->inventoryItems[strval($varietyId)]->getQuantity() >= $minimumQuantity;
     }
 
     public function getInventoryWeight(): int
     {
         $weight = 0;
 
-        foreach ($this->inventory as $item) {
+        foreach ($this->inventoryItems as $item) {
             $weight += $item->getWeight();
         }
 
@@ -187,7 +187,7 @@ final class Entity
 
     public function consumeItem(UuidInterface $id): Item
     {
-        $item = $this->inventory[strval($id)];
+        $item = $this->inventoryItems[strval($id)];
 
         foreach ($item->getVariety()->getResources() as $resource) {
             if ($resource->getId()->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))) {
@@ -224,11 +224,11 @@ final class Entity
 
     public function dropItem(UuidInterface $id, int $quantity): Item
     {
-        if (!array_key_exists(strval($id), $this->inventory)) {
+        if (!array_key_exists(strval($id), $this->inventoryItems)) {
             throw new DomainException;
         }
 
-        $item = $this->inventory[strval($id)];
+        $item = $this->inventoryItems[strval($id)];
         $this->removeQuantityFromItem($quantity, $item);
 
         return $item;
@@ -236,22 +236,22 @@ final class Entity
 
     public function addItem(Item $item): void
     {
-        if (array_key_exists(strval($item->getVariety()->getId()), $this->inventory)) {
-            $this->inventory[strval($item->getVariety()->getId())]->add($item->getQuantity());
+        if (array_key_exists(strval($item->getVariety()->getId()), $this->inventoryItems)) {
+            $this->inventoryItems[strval($item->getVariety()->getId())]->add($item->getQuantity());
         } else {
-            $this->inventory[strval($item->getVariety()->getId())] = $item;
+            $this->inventoryItems[strval($item->getVariety()->getId())] = $item;
         }
     }
 
     public function hasToolsFor(Entity $target): bool
     {
         if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            return array_key_exists(VarietyRepositoryConfig::SHOVEL, $this->inventory);
+            return array_key_exists(VarietyRepositoryConfig::SHOVEL, $this->inventoryItems);
         }
 
         if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-            return array_key_exists(VarietyRepositoryConfig::HAMMER, $this->inventory)
-                && array_key_exists(VarietyRepositoryConfig::HAND_SAW, $this->inventory);
+            return array_key_exists(VarietyRepositoryConfig::HAMMER, $this->inventoryItems)
+                && array_key_exists(VarietyRepositoryConfig::HAND_SAW, $this->inventoryItems);
         }
 
         return false;
@@ -287,7 +287,7 @@ final class Entity
 
     private function hasStorage(GameRepository $gameRepository, EntityRepository $entityRepository): bool
     {
-        if (array_key_exists(VarietyRepositoryConfig::WOODEN_CRATE, $this->inventory)) {
+        if (array_key_exists(VarietyRepositoryConfig::WOODEN_CRATE, $this->inventoryItems)) {
             return true;
         }
 
@@ -313,9 +313,9 @@ final class Entity
     public function reduceInventoryItemQuantity(UuidInterface $varietyId, int $newQuantity): void
     {
         if ($newQuantity === 0) {
-            unset($this->inventory[strval($varietyId)]);
+            unset($this->inventoryItems[strval($varietyId)]);
         } else {
-            $this->inventory[strval($varietyId)]->reduceTo($newQuantity);
+            $this->inventoryItems[strval($varietyId)]->reduceTo($newQuantity);
         }
     }
 
@@ -324,12 +324,12 @@ final class Entity
         int $increment,
         VarietyRepository $varietyRepository
     ): void {
-        if (!array_key_exists(strval($varietyId), $this->inventory)) {
-            $this->inventory[strval($varietyId)] = $varietyRepository
+        if (!array_key_exists(strval($varietyId), $this->inventoryItems)) {
+            $this->inventoryItems[strval($varietyId)] = $varietyRepository
                 ->find($varietyId)
                 ->createItemWithQuantity($increment);
         } else {
-            $this->inventory[strval($varietyId)]->incrementBy($increment);
+            $this->inventoryItems[strval($varietyId)]->incrementBy($increment);
         }
 
         if ($this->getInventoryWeight() > $this->getInventoryCapacity()) {
@@ -339,10 +339,10 @@ final class Entity
 
     public function decrementInventoryItemQuantity(UuidInterface $varietyId, int $decrement): void
     {
-        if ($this->inventory[strval($varietyId)]->getQuantity() - $decrement === 0) {
-            unset($this->inventory[strval($varietyId)]);
+        if ($this->inventoryItems[strval($varietyId)]->getQuantity() - $decrement === 0) {
+            unset($this->inventoryItems[strval($varietyId)]);
         } else {
-            $this->inventory[strval($varietyId)]->decrementBy($decrement);
+            $this->inventoryItems[strval($varietyId)]->decrementBy($decrement);
         }
     }
 
@@ -357,7 +357,7 @@ final class Entity
         if ($item->moreThan($quantity)) {
             $item->remove($quantity);
         } else {
-            unset($this->inventory[strval($item->getVariety()->getId())]);
+            unset($this->inventoryItems[strval($item->getVariety()->getId())]);
         }
     }
 
@@ -365,10 +365,10 @@ final class Entity
     {
         $key = strval($addedItem->getVariety()->getId());
 
-        if (array_key_exists($key, $this->inventory)) {
-            $this->inventory[$key]->add($addedItem->getQuantity());
+        if (array_key_exists($key, $this->inventoryItems)) {
+            $this->inventoryItems[$key]->add($addedItem->getQuantity());
         } else {
-            $this->inventory[$key] = $addedItem;
+            $this->inventoryItems[$key] = $addedItem;
         }
     }
 
@@ -405,7 +405,7 @@ final class Entity
             )
         ];
 
-        $this->inventory = [
+        $this->inventoryItems = [
             $varietyRepository
                 ->find(Uuid::fromString(VarietyRepositoryConfig::WATER_BOTTLE))
                 ->createItemWithQuantity(8),
