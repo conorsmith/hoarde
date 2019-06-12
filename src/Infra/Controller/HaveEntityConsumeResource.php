@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
-use ConorSmith\Hoarde\Domain\Entity;
-use ConorSmith\Hoarde\Domain\EntityRepository;
-use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\UseCase\EntityConsumesResourceItem\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -14,78 +12,30 @@ use Zend\Diactoros\Response;
 
 final class HaveEntityConsumeResource
 {
-    /** @var GameRepository */
-    private $gameRepo;
-
-    /** @var EntityRepository */
-    private $entityRepo;
-
     /** @var Segment */
     private $session;
 
+    /** @var UseCase */
+    private $useCase;
+
     public function __construct(
-        GameRepository $gameRepo,
-        EntityRepository $entityRepo,
-        Segment $session
+        Segment $session,
+        UseCase $useCase
     ) {
-        $this->gameRepo = $gameRepo;
-        $this->entityRepo = $entityRepo;
         $this->session = $session;
+        $this->useCase = $useCase;
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $gameId = Uuid::fromString($args['gameId']);
+        $entityId = Uuid::fromString($_POST['entityId']);
+        $resourceId = Uuid::fromString($_POST['resourceId']);
 
-        $game = $this->gameRepo->find($gameId);
-        $entity = $this->entityRepo->find(Uuid::fromString($_POST['entityId']));
+        $result = $this->useCase->__invoke($gameId, $entityId, $resourceId);
 
-        if (!$entity->getGameId()->equals($gameId)) {
-            $this->session->setFlash("danger", "Consume resource request must be for an entity from this game");
-
-            $response = new Response;
-            $response = $response->withHeader("Location", "/{$gameId}");
-            return $response;
-        }
-
-        $chosenItem = null;
-
-        $lastConsumedVarietyId = $entity->getResourceNeeds()[$_POST['resourceId']]->getLastConsumedVarietyId();
-
-        if (!is_null($lastConsumedVarietyId)) {
-            foreach ($entity->getInventory()->getItems() as $item) {
-                if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
-                    $chosenItem = $item;
-                }
-            }
-        }
-
-        if (is_null($chosenItem)) {
-            foreach ($entity->getInventory()->getItems() as $item) {
-                foreach ($item->getVariety()->getResources() as $resource) {
-                    if ($resource->getId()->equals(Uuid::fromString($_POST['resourceId']))) {
-                        $chosenItem = $item;
-                    }
-                }
-            }
-        }
-
-        if (is_null($chosenItem)) {
-            $this->session->setFlash(
-                "danger",
-                "{$entity->getLabel()} has none of this resource to consume"
-            );
-
-            $response = new Response;
-            $response = $response->withHeader("Location", "/{$gameId}");
-            return $response;
-        }
-
-        $entity->consumeItem($chosenItem->getVariety()->getId());
-        $this->entityRepo->save($entity);
-
-        if (!$entity->isIntact()) {
-            $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
+        if (!$result->isSuccessful()) {
+            $this->session->setFlash("danger", $result->getMessage());
         }
 
         $response = new Response;

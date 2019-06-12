@@ -102,9 +102,10 @@ $router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller
 ));
 
 $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConsumeResource(
-    $gameRepository,
-    $entityRepository,
-    $sessionSegment
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityConsumesResourceItem\UseCase(
+        $entityRepository
+    )
 ));
 
 $router->post("/{gameId}/scavenge", new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
