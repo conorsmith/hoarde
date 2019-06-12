@@ -176,4 +176,19 @@ final class Inventory
 
         unset($this->items[strval($item->getVariety()->getId())]);
     }
+
+    public function filterByResource(UuidInterface $filterResourceId): iterable
+    {
+        $filteredItems = [];
+
+        foreach ($this->items as $item) {
+            foreach ($item->getVariety()->getResources() as $itemResource) {
+                if ($itemResource->getId()->equals($filterResourceId)) {
+                    $filteredItems[] = $item;
+                }
+            }
+        }
+
+        return $filteredItems;
+    }
 }

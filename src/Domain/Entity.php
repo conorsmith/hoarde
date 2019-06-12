@@ -119,6 +119,15 @@ final class Entity
         return $this->resourceNeeds;
     }
 
+    public function findResourceNeed(UuidInterface $resourceId): ?ResourceNeed
+    {
+        if (!array_key_exists(strval($resourceId), $this->resourceNeeds)) {
+            return null;
+        }
+
+        return $this->resourceNeeds[strval($resourceId)];
+    }
+
     public function hasInventory(): bool
     {
         return !is_null($this->inventory);
@@ -150,6 +159,48 @@ final class Entity
                 $this->isIntact = false;
             }
         }
+    }
+
+    public function hasItemWithResourceContent(UuidInterface $resourceId): bool
+    {
+        $inventoryItemsWithResource = [];
+
+        foreach ($this->inventory->filterByResource($resourceId) as $item) {
+            $inventoryItemsWithResource[] = $item;
+        }
+
+        return count($inventoryItemsWithResource) > 0;
+    }
+
+    public function consumeItemForResourceNeed(UuidInterface $resourceId): void
+    {
+        $resourceNeed = $this->findResourceNeed($resourceId);
+
+        if (is_null($resourceNeed)) {
+            throw new DomainException;
+        }
+
+        $lastConsumedVarietyId = $resourceNeed->getLastConsumedVarietyId();
+
+        if (!is_null($lastConsumedVarietyId)
+            && $this->inventory->containsItem($lastConsumedVarietyId)
+        ) {
+            $this->consumeItem($lastConsumedVarietyId);
+            return;
+        }
+
+        $inventoryItemsWithResource = [];
+
+        foreach ($this->inventory->filterByResource($resourceId) as $item) {
+            $inventoryItemsWithResource[] = $item;
+        }
+
+        if (count($inventoryItemsWithResource) > 0) {
+            $this->consumeItem($inventoryItemsWithResource[0]->getVariety()->getId());
+            return;
+        }
+
+        throw new DomainException;
     }
 
     public function consumeItem(UuidInterface $id): Item

@@ -5,6 +5,7 @@ namespace ConorSmith\Hoarde\UseCase\EntityConsumesResourceItem;
 
 use ConorSmith\Hoarde\App\Result;
 use ConorSmith\Hoarde\Domain\EntityRepository;
+use ConorSmith\Hoarde\Domain\ResourceRepository;
 use Ramsey\Uuid\UuidInterface;
 
 final class UseCase
@@ -12,46 +13,44 @@ final class UseCase
     /** @var EntityRepository */
     private $entityRepository;
 
-    public function __construct(EntityRepository $entityRepository)
+    /** @var ResourceRepository */
+    private $resourceRepository;
+
+    public function __construct(EntityRepository $entityRepository, ResourceRepository $resourceRepository)
     {
         $this->entityRepository = $entityRepository;
+        $this->resourceRepository = $resourceRepository;
     }
 
     public function __invoke(UuidInterface $gameId, UuidInterface $entityId, UuidInterface $resourceId): Result
     {
         $entity = $this->entityRepository->findInGame($entityId, $gameId);
+        $resource = $this->resourceRepository->find($resourceId);
 
         if (is_null($entityId)) {
             return Result::entityNotFound($entityId, $gameId);
         }
 
-        $chosenItem = null;
-
-        $lastConsumedVarietyId = $entity->getResourceNeeds()[strval($resourceId)]->getLastConsumedVarietyId();
-
-        if (!is_null($lastConsumedVarietyId)) {
-            foreach ($entity->getInventory()->getItems() as $item) {
-                if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
-                    $chosenItem = $item;
-                }
-            }
+        if (is_null($resource)) {
+            return Result::failed("Resource {$resourceId} was not found.");
         }
 
-        if (is_null($chosenItem)) {
-            foreach ($entity->getInventory()->getItems() as $item) {
-                foreach ($item->getVariety()->getResources() as $resource) {
-                    if ($resource->getId()->equals($resourceId)) {
-                        $chosenItem = $item;
-                    }
-                }
-            }
+        if (!$entity->hasInventory()) {
+            return Result::failed("{$entity->getLabel()} has no inventory.");
         }
 
-        if (is_null($chosenItem)) {
-            return Result::failed("{$entity->getLabel()} has none of this resource to consume");
+        $resourceNeed = $entity->findResourceNeed($resourceId);
+
+        if (is_null($resourceNeed)) {
+            return Result::failed("{$entity->getLabel()} has no need for {$resource->getLabel()}.");
         }
 
-        $entity->consumeItem($chosenItem->getVariety()->getId());
+        if (!$entity->hasItemWithResourceContent($resourceId)) {
+            return Result::failed("{$entity->getLabel()} has no {$resource->getLabel()}.");
+        }
+
+        $entity->consumeItemForResourceNeed($resourceId);
+
         $this->entityRepository->save($entity);
 
         if (!$entity->isIntact()) {

@@ -104,7 +104,8 @@ $router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller
 $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConsumeResource(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityConsumesResourceItem\UseCase(
-        $entityRepository
+        $entityRepository,
+        $resourceRepository
     )
 ));
 
