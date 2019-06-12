@@ -15,15 +15,9 @@ class ConstructionController {
 
     onSubmit(e) {
         let form = document.createElement("form");
-        form.setAttribute("action", "/" + this.model.gameId + "/construct");
+        form.setAttribute("action", "/" + this.model.gameId + "/" + this.model.entityId + "/construct");
         form.setAttribute("method", "POST");
         form.setAttribute("hidden", true);
-
-        let actorIdInput = document.createElement("input");
-        actorIdInput.setAttribute("type", "hidden");
-        actorIdInput.setAttribute("name", "actorId");
-        actorIdInput.setAttribute("value", this.model.entityId);
-        form.appendChild(actorIdInput);
 
         let constructionVarietyId = document.createElement("input");
         constructionVarietyId.setAttribute("type", "hidden");

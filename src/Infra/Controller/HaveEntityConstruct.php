@@ -13,6 +13,7 @@ use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 use Zend\Diactoros\Response;
 
@@ -42,10 +43,10 @@ final class HaveEntityConstruct
         $gameId = Uuid::fromString($args['gameId']);
         $game = $this->gameRepo->find($gameId);
 
-        $actor = $this->entityRepo->find(Uuid::fromString($_POST['actorId']));
+        $actor = $this->entityRepo->find(Uuid::fromString($args['actorId']));
 
-        if (array_key_exists('targetId', $_POST)) {
-            return $this->continueConstruction($actor, $game);
+        if (array_key_exists('targetId', $args)) {
+            return $this->continueConstruction($actor, $game, Uuid::fromString($args['targetId']));
         } else {
             return $this->beginConstruction($actor, $game);
         }
@@ -156,7 +157,7 @@ final class HaveEntityConstruct
         return $response;
     }
 
-    private function continueConstruction(Entity $actor, Game $game): ResponseInterface
+    private function continueConstruction(Entity $actor, Game $game, UuidInterface $targetId): ResponseInterface
     {
         $constructionVarietyId = Uuid::fromString($_POST['constructionVarietyId']);
 
@@ -173,7 +174,7 @@ final class HaveEntityConstruct
             throw new RuntimeException("Invalid construction");
         }
 
-        $target = $this->entityRepo->find(Uuid::fromString($_POST['targetId']));
+        $target = $this->entityRepo->find($targetId);
 
         if (!$actor->getGameId()->equals($game->getId())
             || !$target->getGameId()->equals($game->getId())

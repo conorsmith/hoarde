@@ -245,21 +245,9 @@ for (var i = 0; i < constructContinueButtons.length; i++) {
         var constructionVarietyId = e.currentTarget.dataset.constructionVarietyId;
 
         var form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/construct");
+        form.setAttribute("action", "/" + gameId + "/" + actorId + "/construct/" + targetId);
         form.setAttribute("method", "POST");
         form.setAttribute("hidden", true);
-
-        var targetIdInput = document.createElement("input");
-        targetIdInput.setAttribute("type", "hidden");
-        targetIdInput.setAttribute("name", "targetId");
-        targetIdInput.setAttribute("value", targetId);
-        form.appendChild(targetIdInput);
-
-        var actorIdInput = document.createElement("input");
-        actorIdInput.setAttribute("type", "hidden");
-        actorIdInput.setAttribute("name", "actorId");
-        actorIdInput.setAttribute("value", actorId);
-        form.appendChild(actorIdInput);
 
         var constructionVarietyIdInput = document.createElement("input");
         constructionVarietyIdInput.setAttribute("type", "hidden");

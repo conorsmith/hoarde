@@ -147,7 +147,13 @@ $router->post("/{gameId}/fetch-water", new ConorSmith\Hoarde\Infra\Controller\Fe
     $sessionSegment
 ));
 
-$router->post("/{gameId}/construct", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConstruct(
+$router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConstruct(
+    $gameRepository,
+    $entityRepository,
+    $sessionSegment
+));
+
+$router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConstruct(
     $gameRepository,
     $entityRepository,
     $sessionSegment
