@@ -11,12 +11,16 @@ final class Inventory
     /** @var UuidInterface */
     private $entityId;
 
+    /** @var int */
+    private $capacity;
+
     /** @var Item[] */
     private $items;
 
-    public function __construct(UuidInterface $entityId, iterable $items)
+    public function __construct(UuidInterface $entityId, int $capacity, iterable $items)
     {
         $this->entityId = $entityId;
+        $this->capacity = $capacity;
         $this->items = [];
 
         foreach ($items as $item) {
@@ -26,6 +30,11 @@ final class Inventory
 
             $this->items[strval($item->getVariety()->getId())] = $item;
         }
+    }
+
+    public function getCapacity(): int
+    {
+        return $this->capacity;
     }
 
     public function getItems(): iterable

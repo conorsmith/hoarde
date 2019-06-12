@@ -68,7 +68,14 @@ final class Entity
         }
 
         if (!is_null($inventoryItems)) {
-            $this->inventory = new Inventory($this->id, $inventoryItems);
+
+            if ($this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
+                $capacity = 50000;
+            } else {
+                $capacity = 10000;
+            }
+
+            $this->inventory = new Inventory($this->id, $capacity, $inventoryItems);
         }
     }
 
@@ -154,11 +161,7 @@ final class Entity
 
     public function getInventoryCapacity(): int
     {
-        if ($this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-            return 50000;
-        }
-
-        return 10000;
+        return $this->inventory->getCapacity();
     }
 
     public function isOverencumbered(): bool
@@ -344,7 +347,7 @@ final class Entity
             )
         ];
 
-        $this->inventory = new Inventory($this->id, [
+        $this->inventory = new Inventory($this->id, 10000, [
             $varietyRepository
                 ->find(Uuid::fromString(VarietyRepositoryConfig::WATER_BOTTLE))
                 ->createItemWithQuantity(8),
