@@ -120,6 +120,7 @@ for (var i = 0; i < useButtons.length; i++) {
 
         var itemId = e.currentTarget.dataset.itemId;
         var entityId = e.currentTarget.dataset.entityId;
+        var actionId = e.currentTarget.dataset.actionId;
 
         var form = document.createElement("form");
         form.setAttribute("action", "/" + gameId + "/" + entityId + "/use");
@@ -131,6 +132,12 @@ for (var i = 0; i < useButtons.length; i++) {
         itemInput.setAttribute("name", "item");
         itemInput.setAttribute("value", itemId);
         form.appendChild(itemInput);
+
+        var actionIdInput = document.createElement("input");
+        actionIdInput.setAttribute("type", "hidden");
+        actionIdInput.setAttribute("name", "actionId");
+        actionIdInput.setAttribute("value", actionId);
+        form.appendChild(actionIdInput);
 
         document.body.appendChild(form);
 

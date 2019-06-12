@@ -88,10 +88,17 @@ $router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controlle
 ));
 
 $router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem(
-    $gameRepository,
-    $entityRepository,
-    $varietyRepository,
-    $sessionSegment
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityUsesItem\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        new ConorSmith\Hoarde\Infra\UnitOfWorkDb(
+            $db,
+            $gameRepository,
+            $entityRepository
+        )
+    )
 ));
 
 $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConsumeResource(
