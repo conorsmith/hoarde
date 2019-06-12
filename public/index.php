@@ -87,7 +87,7 @@ $router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controlle
     )
 ));
 
-$router->post("/{gameId}/use", new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem(
+$router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem(
     $gameRepository,
     $entityRepository,
     $varietyRepository,

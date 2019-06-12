@@ -44,12 +44,11 @@ final class HaveEntityUseItem
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $gameId = Uuid::fromString($args['gameId']);
+        $entityId = Uuid::fromString($args['entityId']);
+        $itemId = Uuid::fromString($_POST['item']);
 
         $game = $this->gameRepo->find($gameId);
-        $entityIds = $this->gameRepo->findEntityIds($gameId);
-        $entity = $this->entityRepo->find($entityIds[0]);
-
-        $itemId = Uuid::fromString($_POST['item']);
+        $entity = $this->entityRepo->findInGame($entityId, $gameId);
 
         $consumedItem = $entity->consumeItem($itemId);
         $this->entityRepo->save($entity);
