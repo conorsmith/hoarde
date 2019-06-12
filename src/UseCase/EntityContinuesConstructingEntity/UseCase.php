@@ -6,13 +6,10 @@ namespace ConorSmith\Hoarde\UseCase\EntityContinuesConstructingEntity;
 use ConorSmith\Hoarde\App\Result;
 use ConorSmith\Hoarde\App\UnitOfWork;
 use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
-use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
-use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
-use Ramsey\Uuid\Uuid;
+use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Ramsey\Uuid\UuidInterface;
-use RuntimeException;
 
 final class UseCase
 {
@@ -22,16 +19,21 @@ final class UseCase
     /** @var EntityRepository */
     private $entityRepository;
 
+    /** @var VarietyRepository */
+    private $varietyRepository;
+
     /** @var UnitOfWorkProcessor */
     private $unitOfWorkProcessor;
 
     public function __construct(
         GameRepository $gameRepository,
         EntityRepository $entityRepository,
+        VarietyRepository $varietyRepository,
         UnitOfWorkProcessor $unitOfWorkProcessor
     ) {
         $this->gameRepository = $gameRepository;
         $this->entityRepository = $entityRepository;
+        $this->varietyRepository = $varietyRepository;
         $this->unitOfWorkProcessor = $unitOfWorkProcessor;
     }
 
@@ -57,24 +59,18 @@ final class UseCase
             return Result::entityHasNoInventory($actor);
         }
 
+        $targetVariety = $this->varietyRepository->find($target->getVarietyId());
         $construction = $target->getConstruction();
 
+        if (!$targetVariety->hasBlueprint()) {
+            return Result::failed("{$target->getLabel()} cannot be constructed.");
+        }
+
         if ($construction->isConstructed()) {
-            return Result::failed("Target entity has already been constructed");
+            return Result::failed("{$target->getLabel()} has already been constructed");
         }
 
-        $requiredTools = $this->findRequiredTools($target);
-        $actorInventory = $actor->getInventory();
-
-        $meetsRequirements = true;
-
-        foreach ($requiredTools as $tool) {
-            if (!$actorInventory->containsItem(Uuid::fromString($tool))) {
-                $meetsRequirements = false;
-            }
-        }
-
-        if (!$meetsRequirements) {
+        if (!$targetVariety->getBlueprint()->canContinueConstruction($actor->getInventory())) {
             return Result::failed("Construction requirements not met.");
         }
 
@@ -92,23 +88,5 @@ final class UseCase
         }
 
         return Result::succeeded();
-    }
-
-    private function findRequiredTools(Entity $target): iterable
-    {
-        if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            return [
-                VarietyRepositoryConfig::SHOVEL,
-            ];
-        }
-
-        if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-            return [
-                VarietyRepositoryConfig::HAMMER,
-                VarietyRepositoryConfig::HAND_SAW,
-            ];
-        }
-
-        throw new RuntimeException("Invalid construction");
     }
 }

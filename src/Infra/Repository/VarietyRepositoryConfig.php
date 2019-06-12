@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Repository;
 
 use ConorSmith\Hoarde\Domain\ActionRepository;
+use ConorSmith\Hoarde\Domain\Blueprint;
 use ConorSmith\Hoarde\Domain\ResourceContent;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\Variety;
@@ -64,6 +65,16 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 0,
             'icon'        => "tint",
             'description' => "A 10 metre deep hole reaching the water table.",
+            'blueprint'   => [
+                'tools'     => [
+                    self::SHOVEL,
+                ],
+                'materials' => [
+                    self::BUCKET => 1,
+                    self::ROPE   => 1,
+                ],
+                'turns'     => 10,
+            ],
         ],
         self::WATER_BOTTLE => [
             'label'       => "Water Bottle",
@@ -194,6 +205,17 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'description' => "A sturdy crate crafted from wood in which items could be protected from the elements.",
             'actions'     => [
                 ActionRepositoryConfig::PLACE,
+            ],
+            'blueprint'   => [
+                'tools'     => [
+                    self::HAMMER,
+                    self::HAND_SAW,
+                ],
+                'materials' => [
+                    self::NAIL   => 60,
+                    self::TIMBER => 10,
+                ],
+                'turns'     => 3,
             ],
         ],
         self::SHOVEL => [
@@ -401,6 +423,16 @@ final class VarietyRepositoryConfig implements VarietyRepository
             }
         }
 
+        $blueprint = null;
+
+        if (array_key_exists('blueprint', self::VARIETIES[strval($id)])) {
+            $blueprint = new Blueprint(
+                self::VARIETIES[strval($id)]['blueprint']['tools'],
+                self::VARIETIES[strval($id)]['blueprint']['materials'],
+                self::VARIETIES[strval($id)]['blueprint']['turns']
+            );
+        }
+
         $resourceContents = [];
 
         foreach (self::VARIETIES[strval($id)]['resources'] as $resourceId => $amount) {
@@ -417,7 +449,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
             self::VARIETIES[strval($id)]['weight'],
             self::VARIETIES[strval($id)]['icon'],
             self::VARIETIES[strval($id)]['description'],
-            $actions
+            $actions,
+            $blueprint
         );
     }
 }

@@ -29,6 +29,9 @@ final class Variety
     /** @var iterable */
     private $actions;
 
+    /** @var ?Blueprint */
+    private $blueprint;
+
     public function __construct(
         UuidInterface $id,
         string $label,
@@ -36,13 +39,15 @@ final class Variety
         int $weight,
         string $icon,
         string $description,
-        iterable $actions
+        iterable $actions,
+        ?Blueprint $blueprint
     ) {
         $this->id = $id;
         $this->label = $label;
         $this->weight = $weight;
         $this->icon = $icon;
         $this->description = $description;
+        $this->blueprint = $blueprint;
 
         $this->resourceContents = [];
         $this->actions = [];
@@ -102,6 +107,16 @@ final class Variety
     public function getActions(): iterable
     {
         return $this->actions;
+    }
+
+    public function hasBlueprint(): bool
+    {
+        return !is_null($this->blueprint);
+    }
+
+    public function getBlueprint(): ?Blueprint
+    {
+        return $this->blueprint;
     }
 
     public function createItemWithQuantity(int $quantity): Item

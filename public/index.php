@@ -160,6 +160,7 @@ $router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\
     new ConorSmith\Hoarde\UseCase\EntityContinuesConstructingEntity\UseCase(
         $gameRepository,
         $entityRepository,
+        $varietyRepository,
         $unitOfWorkProcessor
     )
 ));

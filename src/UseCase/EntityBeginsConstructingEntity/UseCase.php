@@ -11,10 +11,8 @@ use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
-use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use RuntimeException;
 
 final class UseCase
 {
@@ -60,54 +58,18 @@ final class UseCase
             return Result::varietyNotFound($targetVarietyId);
         }
 
-        if ($targetVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            $tools = [
-                VarietyRepositoryConfig::SHOVEL,
-            ];
-
-            $materials = [
-                VarietyRepositoryConfig::ROPE   => 1,
-                VarietyRepositoryConfig::BUCKET => 1,
-            ];
-
-            $targetConstruction = new Construction(false, 9, 10);
-        } elseif ($targetVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-            $tools = [
-                VarietyRepositoryConfig::HAMMER,
-                VarietyRepositoryConfig::HAND_SAW,
-            ];
-
-            $materials = [
-                VarietyRepositoryConfig::TIMBER => 10,
-                VarietyRepositoryConfig::NAIL   => 60,
-            ];
-
-            $targetConstruction = new Construction(false, 2, 3);
-        } else {
-            throw new RuntimeException("Invalid construction");
+        if (!$targetVariety->hasBlueprint()) {
+            return Result::failed("{$targetVariety->getLabel()} cannot be constructed.");
         }
 
+        $blueprint = $targetVariety->getBlueprint();
         $actorInventory = $actor->getInventory();
 
-        $meetsRequirements = true;
-
-        foreach ($tools as $tool) {
-            if (!$actorInventory->containsItem(Uuid::fromString($tool))) {
-                $meetsRequirements = false;
-            }
-        }
-
-        foreach ($materials as $material => $quantity) {
-            if (!$actorInventory->containsItemAmountingToAtLeast(Uuid::fromString($material), $quantity)) {
-                $meetsRequirements = false;
-            }
-        }
-
-        if (!$meetsRequirements) {
+        if (!$blueprint->canBeginConstruction($actorInventory)) {
             return Result::failed("Construction requirements not met.");
         }
 
-        foreach ($materials as $varietyId => $quantity) {
+        foreach ($blueprint->getMaterials() as $varietyId => $quantity) {
             $actorInventory->discardItem(Uuid::fromString($varietyId), $quantity);
         }
 
@@ -118,7 +80,7 @@ final class UseCase
             $targetVariety->getLabel(),
             $targetVariety->getIcon(),
             true,
-            $targetConstruction,
+            new Construction(false, $blueprint->getTurns() - 1, $blueprint->getTurns()),
             [],
             []
         );
