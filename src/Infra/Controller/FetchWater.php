@@ -74,7 +74,7 @@ final class FetchWater
             $item = $this->varietyRepo->find(Uuid::fromString(VarietyRepositoryConfig::WATER_BOTTLE))
                 ->createItemWithQuantity($waterBottlesRetrieved);
 
-            $entity->addItem($item);
+            $entity->getInventory()->addItem($item);
 
         }
 

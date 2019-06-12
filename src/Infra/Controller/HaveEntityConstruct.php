@@ -110,16 +110,18 @@ final class HaveEntityConstruct
             throw new RuntimeException("Invalid construction");
         }
 
+        $actorInventory = $actor->getInventory();
+
         $meetsRequirements = true;
 
         foreach ($tools as $tool) {
-            if (!$actor->hasItemInInventory(Uuid::fromString($tool))) {
+            if (!$actorInventory->containsItem(Uuid::fromString($tool))) {
                 $meetsRequirements = false;
             }
         }
 
         foreach ($materials as $material => $quantity) {
-            if (!$actor->hasItemsAmountingToAtLeast(Uuid::fromString($material), $quantity)) {
+            if (!$actorInventory->containsItemAmountingToAtLeast(Uuid::fromString($material), $quantity)) {
                 $meetsRequirements = false;
             }
         }
@@ -135,7 +137,7 @@ final class HaveEntityConstruct
         $this->entityRepo->save($constructedEntity);
 
         foreach ($materials as $varietyId => $quantity) {
-            $actor->dropItem(Uuid::fromString($varietyId), $quantity);
+            $actorInventory->discardItem(Uuid::fromString($varietyId), $quantity);
         }
 
         $actor->wait();
@@ -182,10 +184,12 @@ final class HaveEntityConstruct
             return $response;
         }
 
+        $actorInventory = $actor->getInventory();
+
         $meetsRequirements = true;
 
         foreach ($tools as $tool) {
-            if (!$actor->hasItemInInventory(Uuid::fromString($tool))) {
+            if (!$actorInventory->containsItem(Uuid::fromString($tool))) {
                 $meetsRequirements = false;
             }
         }

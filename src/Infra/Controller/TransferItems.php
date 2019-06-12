@@ -58,6 +58,9 @@ final class TransferItems
         $entityA = $this->entityRepo->find(Uuid::fromString($manifestA['entityId']));
         $entityB = $this->entityRepo->find(Uuid::fromString($manifestB['entityId']));
 
+        $inventoryA = $entityA->getInventory();
+        $inventoryB = $entityB->getInventory();
+
         if (!$entityA->getGameId()->equals($gameId)
             || !$entityB->getGameId()->equals($gameId)
         ) {
@@ -70,8 +73,8 @@ final class TransferItems
         try {
             foreach ($manifestA['items'] as $item) {
                 if (intval($item['quantity']) > 0) {
-                    $entityA->decrementInventoryItemQuantity(Uuid::fromString($item['varietyId']), intval($item['quantity']));
-                    $entityB->incrementInventoryItemQuantity(
+                    $inventoryA->decrementItemQuantity(Uuid::fromString($item['varietyId']), intval($item['quantity']));
+                    $inventoryB->incrementItemQuantity(
                         Uuid::fromString($item['varietyId']),
                         intval($item['quantity']),
                         $this->varietyRepo
@@ -81,8 +84,8 @@ final class TransferItems
 
             foreach ($manifestB['items'] as $item) {
                 if (intval($item['quantity']) > 0) {
-                    $entityB->decrementInventoryItemQuantity(Uuid::fromString($item['varietyId']), intval($item['quantity']));
-                    $entityA->incrementInventoryItemQuantity(
+                    $inventoryB->decrementItemQuantity(Uuid::fromString($item['varietyId']), intval($item['quantity']));
+                    $inventoryA->incrementItemQuantity(
                         Uuid::fromString($item['varietyId']),
                         intval($item['quantity']),
                         $this->varietyRepo

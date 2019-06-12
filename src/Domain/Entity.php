@@ -138,16 +138,6 @@ final class Entity
         return $this->inventory;
     }
 
-    public function hasItemInInventory(UuidInterface $varietyId): bool
-    {
-        return $this->inventory->containsItem($varietyId);
-    }
-
-    public function hasItemsAmountingToAtLeast(UuidInterface $varietyId, int $minimumQuantity): bool
-    {
-        return $this->inventory->containsItemAmountingToAtLeast($varietyId, $minimumQuantity);
-    }
-
     public function getInventoryWeight(): int
     {
         $weight = 0;
@@ -166,7 +156,7 @@ final class Entity
 
     public function isOverencumbered(): bool
     {
-        return $this->getInventoryWeight() >= $this->getInventoryCapacity();
+        return $this->inventory->getWeight() >= $this->inventory->getCapacity();
     }
 
     public function relabel(string $label): void
@@ -225,18 +215,6 @@ final class Entity
         }
     }
 
-    public function dropItem(UuidInterface $id, int $quantity): Item
-    {
-        $this->inventory->discardItem($id, $quantity);
-
-        return $this->inventory->getItem($id);
-    }
-
-    public function addItem(Item $item): void
-    {
-        $this->inventory->addItem($item);
-    }
-
     public function hasToolsFor(Entity $target): bool
     {
         if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
@@ -277,35 +255,6 @@ final class Entity
         }
 
         return $haul;
-    }
-
-    public function addHaulToInventory(ScavengingHaul $haul): void
-    {
-        foreach ($haul->getItems() as $item) {
-            $this->inventory->addItem($item);
-        }
-    }
-
-    public function reduceInventoryItemQuantity(UuidInterface $varietyId, int $newQuantity): void
-    {
-        $this->inventory->reduceItemQuantityTo($varietyId, $newQuantity);
-    }
-
-    public function incrementInventoryItemQuantity(
-        UuidInterface $varietyId,
-        int $increment,
-        VarietyRepository $varietyRepository
-    ): void {
-        $this->inventory->incrementItemQuantity($varietyId, $increment, $varietyRepository);
-
-        if ($this->getInventoryWeight() > $this->getInventoryCapacity()) {
-            throw new DomainException("{$this->label} cannot carry that much!");
-        }
-    }
-
-    public function decrementInventoryItemQuantity(UuidInterface $varietyId, int $decrement): void
-    {
-        $this->inventory->decrementItemQuantity($varietyId, $decrement);
     }
 
     public function wait(): void

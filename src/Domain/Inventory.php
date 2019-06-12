@@ -37,6 +37,17 @@ final class Inventory
         return $this->capacity;
     }
 
+    public function getWeight(): int
+    {
+        $weight = 0;
+
+        foreach ($this->items as $item) {
+            $weight += $item->getWeight();
+        }
+
+        return $weight;
+    }
+
     public function getItems(): iterable
     {
         return $this->items;
@@ -115,12 +126,21 @@ final class Inventory
     ): void {
         if ($this->containsItem($varietyId)) {
             $this->items[strval($varietyId)]->incrementBy($increment);
+
+            if ($this->getWeight() > $this->getCapacity()) {
+                throw new DomainException;
+            }
+
             return;
         }
 
         $this->items[strval($varietyId)] = $varietyRepository
             ->find($varietyId)
             ->createItemWithQuantity($increment);
+
+        if ($this->getWeight() > $this->getCapacity()) {
+            throw new DomainException;
+        }
     }
 
     public function decrementItemQuantity(UuidInterface $varietyId, int $decrement): void

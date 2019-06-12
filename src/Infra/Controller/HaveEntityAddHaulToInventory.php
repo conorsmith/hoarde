@@ -62,8 +62,10 @@ class HaveEntityAddHaulToInventory
             $haul->reduceItemQuantity(Uuid::fromString($varietyId), $quantity);
         }
 
+        $inventory = $entity->getInventory();
+
         foreach ($modifiedInventory as $varietyId => $quantity) {
-            $entity->reduceInventoryItemQuantity(Uuid::fromString($varietyId), $quantity);
+            $inventory->reduceItemQuantityTo($varietyId, $quantity);
         }
 
         if (!$haul->isRetrievableBy($entity)) {
@@ -72,7 +74,9 @@ class HaveEntityAddHaulToInventory
             return $response;
         }
 
-        $entity->addHaulToInventory($haul);
+        foreach ($haul->getItems() as $item) {
+            $inventory->addItem($item);
+        }
 
         $this->scavengedHaulRepo->delete($haul);
         $this->entityRepo->save($entity);
