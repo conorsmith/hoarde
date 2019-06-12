@@ -5,6 +5,10 @@ require_once __DIR__ . "/../vendor/autoload.php";
 
 Dotenv\Dotenv::create(__DIR__ . "/..")->load();
 
+/**
+ * DEPENDENCIES
+ */
+
 $session = (new Aura\Session\SessionFactory)->newInstance($_COOKIE);
 $sessionSegment = $session->getSegment("ConorSmith\\Hoarde");
 
@@ -23,50 +27,117 @@ $varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig($r
 $entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $varietyRepo, $resourceRepo);
 $scavengingHaulRepo = new \ConorSmith\Hoarde\Infra\Repository\ScavengingHaulRepositoryDb($db, $varietyRepo);
 
-$showLandingPage = new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage;
-$generateNewGame = new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame($gameRepo, $entityRepo, $varietyRepo, $resourceRepo);
-$restartGame = new ConorSmith\Hoarde\Infra\Controller\RestartGame($gameRepo, $entityRepo, $varietyRepo, $resourceRepo);
-$haveEntityWait = new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait($gameRepo, $entityRepo, $sessionSegment);
-$haveEntityUseItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
-$haveEntityConsumeResource = new ConorSmith\Hoarde\Infra\Controller\HaveEntityConsumeResource($gameRepo, $entityRepo, $sessionSegment);
-$haveEntityScavenge = new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge($gameRepo, $entityRepo, $scavengingHaulRepo, $varietyRepo, $sessionSegment);
-$haveEntityAddHaulToInventory = new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory($gameRepo, $entityRepo, $scavengingHaulRepo, $varietyRepo, $sessionSegment);
-$haveEntityDropItem = new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem($sessionSegment, new ConorSmith\Hoarde\UseCase\EntityDiscardsItem\UseCase($entityRepo, $varietyRepo));
-$haveEntityConstruct = new ConorSmith\Hoarde\Infra\Controller\HaveEntityConstruct($gameRepo, $entityRepo, $sessionSegment);
-$showGame = new ConorSmith\Hoarde\Infra\Controller\ShowGame($gameRepo, $entityRepo, $resourceRepo, $actionRepo, $sessionSegment);
-$transferItems = new ConorSmith\Hoarde\Infra\Controller\TransferItems($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
-$fetchWater = new ConorSmith\Hoarde\Infra\Controller\FetchWater($gameRepo, $entityRepo, $varietyRepo, $sessionSegment);
-$updateEntitySettings = new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings($gameRepo, $entityRepo, $sessionSegment);
-$showNotFoundPage = new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage;
-
 $router = new League\Route\Router;
 
-$router->get("/", $showLandingPage);
-$router->post("/", $generateNewGame);
+/**
+ * ROUTES
+ */
+
+$router->get("/", new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage);
+
+$router->post("/", new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame(
+    $gameRepo,
+    $entityRepo,
+    $varietyRepo,
+    $resourceRepo));
 
 $router->get("/{fileName}.js", new ConorSmith\Hoarde\Infra\Controller\CompileJsOutput);
 $router->get("/main.css", new ConorSmith\Hoarde\Infra\Controller\CompileCssOutput);
 
-$router->get("/{gameId}", $showGame);
-$router->post("/{gameId}/restart", $restartGame);
-$router->post("/{gameId}/wait", $haveEntityWait);
-$router->post("/{gameId}/use", $haveEntityUseItem);
-$router->post("/{gameId}/consume", $haveEntityConsumeResource);
-$router->post("/{gameId}/scavenge", $haveEntityScavenge);
-$router->post("/{gameId}/scavenge/{haulId}", $haveEntityAddHaulToInventory);
-$router->post("/{gameId}/drop", $haveEntityDropItem);
-$router->post("/{gameId}/transfer", $transferItems);
-$router->post("/{gameId}/fetch-water", $fetchWater);
-$router->post("/{gameId}/construct", $haveEntityConstruct);
+$router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\ShowGame(
+    $gameRepo,
+    $entityRepo,
+    $resourceRepo,
+    $actionRepo,
+    $sessionSegment
+));
 
-$router->post("/{gameId}/{entityId}/settings", $updateEntitySettings);
+$router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\RestartGame(
+    $gameRepo,
+    $entityRepo,
+    $varietyRepo,
+    $resourceRepo
+));
+
+$router->post("/{gameId}/wait", new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait(
+    $gameRepo,
+    $entityRepo,
+    $sessionSegment
+));
+
+$router->post("/{gameId}/use", new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem(
+    $gameRepo,
+    $entityRepo,
+    $varietyRepo,
+    $sessionSegment
+));
+
+$router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConsumeResource(
+    $gameRepo,
+    $entityRepo,
+    $sessionSegment
+));
+
+$router->post("/{gameId}/scavenge", new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
+    $gameRepo,
+    $entityRepo,
+    $scavengingHaulRepo,
+    $varietyRepo,
+    $sessionSegment
+));
+
+$router->post("/{gameId}/scavenge/{haulId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory(
+    $gameRepo,
+    $entityRepo,
+    $scavengingHaulRepo,
+    $varietyRepo,
+    $sessionSegment
+));
+
+$router->post("/{gameId}/drop", new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityDiscardsItem\UseCase(
+        $entityRepo,
+        $varietyRepo
+    )
+));
+
+$router->post("/{gameId}/transfer", new ConorSmith\Hoarde\Infra\Controller\TransferItems(
+    $gameRepo,
+    $entityRepo,
+    $varietyRepo,
+    $sessionSegment
+));
+
+$router->post("/{gameId}/fetch-water", new ConorSmith\Hoarde\Infra\Controller\FetchWater(
+    $gameRepo,
+    $entityRepo,
+    $varietyRepo,
+    $sessionSegment
+));
+
+$router->post("/{gameId}/construct", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConstruct(
+    $gameRepo,
+    $entityRepo,
+    $sessionSegment
+));
+
+$router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings(
+    $gameRepo,
+    $entityRepo,
+    $sessionSegment
+));
+
+/**
+ * DISPATCH REQUEST
+ */
 
 try {
     $response = $router->dispatch(Zend\Diactoros\ServerRequestFactory::fromGlobals(
         $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
     ));
 } catch (League\Route\Http\Exception\NotFoundException $e) {
-    $response = $showNotFoundPage();
+    $response = (new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage)();
 }
 
 (new Zend\HttpHandlerRunner\Emitter\SapiEmitter)->emit($response);
