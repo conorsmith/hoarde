@@ -20,12 +20,27 @@ $db = Doctrine\DBAL\DriverManager::getConnection([
     'driver'   => "pdo_mysql",
 ]);
 
-$gameRepo = new ConorSmith\Hoarde\Infra\Repository\GameRepositoryDb($db);
-$resourceRepo = new ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
-$actionRepo = new ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
-$varietyRepo = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig($resourceRepo, $actionRepo);
-$entityRepo = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb($db, $varietyRepo, $resourceRepo);
-$scavengingHaulRepo = new \ConorSmith\Hoarde\Infra\Repository\ScavengingHaulRepositoryDb($db, $varietyRepo);
+$gameRepository = new ConorSmith\Hoarde\Infra\Repository\GameRepositoryDb($db);
+
+$resourceRepository = new ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
+
+$actionRepository = new ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
+
+$varietyRepository = new ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig(
+    $resourceRepository,
+    $actionRepository
+);
+
+$entityRepository = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb(
+    $db,
+    $varietyRepository,
+    $resourceRepository
+);
+
+$scavengingHaulRepository = new \ConorSmith\Hoarde\Infra\Repository\ScavengingHaulRepositoryDb(
+    $db,
+    $varietyRepository
+);
 
 $router = new League\Route\Router;
 
@@ -36,95 +51,95 @@ $router = new League\Route\Router;
 $router->get("/", new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage);
 
 $router->post("/", new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame(
-    $gameRepo,
-    $entityRepo,
-    $varietyRepo,
-    $resourceRepo));
+    $gameRepository,
+    $entityRepository,
+    $varietyRepository,
+    $resourceRepository));
 
 $router->get("/{fileName}.js", new ConorSmith\Hoarde\Infra\Controller\CompileJsOutput);
 $router->get("/main.css", new ConorSmith\Hoarde\Infra\Controller\CompileCssOutput);
 
 $router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\ShowGame(
-    $gameRepo,
-    $entityRepo,
-    $resourceRepo,
-    $actionRepo,
+    $gameRepository,
+    $entityRepository,
+    $resourceRepository,
+    $actionRepository,
     $sessionSegment
 ));
 
 $router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\RestartGame(
-    $gameRepo,
-    $entityRepo,
-    $varietyRepo,
-    $resourceRepo
+    $gameRepository,
+    $entityRepository,
+    $varietyRepository,
+    $resourceRepository
 ));
 
 $router->post("/{gameId}/wait", new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait(
-    $gameRepo,
-    $entityRepo,
+    $gameRepository,
+    $entityRepository,
     $sessionSegment
 ));
 
 $router->post("/{gameId}/use", new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem(
-    $gameRepo,
-    $entityRepo,
-    $varietyRepo,
+    $gameRepository,
+    $entityRepository,
+    $varietyRepository,
     $sessionSegment
 ));
 
 $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConsumeResource(
-    $gameRepo,
-    $entityRepo,
+    $gameRepository,
+    $entityRepository,
     $sessionSegment
 ));
 
 $router->post("/{gameId}/scavenge", new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
-    $gameRepo,
-    $entityRepo,
-    $scavengingHaulRepo,
-    $varietyRepo,
+    $gameRepository,
+    $entityRepository,
+    $scavengingHaulRepository,
+    $varietyRepository,
     $sessionSegment
 ));
 
 $router->post("/{gameId}/scavenge/{haulId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory(
-    $gameRepo,
-    $entityRepo,
-    $scavengingHaulRepo,
-    $varietyRepo,
+    $gameRepository,
+    $entityRepository,
+    $scavengingHaulRepository,
+    $varietyRepository,
     $sessionSegment
 ));
 
 $router->post("/{gameId}/drop", new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityDiscardsItem\UseCase(
-        $entityRepo,
-        $varietyRepo
+        $entityRepository,
+        $varietyRepository
     )
 ));
 
 $router->post("/{gameId}/transfer", new ConorSmith\Hoarde\Infra\Controller\TransferItems(
-    $gameRepo,
-    $entityRepo,
-    $varietyRepo,
+    $gameRepository,
+    $entityRepository,
+    $varietyRepository,
     $sessionSegment
 ));
 
 $router->post("/{gameId}/fetch-water", new ConorSmith\Hoarde\Infra\Controller\FetchWater(
-    $gameRepo,
-    $entityRepo,
-    $varietyRepo,
+    $gameRepository,
+    $entityRepository,
+    $varietyRepository,
     $sessionSegment
 ));
 
 $router->post("/{gameId}/construct", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConstruct(
-    $gameRepo,
-    $entityRepo,
+    $gameRepository,
+    $entityRepository,
     $sessionSegment
 ));
 
 $router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings(
-    $gameRepo,
-    $entityRepo,
+    $gameRepository,
+    $entityRepository,
     $sessionSegment
 ));
 
