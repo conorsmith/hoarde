@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
-use ConorSmith\Hoarde\Domain\EntityRepository;
-use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\UseCase\EntityWaits\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -13,41 +12,29 @@ use Zend\Diactoros\Response;
 
 final class HaveEntityWait
 {
-    /** @var GameRepository */
-    private $gameRepo;
-
-    /** @var EntityRepository */
-    private $entityRepo;
-
     /** @var Segment */
     private $session;
 
+    /** @var UseCase */
+    private $useCase;
+
     public function __construct(
-        GameRepository $gameRepo,
-        EntityRepository $entityRepo,
-        Segment $session
+        Segment $session,
+        UseCase $useCase
     ) {
-        $this->gameRepo = $gameRepo;
-        $this->entityRepo = $entityRepo;
         $this->session = $session;
+        $this->useCase = $useCase;
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $gameId = Uuid::fromString($args['gameId']);
+        $entityId = Uuid::fromString($args['entityId']);
 
-        $game = $this->gameRepo->find($gameId);
-        $entityIds = $this->gameRepo->findEntityIds($gameId);
-        $entity = $this->entityRepo->find($entityIds[0]);
+        $result = $this->useCase->__invoke($gameId, $entityId);
 
-        $entity->wait();
-        $this->entityRepo->save($entity);
-
-        $game->proceedToNextTurn();
-        $this->gameRepo->save($game);
-
-        if (!$entity->isIntact()) {
-            $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
+        if (!$result->isSuccessful()) {
+            $this->session->setFlash("danger", $result->getMessage());
         }
 
         $response = new Response;

@@ -74,10 +74,17 @@ $router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\Restar
     $resourceRepository
 ));
 
-$router->post("/{gameId}/wait", new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait(
-    $gameRepository,
-    $entityRepository,
-    $sessionSegment
+$router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityWaits\UseCase(
+        $gameRepository,
+        $entityRepository,
+        new ConorSmith\Hoarde\Infra\UnitOfWorkDb(
+            $db,
+            $gameRepository,
+            $entityRepository
+        )
+    )
 ));
 
 $router->post("/{gameId}/use", new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem(
