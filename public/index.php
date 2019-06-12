@@ -79,7 +79,7 @@ $router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controlle
     new ConorSmith\Hoarde\UseCase\EntityWaits\UseCase(
         $gameRepository,
         $entityRepository,
-        new ConorSmith\Hoarde\Infra\UnitOfWorkDb(
+        new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
             $db,
             $gameRepository,
             $entityRepository
@@ -93,7 +93,7 @@ $router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller
         $gameRepository,
         $entityRepository,
         $varietyRepository,
-        new ConorSmith\Hoarde\Infra\UnitOfWorkDb(
+        new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
             $db,
             $gameRepository,
             $entityRepository

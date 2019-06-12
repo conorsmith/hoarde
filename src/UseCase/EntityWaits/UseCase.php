@@ -5,6 +5,7 @@ namespace ConorSmith\Hoarde\UseCase\EntityWaits;
 
 use ConorSmith\Hoarde\App\Result;
 use ConorSmith\Hoarde\App\UnitOfWork;
+use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use Ramsey\Uuid\UuidInterface;
@@ -17,17 +18,17 @@ final class UseCase
     /** @var EntityRepository */
     private $entityRepository;
 
-    /** @var UnitOfWork */
-    private $unitOfWork;
+    /** @var UnitOfWorkProcessor */
+    private $unitOfWorkProcessor;
 
     public function __construct(
         GameRepository $gameRepository,
         EntityRepository $entityRepository,
-        UnitOfWork $unitOfWork
+        UnitOfWorkProcessor $unitOfWorkProcessor
     ) {
         $this->gameRepository = $gameRepository;
         $this->entityRepository = $entityRepository;
-        $this->unitOfWork = $unitOfWork;
+        $this->unitOfWorkProcessor = $unitOfWorkProcessor;
     }
 
     public function __invoke(UuidInterface $gameId, UuidInterface $entityId): Result
@@ -46,9 +47,10 @@ final class UseCase
         $entity->wait();
         $game->proceedToNextTurn();
 
-        $this->unitOfWork->registerDirty($game);
-        $this->unitOfWork->registerDirty($entity);
-        $this->unitOfWork->commit();
+        $unitOfWork = new UnitOfWork;
+        $unitOfWork->save($game);
+        $unitOfWork->save($entity);
+        $unitOfWork->commit($this->unitOfWorkProcessor);
 
         if (!$entity->isIntact()) {
             return Result::failed("{$entity->getLabel()} has expired.");

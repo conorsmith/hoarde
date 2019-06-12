@@ -5,6 +5,7 @@ namespace ConorSmith\Hoarde\UseCase\EntityUsesItem;
 
 use ConorSmith\Hoarde\App\Result;
 use ConorSmith\Hoarde\App\UnitOfWork;
+use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
 use ConorSmith\Hoarde\Domain\Construction;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
@@ -27,19 +28,19 @@ final class UseCase
     /** @var VarietyRepository */
     private $varietyRepository;
 
-    /** @var UnitOfWork */
-    private $unitOfWork;
+    /** @var UnitOfWorkProcessor */
+    private $unitOfWorkProcessor;
 
     public function __construct(
         GameRepository $gameRepository,
         EntityRepository $entityRepository,
         VarietyRepository $varietyRepository,
-        UnitOfWork $unitOfWork
+        UnitOfWorkProcessor $unitOfWorkProcessor
     ) {
         $this->gameRepository = $gameRepository;
         $this->entityRepository = $entityRepository;
         $this->varietyRepository = $varietyRepository;
-        $this->unitOfWork = $unitOfWork;
+        $this->unitOfWorkProcessor = $unitOfWorkProcessor;
     }
 
     public function __invoke(
@@ -111,9 +112,10 @@ final class UseCase
 
         $game->proceedToNextTurn();
 
-        $this->unitOfWork->registerDirty($actingEntity);
-        $this->unitOfWork->registerDirty($placedEntity);
-        $this->unitOfWork->registerDirty($game);
-        $this->unitOfWork->commit();
+        $unitOfWork = new UnitOfWork;
+        $unitOfWork->save($actingEntity);
+        $unitOfWork->save($placedEntity);
+        $unitOfWork->save($game);
+        $unitOfWork->commit($this->unitOfWorkProcessor);
     }
 }
