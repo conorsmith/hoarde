@@ -62,7 +62,7 @@ final class UseCase
         }
 
         if (is_null($itemVariety)) {
-            return Result::failed("Variety {$itemVarietyId} was not found.");
+            return Result::varietyNotFound($itemVarietyId);
         }
 
         if (!$entity->hasInventory()) {

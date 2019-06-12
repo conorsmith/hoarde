@@ -28,6 +28,11 @@ final class Result
         return self::failed("Entity {$entityId} was not found in game {$gameId}.");
     }
 
+    public static function varietyNotFound(UuidInterface $varietyId): self
+    {
+        return Result::failed("Variety {$varietyId} was not found.");
+    }
+
     public static function actorExpired(Entity $actor): self
     {
         return Result::failed("{$actor->getLabel()} has expired.");

@@ -42,6 +42,12 @@ $scavengingHaulRepository = new \ConorSmith\Hoarde\Infra\Repository\ScavengingHa
     $varietyRepository
 );
 
+$unitOfWorkProcessor = new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
+    $db,
+    $gameRepository,
+    $entityRepository
+);
+
 $router = new League\Route\Router;
 
 /**
@@ -79,11 +85,7 @@ $router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controlle
     new ConorSmith\Hoarde\UseCase\EntityWaits\UseCase(
         $gameRepository,
         $entityRepository,
-        new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
-            $db,
-            $gameRepository,
-            $entityRepository
-        )
+        $unitOfWorkProcessor
     )
 ));
 
@@ -93,11 +95,7 @@ $router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller
         $gameRepository,
         $entityRepository,
         $varietyRepository,
-        new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
-            $db,
-            $gameRepository,
-            $entityRepository
-        )
+        $unitOfWorkProcessor
     )
 ));
 
@@ -148,16 +146,21 @@ $router->post("/{gameId}/fetch-water", new ConorSmith\Hoarde\Infra\Controller\Fe
 ));
 
 $router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Controller\HaveEntityBeginConstruction(
-    $gameRepository,
-    $entityRepository,
-    $sessionSegment
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityBeginsConstructingEntity\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $unitOfWorkProcessor
+    )
 ));
 
 $router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityContinueConstruct(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityContinuesConstructingEntity\UseCase(
         $gameRepository,
-        $entityRepository
+        $entityRepository,
+        $unitOfWorkProcessor
     )
 ));
 
