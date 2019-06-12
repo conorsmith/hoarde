@@ -48,6 +48,11 @@ final class Item
         return $this->quantity > $quantity;
     }
 
+    public function lessThan(int $quantity): bool
+    {
+        return $this->quantity < $quantity;
+    }
+
     public function removeOne(): void
     {
         if ($this->quantity < 2) {

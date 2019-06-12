@@ -36,8 +36,8 @@ final class Entity
     /** @var array */
     private $resourceNeeds;
 
-    /** @var array */
-    private $inventoryItems;
+    /** @var ?Inventory */
+    private $inventory;
 
     public function __construct(
         UuidInterface $id,
@@ -48,7 +48,7 @@ final class Entity
         bool $isIntact,
         Construction $construction,
         iterable $resourceNeeds,
-        iterable $inventoryItems
+        ?iterable $inventoryItems
     ) {
         $this->id = $id;
         $this->gameId = $gameId;
@@ -58,7 +58,6 @@ final class Entity
         $this->isIntact = $isIntact;
         $this->construction = $construction;
         $this->resourceNeeds = [];
-        $this->inventoryItems = [];
 
         foreach ($resourceNeeds as $resourceNeed) {
             if (!$resourceNeed instanceof ResourceNeed) {
@@ -68,12 +67,8 @@ final class Entity
             $this->resourceNeeds[strval($resourceNeed->getResource()->getId())] = $resourceNeed;
         }
 
-        foreach ($inventoryItems as $item) {
-            if (!$item instanceof Item) {
-                throw new DomainException;
-            }
-
-            $this->inventoryItems[strval($item->getVariety()->getId())] = $item;
+        if (!is_null($inventoryItems)) {
+            $this->inventory = new Inventory($this->id, $inventoryItems);
         }
     }
 
@@ -117,30 +112,40 @@ final class Entity
         return $this->resourceNeeds;
     }
 
-    public function getInventory(): iterable
+    public function getInventoryItems(): iterable
     {
-        return $this->inventoryItems;
+        return $this->inventory->getItems();
+    }
+
+    public function hasInventory(): bool
+    {
+        return !is_null($this->inventory);
+    }
+
+    public function getInventory(): Inventory
+    {
+        if (!$this->hasInventory()) {
+            throw new DomainException;
+        }
+
+        return $this->inventory;
     }
 
     public function hasItemInInventory(UuidInterface $varietyId): bool
     {
-        return array_key_exists(strval($varietyId), $this->inventoryItems);
+        return $this->inventory->containsItem($varietyId);
     }
 
     public function hasItemsAmountingToAtLeast(UuidInterface $varietyId, int $minimumQuantity): bool
     {
-        if (!array_key_exists(strval($varietyId), $this->inventoryItems)) {
-            return false;
-        }
-
-        return $this->inventoryItems[strval($varietyId)]->getQuantity() >= $minimumQuantity;
+        return $this->inventory->containsItemAmountingToAtLeast($varietyId, $minimumQuantity);
     }
 
     public function getInventoryWeight(): int
     {
         $weight = 0;
 
-        foreach ($this->inventoryItems as $item) {
+        foreach ($this->inventory->getItems() as $item) {
             $weight += $item->getWeight();
         }
 
@@ -166,11 +171,6 @@ final class Entity
         $this->label = $label;
     }
 
-    public function hasInventory(): bool
-    {
-        return !$this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WELL));
-    }
-
     private function beforeAction(): void
     {
         $this->consumeResources();
@@ -187,7 +187,7 @@ final class Entity
 
     public function consumeItem(UuidInterface $id): Item
     {
-        $item = $this->inventoryItems[strval($id)];
+        $item = $this->inventory->getItem($id);
 
         foreach ($item->getVariety()->getResources() as $resource) {
             if ($resource->getId()->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))) {
@@ -198,7 +198,7 @@ final class Entity
             }
         }
 
-        $this->removeQuantityFromItem(1, $item);
+        $this->inventory->removeQuantityFromItem($item, 1);
 
         return $item;
     }
@@ -224,34 +224,25 @@ final class Entity
 
     public function dropItem(UuidInterface $id, int $quantity): Item
     {
-        if (!array_key_exists(strval($id), $this->inventoryItems)) {
-            throw new DomainException;
-        }
+        $this->inventory->discardItem($id, $quantity);
 
-        $item = $this->inventoryItems[strval($id)];
-        $this->removeQuantityFromItem($quantity, $item);
-
-        return $item;
+        return $this->inventory->getItem($id);
     }
 
     public function addItem(Item $item): void
     {
-        if (array_key_exists(strval($item->getVariety()->getId()), $this->inventoryItems)) {
-            $this->inventoryItems[strval($item->getVariety()->getId())]->add($item->getQuantity());
-        } else {
-            $this->inventoryItems[strval($item->getVariety()->getId())] = $item;
-        }
+        $this->inventory->addItem($item);
     }
 
     public function hasToolsFor(Entity $target): bool
     {
         if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            return array_key_exists(VarietyRepositoryConfig::SHOVEL, $this->inventoryItems);
+            return $this->inventory->containsItem(Uuid::fromString(VarietyRepositoryConfig::SHOVEL));
         }
 
         if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-            return array_key_exists(VarietyRepositoryConfig::HAMMER, $this->inventoryItems)
-                && array_key_exists(VarietyRepositoryConfig::HAND_SAW, $this->inventoryItems);
+            return $this->inventory->containsItem(Uuid::fromString(VarietyRepositoryConfig::HAMMER))
+                && $this->inventory->containsItem(Uuid::fromString(VarietyRepositoryConfig::HAND_SAW));
         }
 
         return false;
@@ -285,38 +276,16 @@ final class Entity
         return $haul;
     }
 
-    private function hasStorage(GameRepository $gameRepository, EntityRepository $entityRepository): bool
-    {
-        if (array_key_exists(VarietyRepositoryConfig::WOODEN_CRATE, $this->inventoryItems)) {
-            return true;
-        }
-
-        $entityIds = $gameRepository->findEntityIds($this->gameId);
-
-        foreach ($entityIds as $entityId) {
-            $entity = $entityRepository->find($entityId);
-            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function addHaulToInventory(ScavengingHaul $haul): void
     {
         foreach ($haul->getItems() as $item) {
-            $this->addToInventory($item);
+            $this->inventory->addItem($item);
         }
     }
 
     public function reduceInventoryItemQuantity(UuidInterface $varietyId, int $newQuantity): void
     {
-        if ($newQuantity === 0) {
-            unset($this->inventoryItems[strval($varietyId)]);
-        } else {
-            $this->inventoryItems[strval($varietyId)]->reduceTo($newQuantity);
-        }
+        $this->inventory->reduceItemQuantityTo($varietyId, $newQuantity);
     }
 
     public function incrementInventoryItemQuantity(
@@ -324,13 +293,7 @@ final class Entity
         int $increment,
         VarietyRepository $varietyRepository
     ): void {
-        if (!array_key_exists(strval($varietyId), $this->inventoryItems)) {
-            $this->inventoryItems[strval($varietyId)] = $varietyRepository
-                ->find($varietyId)
-                ->createItemWithQuantity($increment);
-        } else {
-            $this->inventoryItems[strval($varietyId)]->incrementBy($increment);
-        }
+        $this->inventory->incrementItemQuantity($varietyId, $increment, $varietyRepository);
 
         if ($this->getInventoryWeight() > $this->getInventoryCapacity()) {
             throw new DomainException("{$this->label} cannot carry that much!");
@@ -339,37 +302,13 @@ final class Entity
 
     public function decrementInventoryItemQuantity(UuidInterface $varietyId, int $decrement): void
     {
-        if ($this->inventoryItems[strval($varietyId)]->getQuantity() - $decrement === 0) {
-            unset($this->inventoryItems[strval($varietyId)]);
-        } else {
-            $this->inventoryItems[strval($varietyId)]->decrementBy($decrement);
-        }
+        $this->inventory->decrementItemQuantity($varietyId, $decrement);
     }
 
     public function wait(): void
     {
         $this->beforeAction();
         $this->afterAction();
-    }
-
-    private function removeQuantityFromItem(int $quantity, Item $item): void
-    {
-        if ($item->moreThan($quantity)) {
-            $item->remove($quantity);
-        } else {
-            unset($this->inventoryItems[strval($item->getVariety()->getId())]);
-        }
-    }
-
-    private function addToInventory(Item $addedItem): void
-    {
-        $key = strval($addedItem->getVariety()->getId());
-
-        if (array_key_exists($key, $this->inventoryItems)) {
-            $this->inventoryItems[$key]->add($addedItem->getQuantity());
-        } else {
-            $this->inventoryItems[$key] = $addedItem;
-        }
     }
 
     public function needsPringles(): bool
@@ -405,13 +344,13 @@ final class Entity
             )
         ];
 
-        $this->inventoryItems = [
+        $this->inventory = new Inventory($this->id, [
             $varietyRepository
                 ->find(Uuid::fromString(VarietyRepositoryConfig::WATER_BOTTLE))
                 ->createItemWithQuantity(8),
             $varietyRepository
                 ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_STEW))
                 ->createItemWithQuantity(3),
-        ];
+        ]);
     }
 }

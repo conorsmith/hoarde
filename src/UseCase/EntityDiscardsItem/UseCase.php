@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\UseCase\EntityDiscardsItem;
 
 use ConorSmith\Hoarde\Domain\EntityRepository;
+use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Ramsey\Uuid\UuidInterface;
 
 final class UseCase
@@ -11,33 +12,48 @@ final class UseCase
     /** @var EntityRepository */
     private $entityRepository;
 
-    public function __construct(EntityRepository $entityRepository)
+    /** @var VarietyRepository */
+    private $varietyRepository;
+
+    public function __construct(EntityRepository $entityRepository, VarietyRepository $varietyRepository)
     {
         $this->entityRepository = $entityRepository;
+        $this->varietyRepository = $varietyRepository;
     }
 
     public function __invoke(
         UuidInterface $gameId,
         UuidInterface $entityId,
         UuidInterface $itemVarietyId,
-        int $quantityDropped
+        int $quantityDiscarded
     ): Result {
         $entity = $this->entityRepository->findInGame($entityId, $gameId);
+        $variety = $this->varietyRepository->find($itemVarietyId);
 
         if (is_null($entity)) {
-            return Result::failed("Entity was not found in this game.");
+            return Result::failed("Entity {$entityId} was not found in game {$gameId}.");
         }
 
-        if (!$entity->hasItemInInventory($itemVarietyId)) {
-            return Result::failed("{$entity->getLabel()} does not have any of this item.");
+        if (is_null($variety)) {
+            return Result::failed("Variety {$itemVarietyId} was not found.");
         }
 
-        $droppedItem = $entity->dropItem($itemVarietyId, $quantityDropped);
+        if (!$entity->hasInventory()) {
+            return Result::failed("Entity {$entityId} has no inventory.");
+        }
+
+        $inventory = $entity->getInventory();
+
+        if (!$inventory->containsItemAmountingToAtLeast($itemVarietyId, $quantityDiscarded)) {
+            return Result::failed("{$entity->getLabel()} does not have {$variety->getLabel()} ({$quantityDiscarded}).");
+        }
+
+        $inventory->discardItem($itemVarietyId, $quantityDiscarded);
 
         $this->entityRepository->save($entity);
 
         return Result::succeeded(
-            "{$entity->getLabel()} dropped {$droppedItem->getVariety()->getLabel()} ({$quantityDropped})"
+            "{$entity->getLabel()} discarded {$variety->getLabel()} ({$quantityDiscarded})."
         );
     }
 }

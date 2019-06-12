@@ -201,7 +201,7 @@ final class ShowGame
 
         $items = [];
 
-        foreach ($entity->getInventory() as $item) {
+        foreach ($entity->getInventoryItems() as $item) {
             $presentedItem = $this->presentItem($item);
             $presentedItem->actions = [];
 
@@ -338,14 +338,14 @@ final class ShowGame
         $lastConsumedItem = null;
 
         if (!is_null($lastConsumedVarietyId)) {
-            foreach ($entity->getInventory() as $item) {
+            foreach ($entity->getInventoryItems() as $item) {
                 if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
                     $lastConsumedItem = $this->presentItem($item);
                 }
             }
         }
 
-        foreach ($entity->getInventory() as $item) {
+        foreach ($entity->getInventoryItems() as $item) {
             foreach ($item->getVariety()->getResources() as $itemResource) {
                 if ($itemResource->getId()->equals($resource->getId())
                     && !$item->getVariety()->getId()->equals($lastConsumedVarietyId)
