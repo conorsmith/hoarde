@@ -26,6 +26,9 @@ final class Variety
     /** @var string */
     private $description;
 
+    /** @var bool */
+    private $hasInventory;
+
     /** @var iterable */
     private $actions;
 
@@ -39,6 +42,7 @@ final class Variety
         int $weight,
         string $icon,
         string $description,
+        bool $hasInventory,
         iterable $actions,
         ?Blueprint $blueprint
     ) {
@@ -47,6 +51,7 @@ final class Variety
         $this->weight = $weight;
         $this->icon = $icon;
         $this->description = $description;
+        $this->hasInventory = $hasInventory;
         $this->blueprint = $blueprint;
 
         $this->resourceContents = [];
@@ -102,6 +107,11 @@ final class Variety
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    public function hasInventory(): bool
+    {
+        return $this->hasInventory;
     }
 
     public function getActions(): iterable

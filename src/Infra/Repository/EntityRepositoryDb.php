@@ -77,6 +77,8 @@ final class EntityRepositoryDb implements EntityRepository
 
         $id = Uuid::fromString($row['id']);
 
+        $variety = $this->varietyRepository->find(Uuid::fromString($row['variety_id']));
+
         return new Entity(
             $id,
             Uuid::fromString($row['game_id']),
@@ -92,7 +94,7 @@ final class EntityRepositoryDb implements EntityRepository
                     : 0
             ),
             $this->findResourceNeeds($id),
-            $this->findInventory($id)
+            $variety->hasInventory() ? $this->findInventory($id) : null
         );
     }
 

@@ -58,6 +58,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 75000,
             'icon'        => "user",
             'description' => "Homo sapiens, the only extant members of the subtribe Hominina.",
+            'inventory'   => [
+                'capacity' => 10000,
+            ],
         ],
         self::WELL => [
             'label'       => "Well",
@@ -216,6 +219,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
                     self::TIMBER => 10,
                 ],
                 'turns'     => 3,
+            ],
+            'inventory'   => [
+                'capacity' => 50000,
             ],
         ],
         self::SHOVEL => [
@@ -449,6 +455,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
             self::VARIETIES[strval($id)]['weight'],
             self::VARIETIES[strval($id)]['icon'],
             self::VARIETIES[strval($id)]['description'],
+            array_key_exists('inventory', self::VARIETIES[strval($id)]),
             $actions,
             $blueprint
         );

@@ -147,35 +147,37 @@ final class ShowGame
 
         $items = [];
 
-        foreach ($entity->getInventory()->getItems() as $item) {
-            $presentedItem = $this->presentItem($item);
-            $presentedItem->actions = [];
+        if ($entity->hasInventory()) {
+            foreach ($entity->getInventory()->getItems() as $item) {
+                $presentedItem = $this->presentItem($item);
+                $presentedItem->actions = [];
 
-            foreach ($item->getVariety()->getActions() as $action) {
-                if ($action->canBePerformedBy($entity->getVarietyId())) {
-                    switch (strval($action->getId())) {
-                        case ActionRepositoryConfig::CONSUME:
-                        case ActionRepositoryConfig::PLACE:
-                            $jsClass = "js-use";
-                            break;
-                        case ActionRepositoryConfig::CONSTRUCT:
-                        case ActionRepositoryConfig::DIG:
-                            $jsClass = "js-construct";
-                            break;
-                        default:
-                            $jsClass = "";
+                foreach ($item->getVariety()->getActions() as $action) {
+                    if ($action->canBePerformedBy($entity->getVarietyId())) {
+                        switch (strval($action->getId())) {
+                            case ActionRepositoryConfig::CONSUME:
+                            case ActionRepositoryConfig::PLACE:
+                                $jsClass = "js-use";
+                                break;
+                            case ActionRepositoryConfig::CONSTRUCT:
+                            case ActionRepositoryConfig::DIG:
+                                $jsClass = "js-construct";
+                                break;
+                            default:
+                                $jsClass = "";
+                        }
+
+                        $presentedItem->actions[] = (object)[
+                            'id'      => $action->getId(),
+                            'label'   => $action->getLabel(),
+                            'icon'    => $action->getIcon(),
+                            'jsClass' => $jsClass,
+                        ];
                     }
-
-                    $presentedItem->actions[] = (object)[
-                        'id'      => $action->getId(),
-                        'label'   => $action->getLabel(),
-                        'icon'    => $action->getIcon(),
-                        'jsClass' => $jsClass,
-                    ];
                 }
-            }
 
-            $items[] = $presentedItem;
+                $items[] = $presentedItem;
+            }
         }
 
         $presentation = (object) [
