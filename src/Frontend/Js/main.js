@@ -9,6 +9,7 @@ var infoButtons = document.getElementsByClassName("js-info");
 var fetchButtons = document.getElementsByClassName("js-fetch");
 var constructButtons = document.getElementsByClassName("js-construct");
 var constructContinueButtons = document.getElementsByClassName("js-construct-continue");
+var sowButtons = document.getElementsByClassName("js-sow");
 
 $(function () {
     $('[data-toggle="popover"]').popover({
@@ -267,10 +268,22 @@ for (var i = 0; i < constructContinueButtons.length; i++) {
     }
 }
 
+for (var i = 0; i < sowButtons.length; i++) {
+    sowButtons[i].onclick = function (e) {
+        e.preventDefault();
+
+        document.getElementById("sowModal").dataset.entityId = e.currentTarget.dataset.entityId;
+        document.getElementById("sowModal").dataset.actorId = e.currentTarget.dataset.actorId;
+
+        $("#sowModal").modal();
+    }
+}
+
 var eventBus = new EventBus();
 
 import {TransferController, TransferModalView} from "./transfer.js";
 import {MainController as ConstructController, ModalView as ConstructModalView} from "./construct.js";
+import {MainController as SowController, ModalView as SowModalView} from "./sow.js";
 
 new TransferController(
     eventBus,
@@ -292,6 +305,16 @@ new ConstructController(
     JSON.parse(document.getElementById("entities").value),
     JSON.parse(document.getElementById("constructions").value),
     JSON.parse(document.getElementById("actions").value),
+    gameId
+);
+
+new SowController(
+    eventBus,
+    new SowModalView(
+        document.getElementById("sowModal"),
+        document.getElementById("transfer-item-slider")
+    ),
+    JSON.parse(document.getElementById("entities").value),
     gameId
 );
 

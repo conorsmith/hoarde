@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
+use ConorSmith\Hoarde\Domain\Action;
 use ConorSmith\Hoarde\Domain\ActionRepository;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
@@ -150,7 +151,7 @@ final class ShowGame
         if ($entity->hasInventory()) {
             foreach ($entity->getInventory()->getItems() as $item) {
                 $presentedItem = $this->presentItem($item);
-                $presentedItem->actions = [];
+                $presentedItem->performableActions = [];
 
                 foreach ($item->getVariety()->getActions() as $action) {
                     if ($action->canBePerformedBy($entity->getVarietyId())) {
@@ -167,7 +168,7 @@ final class ShowGame
                                 $jsClass = "";
                         }
 
-                        $presentedItem->actions[] = (object)[
+                        $presentedItem->performableActions[] = (object)[
                             'id'      => $action->getId(),
                             'label'   => $action->getLabel(),
                             'icon'    => $action->getIcon(),
@@ -275,6 +276,13 @@ final class ShowGame
                 return $resource->getLabel();
             }, $item->getVariety()->getResources())),
             'description'   => nl2br($item->getVariety()->getDescription()),
+            'actions'       => array_values(array_map(function (Action $action) {
+                return (object) [
+                    'id'    => $action->getId(),
+                    'label' => $action->getLabel(),
+                    'icon'  => $action->getIcon(),
+                ];
+            }, $item->getVariety()->getActions())),
         ];
     }
 

@@ -40,7 +40,7 @@
 
                 <h6 class="dropdown-header"><?=$item->label?></h6>
 
-                <?php foreach ($item->actions as $action) : ?>
+                <?php foreach ($item->performableActions as $action) : ?>
                     <a href="#"
                        class="dropdown-item <?=$action->jsClass?>"
                        data-entity-id="<?=$entity->id?>"

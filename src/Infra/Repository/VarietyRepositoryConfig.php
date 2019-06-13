@@ -16,6 +16,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
 {
     public const HUMAN = "fde2146a-c29d-4262-b96f-ec7b696eccad";
     public const WELL = "59aabe00-8418-4127-9ceb-12beca840854";
+    public const GARDEN_PLOT = "608e795a-2b62-436b-b636-74fd13ff076d";
     public const WATER_BOTTLE = "2f555296-ff9f-4205-a4f7-d181e4455f9d";
     public const COKE_ZERO = "08db1181-2bc9-4408-b378-5270e8dbee4b";
     public const CHERRY_COKE_ZERO = "450349d4-fe21-4da0-8f78-99c684b05b45";
@@ -47,6 +48,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
     public const DRIL_FIGURINE_13 = "b2949529-b2b4-45db-9dc6-cece114418ba";
     public const TIMBER = "e2f811da-d77b-47b1-a167-1df513c2b04b";
     public const NAIL = "2808d535-38cd-4254-952f-c79aa2e66cd0";
+    public const RADISH_SEED = "ce821bc9-0ee2-4ea9-abe8-7ee67efb5d39";
+    public const RADISH = "24bc9c41-6894-42d0-81b1-18a3e849d262";
 
     private const DESCRIPTION_TEMPLATE_DRIL_FIGURINE = "A commemorative figurine of Twitter user @dril. Part of a set"
         . " of 13. The base is engraved with a tweet:\n\n";
@@ -77,6 +80,20 @@ final class VarietyRepositoryConfig implements VarietyRepository
                     self::ROPE   => 1,
                 ],
                 'turns'     => 10,
+            ],
+        ],
+        self::GARDEN_PLOT => [
+            'label'       => "Garden Plot",
+            'resources'   => [],
+            'weight'      => 0,
+            'icon'        => "seedling",
+            'description' => "An area of soil designated for planting fruits and vegetables.",
+            'blueprint'   => [
+                'tools'     => [
+                    self::SHOVEL,
+                ],
+                'materials' => [],
+                'turns'     => 4,
             ],
         ],
         self::WATER_BOTTLE => [
@@ -398,6 +415,28 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'description' => "A tool for cutting wood.",
             'actions'     => [
                 ActionRepositoryConfig::CONSTRUCT,
+            ],
+        ],
+        self::RADISH_SEED => [
+            'label'       => "Radish Seed",
+            'resources'   => [],
+            'weight'      => 1,
+            'icon'        => "seedling",
+            'description' => "A seed that is somehow identifiable as that of the radish.",
+            'actions'     => [
+                ActionRepositoryConfig::SOW,
+            ],
+        ],
+        self::RADISH => [
+            'label'       => "Radish",
+            'resources'   => [
+                ResourceRepositoryConfig::FOOD => 100,
+            ],
+            'weight'      => 9,
+            'icon'        => "utensils",
+            'description' => "An edible root vegetable with a sharp flavour.",
+            'actions'     => [
+                ActionRepositoryConfig::CONSUME,
             ],
         ],
     ];

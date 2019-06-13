@@ -89,9 +89,7 @@ final class EntityRepositoryDb implements EntityRepository
             new Construction(
                 $row['is_constructed'] === "1",
                 intval($row['construction_level']),
-                array_key_exists($row['variety_id'], self::CONSTRUCTION_MAXIMUMS_FOR_ENTITY)
-                    ? self::CONSTRUCTION_MAXIMUMS_FOR_ENTITY[$row['variety_id']]
-                    : 0
+                $variety->hasBlueprint() ? $variety->getBlueprint()->getTurns() : 0
             ),
             $this->findResourceNeeds($id),
             $variety->hasInventory() ? $this->findInventory($id) : null

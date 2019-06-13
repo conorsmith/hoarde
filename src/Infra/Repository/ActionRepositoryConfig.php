@@ -14,35 +14,41 @@ final class ActionRepositoryConfig implements ActionRepository
     public const CONSUME = "427d031d-ee80-4452-bbb3-5d2d96ca554b";
     public const DIG = "0e2bb910-26fa-4832-8fb0-5cb4efb69aba";
     public const PLACE = "2afdf3f4-b77e-4391-a857-fab631a8c2be";
+    public const SOW = "99b65213-9cee-42ec-9dfe-8a04a790469e";
 
     private const CONFIG = [
-        self::CONSTRUCT   => [
+        self::CONSTRUCT => [
             'label'               => "Construct",
             'icon'                => "tools",
             'performingVarieties' => [
                 VarietyRepositoryConfig::HUMAN,
             ],
         ],
-        self::CONSUME => [
+        self::CONSUME   => [
             'label'               => "Consume",
             'icon'                => "drumstick-bite",
             'performingVarieties' => [
                 VarietyRepositoryConfig::HUMAN,
             ],
         ],
-        self::DIG     => [
+        self::DIG       => [
             'label'               => "Dig",
             'icon'                => "tools",
             'performingVarieties' => [
                 VarietyRepositoryConfig::HUMAN,
             ],
         ],
-        self::PLACE   => [
+        self::PLACE     => [
             'label'               => "Place",
             'icon'                => "people-carry",
             'performingVarieties' => [
                 VarietyRepositoryConfig::HUMAN,
             ],
+        ],
+        self::SOW       => [
+            'label'               => "Sow",
+            'icon'                => "seedling",
+            'performingVarieties' => [],
         ],
     ];
 

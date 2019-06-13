@@ -52,6 +52,11 @@
                   'entity'   => $entity,
                   'isIntact' => $isIntact,
               ])?>
+          <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::GARDEN_PLOT) : ?>
+              <?=$this->renderTemplate("Game/entity-plot.php", [
+                  'entity'   => $entity,
+                  'isIntact' => $isIntact,
+              ])?>
           <?php endif ?>
       <?php endforeach ?>
 
@@ -59,6 +64,7 @@
 
     <?=$this->renderTemplate("Game/modal-drop.php")?>
     <?=$this->renderTemplate("Game/modal-settings.php")?>
+    <?=$this->renderTemplate("Game/modal-sow.php")?>
 
     <?=$this->renderTemplate("Game/modal-scavenge.php", [
         'entity' => $human,

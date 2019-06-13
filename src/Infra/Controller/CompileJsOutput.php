@@ -22,6 +22,9 @@ final class CompileJsOutput
         } elseif ($args['fileName'] === "construct") {
             $output = $this->renderJsFiles("Construct");
 
+        } elseif ($args['fileName'] === "sow") {
+            $output = $this->renderJsFiles("Sow");
+
         } else {
 
             ob_start();

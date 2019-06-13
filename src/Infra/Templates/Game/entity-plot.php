@@ -27,7 +27,7 @@
                     <div class="alert alert-warning"
                          style="font-size: 0.8rem;"
                     >
-                      To continue construction, <?=$entity->construction->actor->label?> must have: <strong>Shovel</strong>
+                        To continue construction, <?=$entity->construction->actor->label?> must have: <strong>Shovel</strong>
                     </div>
                 <?php endif ?>
 
@@ -46,11 +46,11 @@
             <div class="actions">
 
                 <button type="button"
-                        class="btn btn-light btn-block js-fetch"
-                        data-entity-id="<?=$entity->construction->actor->id?>"
-                        data-well-id="<?=$entity->id?>"
+                        class="btn btn-light btn-block js-sow"
+                        data-actor-id="<?=$entity->construction->actor->id?>"
+                        data-entity-id="<?=$entity->id?>"
                     <?=($isIntact && $entity->construction->isConstructed ? "" : "disabled")?>
-                >Fetch Water</button>
+                >Sow Seeds</button>
 
             </div>
 
