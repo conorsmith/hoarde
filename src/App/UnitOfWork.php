@@ -11,11 +11,20 @@ use InvalidArgumentException;
 final class UnitOfWork
 {
     /** @var array */
-    private $objects;
+    private $savedObjects;
+
+    /** @var array */
+    private $deletedObjects;
 
     public function __construct()
     {
-        $this->objects = [
+        $this->savedObjects = [
+            Game::class           => [],
+            Entity::class         => [],
+            ScavengingHaul::class => [],
+        ];
+
+        $this->deletedObjects = [
             Game::class           => [],
             Entity::class         => [],
             ScavengingHaul::class => [],
@@ -24,22 +33,24 @@ final class UnitOfWork
 
     public function save($object): void
     {
-        if ($object instanceof Entity) {
-            $this->objects[Entity::class][] = $object;
-
-        } elseif ($object instanceof Game) {
-            $this->objects[Game::class][] = $object;
-
-        } elseif ($object instanceof ScavengingHaul) {
-            $this->objects[ScavengingHaul::class][] = $object;
-
-        } else {
+        if (!array_key_exists(get_class($object), $this->savedObjects)) {
             throw new InvalidArgumentException;
         }
+
+        $this->savedObjects[get_class($object)][] = $object;
+    }
+
+    public function delete($object): void
+    {
+        if (!array_key_exists(get_class($object), $this->deletedObjects)) {
+            throw new InvalidArgumentException;
+        }
+
+        $this->deletedObjects[get_class($object)][] = $object;
     }
 
     public function commit(UnitOfWorkProcessor $unitOfWorkProcessor): void
     {
-        $unitOfWorkProcessor->commit($this->objects);
+        $unitOfWorkProcessor->commit($this->savedObjects, $this->deletedObjects);
     }
 }

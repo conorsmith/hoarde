@@ -36,14 +36,20 @@ final class UnitOfWorkProcessorDb implements UnitOfWorkProcessor
         ];
     }
 
-    public function commit(iterable $objects): void
+    public function commit(iterable $savedObjects, iterable $deletedObjects): void
     {
         $this->db->beginTransaction();
 
         try {
-            foreach ($objects as $class => $classObjects) {
+            foreach ($savedObjects as $class => $classObjects) {
                 foreach ($classObjects as $object) {
                     $this->repositories[$class]->save($object);
+                }
+            }
+
+            foreach ($deletedObjects as $class => $classObjects) {
+                foreach ($classObjects as $object) {
+                    $this->repositories[$class]->delete($object);
                 }
             }
 

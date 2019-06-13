@@ -111,7 +111,7 @@ $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\HaveEn
 
 $router->post("/{gameId}/{entityId}/scavenge", new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
     $sessionSegment,
-    new \ConorSmith\Hoarde\UseCase\EntityScavenges\UseCase(
+    new ConorSmith\Hoarde\UseCase\EntityScavenges\UseCase(
         $gameRepository,
         $entityRepository,
         $varietyRepository,
@@ -120,11 +120,12 @@ $router->post("/{gameId}/{entityId}/scavenge", new ConorSmith\Hoarde\Infra\Contr
 ));
 
 $router->post("/{gameId}/{entityId}/scavenge/{haulId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory(
-    $gameRepository,
-    $entityRepository,
-    $scavengingHaulRepository,
-    $varietyRepository,
-    $sessionSegment
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityAddsScavengingHaul\UseCase(
+        $entityRepository,
+        $scavengingHaulRepository,
+        $unitOfWorkProcessor
+    )
 ));
 
 $router->post("/{gameId}/drop", new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem(

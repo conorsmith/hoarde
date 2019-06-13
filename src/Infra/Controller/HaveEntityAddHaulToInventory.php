@@ -4,10 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
-use ConorSmith\Hoarde\Domain\EntityRepository;
-use ConorSmith\Hoarde\Domain\GameRepository;
-use ConorSmith\Hoarde\Domain\ScavengingHaulRepository;
-use ConorSmith\Hoarde\Domain\VarietyRepository;
+use ConorSmith\Hoarde\UseCase\EntityAddsScavengingHaul\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -15,71 +12,37 @@ use Zend\Diactoros\Response;
 
 class HaveEntityAddHaulToInventory
 {
-    /** @var GameRepository */
-    private $gameRepo;
-
-    /** @var EntityRepository */
-    private $entityRepo;
-
-    /** @var ScavengingHaulRepository */
-    private $scavengedHaulRepo;
-
-    /** @var VarietyRepository */
-    private $varietyRepo;
-
     /** @var Segment */
     private $session;
 
+    /** @var UseCase */
+    private $useCase;
+
     public function __construct(
-        GameRepository $gameRepo,
-        EntityRepository $entityRepo,
-        ScavengingHaulRepository $scavengingHaulRepo,
-        VarietyRepository $varietyRepo,
-        Segment $session
+        Segment $session,
+        UseCase $useCase
     ) {
-        $this->gameRepo = $gameRepo;
-        $this->entityRepo = $entityRepo;
-        $this->scavengedHaulRepo = $scavengingHaulRepo;
-        $this->varietyRepo = $varietyRepo;
         $this->session = $session;
+        $this->useCase = $useCase;
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $gameId = Uuid::fromString($args['gameId']);
+        $entityId = Uuid::fromString($args['entityId']);
         $haulId = Uuid::fromString($args['haulId']);
 
         $body = json_decode($request->getBody()->getContents(), true);
         $selectedItems = $body['selectedItems'];
         $modifiedInventory = $body['modifiedInventory'];
 
-        $entityIds = $this->gameRepo->findEntityIds($gameId);
-        $entity = $this->entityRepo->find($entityIds[0]);
+        $result = $this->useCase->__invoke($gameId, $entityId, $haulId, $selectedItems, $modifiedInventory);
 
-        $haul = $this->scavengedHaulRepo->find($haulId);
-
-        foreach ($selectedItems as $varietyId => $quantity) {
-            $haul->reduceItemQuantity(Uuid::fromString($varietyId), $quantity);
-        }
-
-        $inventory = $entity->getInventory();
-
-        foreach ($modifiedInventory as $varietyId => $quantity) {
-            $inventory->reduceItemQuantityTo(Uuid::fromString($varietyId), $quantity);
-        }
-
-        if (!$haul->isRetrievableBy($entity)) {
+        if (!$result->isSuccessful()) {
             $response = new Response;
-            $response->getBody()->write("{$entity->getLabel()} cannot carry that much!");
+            $response->getBody()->write($result->getMessage());
             return $response;
         }
-
-        foreach ($haul->getItems() as $item) {
-            $inventory->addItem($item);
-        }
-
-        $this->scavengedHaulRepo->delete($haul);
-        $this->entityRepo->save($entity);
 
         $response = new Response;
         return $response;

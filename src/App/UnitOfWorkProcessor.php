@@ -5,5 +5,5 @@ namespace ConorSmith\Hoarde\App;
 
 interface UnitOfWorkProcessor
 {
-    public function commit(iterable $objects): void;
+    public function commit(iterable $savedObjects, iterable $deletedObjects): void;
 }
