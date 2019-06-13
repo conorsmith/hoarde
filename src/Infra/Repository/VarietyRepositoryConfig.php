@@ -368,8 +368,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
         self::TIMBER => [
             'label'       => "Timber",
             'resources'   => [],
-            //'weight'      => 1485,
-            'weight'      => 485,
+            'weight'      => 1485,
             'icon'        => "tree",
             'description' => "A piece of timber, 1.8 metres long, 75 mm wide and 22 mm thick. This could be useful for"
                 . " constructing many objects.",
