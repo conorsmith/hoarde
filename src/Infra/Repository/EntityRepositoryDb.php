@@ -212,12 +212,14 @@ final class EntityRepositoryDb implements EntityRepository
             'entity_id' => strval($entity->getId()),
         ]);
 
-        foreach ($entity->getInventory()->getItems() as $item) {
-            $this->db->insert("entity_inventory", [
-                'entity_id' => $entity->getId(),
-                'item_id'   => $item->getVariety()->getId(),
-                'quantity'  => $item->getQuantity(),
-            ]);
+        if ($entity->hasInventory()) {
+            foreach ($entity->getInventory()->getItems() as $item) {
+                $this->db->insert("entity_inventory", [
+                    'entity_id' => $entity->getId(),
+                    'item_id'   => $item->getVariety()->getId(),
+                    'quantity'  => $item->getQuantity(),
+                ]);
+            }
         }
     }
 
