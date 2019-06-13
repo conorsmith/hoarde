@@ -3,7 +3,9 @@ class TransferEntityController {
         this.eventBus = eventBus;
         this.view = view;
         this.model = model;
-        this.entities = entities;
+        this.entities = entities.filter(function (entity) {
+            return entity.construction.isConstructed;
+        });
 
         this.entitySelectorController = new TransferEntitySelectorController(
             this.eventBus,
