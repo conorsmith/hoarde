@@ -328,7 +328,12 @@ scavengeModal.querySelector(".js-scavenge-discard").onclick = function (e) {
         haul.modifyItemQuantity(haulInputs[i].dataset.varietyId, 0);
     }
 
-    api.addHaul(scavengeModal.querySelector(".js-scavenge-submit").dataset.haulId, haulInputs, inventoryInputs);
+    api.addHaul(
+        scavengeModal.querySelector(".js-scavenge-submit").dataset.entityId,
+        scavengeModal.querySelector(".js-scavenge-submit").dataset.haulId,
+        haulInputs,
+        inventoryInputs
+    );
 };
 
 scavengeModal.querySelector(".js-scavenge-submit").onclick = function (e) {
@@ -344,11 +349,11 @@ scavengeModal.querySelector(".js-scavenge-submit").onclick = function (e) {
     var haulInputs = scavengeModalView.findHaulInputs();
     var inventoryInputs = scavengeModalView.findInventoryInputs();
 
-    api.addHaul(this.dataset.haulId, haulInputs, inventoryInputs);
+    api.addHaul(this.dataset.entityId, this.dataset.haulId, haulInputs, inventoryInputs);
 };
 
 var api = {
-    addHaul: function (haulId, haulInputs, inventoryInputs) {
+    addHaul: function (entityId, haulId, haulInputs, inventoryInputs) {
         var body = {};
         body.selectedItems = {};
         body.modifiedInventory = {};
@@ -375,7 +380,7 @@ var api = {
             }
         };
 
-        xhr.open("POST", "/" + gameId + "/scavenge/" + haulId);
+        xhr.open("POST", "/" + gameId + "/" + entityId + "/scavenge/" + haulId);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(JSON.stringify(body));
 
@@ -404,6 +409,9 @@ for (var i = 0; i < scavengeButtons.length; i++) {
                 window.location.reload();
                 return;
             }
+
+            document.getElementById("scavengeModal")
+                .querySelector(".js-scavenge-submit").dataset.entityId = button.dataset.entityId;
 
             $("#scavengeModal").modal('show');
 

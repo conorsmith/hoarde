@@ -119,7 +119,7 @@ $router->post("/{gameId}/{entityId}/scavenge", new ConorSmith\Hoarde\Infra\Contr
     )
 ));
 
-$router->post("/{gameId}/scavenge/{haulId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory(
+$router->post("/{gameId}/{entityId}/scavenge/{haulId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory(
     $gameRepository,
     $entityRepository,
     $scavengingHaulRepository,
