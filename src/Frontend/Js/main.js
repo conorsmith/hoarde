@@ -15,6 +15,18 @@ $(function () {
         trigger: 'focus',
         html: true
     });
+
+    document.body.addEventListener("click", function (e) {
+        document.getElementById("transferModal").querySelectorAll(".dropdown-toggle").forEach(function (dropdownToggle) {
+            $(dropdownToggle).dropdown('hide');
+        });
+    });
+
+    document.getElementById("transferModal").querySelectorAll(".dropdown-toggle").forEach(function (dropdownToggle) {
+        dropdownToggle.addEventListener("click", function (e) {
+            $(this).dropdown('show');
+        });
+    });
 });
 
 $("#dropModal").on("show.bs.modal", function (e) {

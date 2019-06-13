@@ -24,8 +24,6 @@
             <div class="dropdown">
               <a href="#"
                  class="transfer-entity dropdown-toggle"
-                 data-toggle="dropdown"
-                 data-boundary="window"
                  style="margin-right: 1rem; font-weight: 900; display: block;"
               >
                 <i class="fas fa-fw js-icon"></i>
