@@ -453,4 +453,17 @@ final class VarietyRepositoryConfig implements VarietyRepository
             $blueprint
         );
     }
+
+    public function allWithBlueprints(): iterable
+    {
+        $varieties = [];
+
+        foreach (self::VARIETIES as $id => $config) {
+            if (array_key_exists('blueprint', $config)) {
+                $varieties[] = $this->find(Uuid::fromString($id));
+            }
+        }
+
+        return $varieties;
+    }
 }

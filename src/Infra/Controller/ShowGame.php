@@ -13,6 +13,7 @@ use ConorSmith\Hoarde\Domain\Item;
 use ConorSmith\Hoarde\Domain\Resource;
 use ConorSmith\Hoarde\Domain\ResourceNeed;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
+use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Psr\Http\Message\ResponseInterface;
@@ -36,6 +37,9 @@ final class ShowGame
     /** @var ActionRepository */
     private $actionRepo;
 
+    /** @var VarietyRepository */
+    private $varietyRepo;
+
     /** @var Segment */
     private $session;
 
@@ -44,12 +48,14 @@ final class ShowGame
         EntityRepository $entityRepo,
         ResourceRepository $resourceRepo,
         ActionRepository $actionRepo,
+        VarietyRepository $varietyRepo,
         Segment $session
     ) {
         $this->gameRepo = $gameRepo;
         $this->entityRepo = $entityRepo;
         $this->resourceRepo = $resourceRepo;
         $this->actionRepo = $actionRepo;
+        $this->varietyRepo = $varietyRepo;
         $this->session = $session;
     }
 
@@ -83,67 +89,7 @@ final class ShowGame
             }, $entities),
             'encodedEntities' => $this->jsonEncodeEntities($entities),
             'actions'         => $this->presentActions($this->actionRepo->all()),
-            'constructions'   => [
-                (object) [
-                    'id'        => VarietyRepositoryConfig::WELL,
-                    'label'     => "Well",
-                    'icon'      => "tint",
-                    'turns'     => 10,
-                    'tools'     => [
-                        (object) [
-                            'id'    => VarietyRepositoryConfig::SHOVEL,
-                            'label' => "Shovel",
-                            'icon'  => "tools",
-                        ],
-                    ],
-                    'materials' => [
-                        (object) [
-                            'id'       => VarietyRepositoryConfig::ROPE,
-                            'label'    => "Rope",
-                            'icon'     => "tools",
-                            'quantity' => 1,
-                        ],
-                        (object) [
-                            'id'       => VarietyRepositoryConfig::BUCKET,
-                            'label'    => "Bucket",
-                            'icon'     => "fill",
-                            'quantity' => 1,
-                        ],
-                    ],
-                ],
-                (object) [
-                    'id'        => VarietyRepositoryConfig::WOODEN_CRATE,
-                    'label'     => "Wooden Crate",
-                    'icon'      => "box",
-                    'turns'     => 3,
-                    'tools'     => [
-                        (object) [
-                            'id'    => VarietyRepositoryConfig::HAMMER,
-                            'label' => "Claw Hammer",
-                            'icon'  => "hammer",
-                        ],
-                        (object) [
-                            'id'    => VarietyRepositoryConfig::HAND_SAW,
-                            'label' => "Hand Saw",
-                            'icon'  => "tools",
-                        ],
-                    ],
-                    'materials' => [
-                        (object) [
-                            'id'       => VarietyRepositoryConfig::TIMBER,
-                            'label'    => "Timber",
-                            'icon'     => "tree",
-                            'quantity' => 10,
-                        ],
-                        (object) [
-                            'id'       => VarietyRepositoryConfig::NAIL,
-                            'label'    => "Nail",
-                            'icon'     => "toolbox",
-                            'quantity' => 60,
-                        ],
-                    ],
-                ],
-            ]
+            'constructions'   => $this->presentBlueprints($this->varietyRepo->allWithBlueprints()),
         ]);
 
         $response = new Response;
@@ -285,10 +231,11 @@ final class ShowGame
     {
         if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
             $human = $this->findHuman($entities);
+            $entityVariety = $this->varietyRepo->find($entity->getVarietyId());
             $actor = (object) [
                 'id'       => $human->getId(),
                 'label'    => $human->getLabel(),
-                'hasTools' => $human->hasToolsFor($entity),
+                'hasTools' => $entityVariety->getBlueprint()->canContinueConstruction($human->getInventory()),
             ];
         } else {
             $actor = null;
@@ -388,6 +335,47 @@ final class ShowGame
             $presentation[] = (object) [
                 'id'    => $action->getId(),
                 'label' => $action->getLabel(),
+            ];
+        }
+
+        return $presentation;
+    }
+
+    private function presentBlueprints(iterable $varieties): iterable
+    {
+        $presentation = [];
+
+        foreach ($varieties as $variety) {
+            $blueprint = $variety->getBlueprint();
+            $presentedTools = [];
+            $presentedMaterials = [];
+
+            foreach ($blueprint->getTools() as $toolVarietyId) {
+                $tool = $this->varietyRepo->find(Uuid::fromString($toolVarietyId));
+                $presentedTools[] = (object) [
+                    'id'    => $toolVarietyId,
+                    'label' => $tool->getLabel(),
+                    'icon'  => $tool->getIcon(),
+                ];
+            }
+
+            foreach ($blueprint->getMaterials() as $materialVarietyId => $requiredQuantity) {
+                $material = $this->varietyRepo->find(Uuid::fromString($materialVarietyId));
+                $presentedMaterials[] = (object) [
+                    'id'       => $materialVarietyId,
+                    'label'    => $material->getLabel(),
+                    'icon'     => $material->getIcon(),
+                    'quantity' => $requiredQuantity,
+                ];
+            }
+
+            $presentation[] = (object) [
+                'id'        => strval($variety->getId()),
+                'label'     => $variety->getLabel(),
+                'icon'      => $variety->getIcon(),
+                'turns'     => $blueprint->getTurns(),
+                'tools'     => $presentedTools,
+                'materials' => $presentedMaterials,
             ];
         }
 

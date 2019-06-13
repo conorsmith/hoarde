@@ -70,6 +70,7 @@ $router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\ShowGame(
     $entityRepository,
     $resourceRepository,
     $actionRepository,
+    $varietyRepository,
     $sessionSegment
 ));
 

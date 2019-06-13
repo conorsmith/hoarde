@@ -240,20 +240,6 @@ final class Entity
         }
     }
 
-    public function hasToolsFor(Entity $target): bool
-    {
-        if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WELL))) {
-            return $this->inventory->containsItem(Uuid::fromString(VarietyRepositoryConfig::SHOVEL));
-        }
-
-        if ($target->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-            return $this->inventory->containsItem(Uuid::fromString(VarietyRepositoryConfig::HAMMER))
-                && $this->inventory->containsItem(Uuid::fromString(VarietyRepositoryConfig::HAND_SAW));
-        }
-
-        return false;
-    }
-
     public function construct(Entity $target): void
     {
         $this->beforeAction();

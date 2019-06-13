@@ -8,4 +8,5 @@ use Ramsey\Uuid\UuidInterface;
 interface VarietyRepository
 {
     public function find(UuidInterface $id): ?Variety;
+    public function allWithBlueprints(): iterable;
 }
