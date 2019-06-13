@@ -4,13 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
-use ConorSmith\Hoarde\Domain\EntityRepository;
-use ConorSmith\Hoarde\Domain\GameRepository;
-use ConorSmith\Hoarde\Domain\Resource;
-use ConorSmith\Hoarde\Domain\RollTable;
-use ConorSmith\Hoarde\Domain\Scavenge;
-use ConorSmith\Hoarde\Domain\ScavengingHaulRepository;
-use ConorSmith\Hoarde\Domain\VarietyRepository;
+use ConorSmith\Hoarde\UseCase\EntityScavenges\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -18,94 +12,40 @@ use Zend\Diactoros\Response;
 
 final class HaveEntityScavenge
 {
-    /** @var GameRepository */
-    private $gameRepo;
-
-    /** @var EntityRepository */
-    private $entityRepo;
-
-    /** @var ScavengingHaulRepository */
-    private $scavengedHaulRepo;
-
-    /** @var VarietyRepository */
-    private $varietyRepo;
-
     /** @var Segment */
     private $session;
 
+    /** @var UseCase */
+    private $useCase;
+
     public function __construct(
-        GameRepository $gameRepo,
-        EntityRepository $entityRepo,
-        ScavengingHaulRepository $scavengingHaulRepo,
-        VarietyRepository $varietyRepo,
-        Segment $session
+        Segment $session,
+        UseCase $useCase
     ) {
-        $this->gameRepo = $gameRepo;
-        $this->entityRepo = $entityRepo;
-        $this->scavengedHaulRepo = $scavengingHaulRepo;
-        $this->varietyRepo = $varietyRepo;
         $this->session = $session;
+        $this->useCase = $useCase;
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
+        $gameId = Uuid::fromString($args['gameId']);
+        $entityId = Uuid::fromString($args['entityId']);
         $length = intval(json_decode($request->getBody()->getContents(), true)['length']);
 
-        if (!in_array($length, [1, 3])) {
+        $result = $this->useCase->__invoke($gameId, $entityId, $length);
+
+        if (!$result->isSuccessful()) {
             $response = new Response;
             $response = $response->withStatus(400);
             $response->getBody()->write(json_encode([
-                'message' => "Invalid scavenge length",
+                'message' => $result->getMessage(),
             ]));
             return $response;
         }
 
-        $gameId = Uuid::fromString($args['gameId']);
-
-        $game = $this->gameRepo->find($gameId);
-        $entityIds = $this->gameRepo->findEntityIds($gameId);
-        $entity = $this->entityRepo->find($entityIds[0]);
-
-        $rollTable = (new RollTable($this->varietyRepo))->forEntity($entity, $length);
-        $haul = $entity->scavenge(new Scavenge($rollTable, $length));
-
-        $this->entityRepo->save($entity);
-        $this->scavengedHaulRepo->save($haul);
-
-        for ($i = 0; $i < $length; $i++) {
-            $game->proceedToNextTurn();
-        }
-        $this->gameRepo->save($game);
-
-        $transformedHaul = [
-            'id' => $haul->getId(),
-            'weight' => $haul->getWeight(),
-            'items' => [],
-        ];
-
-        if ($haul->hasItems()) {
-            foreach ($haul->getItems() as $item) {
-                $transformedHaul['items'][] = [
-                    'varietyId'     => $item->getVariety()->getId(),
-                    'label'         => $item->getVariety()->getLabel(),
-                    'weight'        => $item->getVariety()->getWeight(),
-                    'quantity'      => $item->getQuantity(),
-                    'icon'          => $item->getVariety()->getIcon(),
-                    'resourceLabel' => implode(", ", array_map(function (Resource $resource) {
-                        return $resource->getLabel();
-                    }, $item->getVariety()->getResources())),
-                    'description'   => nl2br($item->getVariety()->getDescription()),
-                ];
-            }
-        }
-
-        if (!$entity->isIntact()) {
-            $this->session->setFlash("danger", "{$entity->getLabel()} has expired");
-        }
-
         $response = new Response;
         $response->getBody()->write(json_encode([
-            'haul' => $transformedHaul,
+            'haul' => $result->getHaul(),
         ]));
         return $response;
     }

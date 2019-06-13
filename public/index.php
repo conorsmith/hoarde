@@ -45,7 +45,8 @@ $scavengingHaulRepository = new \ConorSmith\Hoarde\Infra\Repository\ScavengingHa
 $unitOfWorkProcessor = new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
     $db,
     $gameRepository,
-    $entityRepository
+    $entityRepository,
+    $scavengingHaulRepository
 );
 
 $router = new League\Route\Router;
@@ -108,12 +109,14 @@ $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\HaveEn
     )
 ));
 
-$router->post("/{gameId}/scavenge", new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
-    $gameRepository,
-    $entityRepository,
-    $scavengingHaulRepository,
-    $varietyRepository,
-    $sessionSegment
+$router->post("/{gameId}/{entityId}/scavenge", new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
+    $sessionSegment,
+    new \ConorSmith\Hoarde\UseCase\EntityScavenges\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $unitOfWorkProcessor
+    )
 ));
 
 $router->post("/{gameId}/scavenge/{haulId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory(

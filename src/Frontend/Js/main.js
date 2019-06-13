@@ -410,7 +410,7 @@ for (var i = 0; i < scavengeButtons.length; i++) {
             button.innerText = button.dataset.buttonText;
         };
 
-        xhr.open("POST", "/" + gameId + "/scavenge");
+        xhr.open("POST", "/" + gameId + "/" + button.dataset.entityId + "/scavenge");
         xhr.send(JSON.stringify({
             length: button.dataset.length
         }));

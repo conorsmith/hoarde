@@ -89,6 +89,7 @@
                     <button type="button"
                             class="btn btn-light btn-block js-scavenge"
                             data-length="1"
+                            data-entity-id="<?=$entity->id?>"
                         <?=(!$isIntact ? "disabled" : "")?>
                     >
                         Scavenge
@@ -105,6 +106,7 @@
                         <a href="#"
                            class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
                            data-length="1"
+                           data-entity-id="<?=$entity->id?>"
                         >
                             Short Scavenge
                             <span class="badge">1 turn</span>
@@ -113,6 +115,7 @@
                         <a href="#"
                            class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
                            data-length="3"
+                           data-entity-id="<?=$entity->id?>"
                         >
                             Long Scavenge
                             <span class="badge">3 turns</span>

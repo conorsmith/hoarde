@@ -30,17 +30,17 @@ final class Result
 
     public static function varietyNotFound(UuidInterface $varietyId): self
     {
-        return Result::failed("Variety {$varietyId} was not found.");
+        return self::failed("Variety {$varietyId} was not found.");
     }
 
     public static function actorExpired(Entity $actor): self
     {
-        return Result::failed("{$actor->getLabel()} has expired.");
+        return self::failed("{$actor->getLabel()} has expired.");
     }
 
     public static function entityHasNoInventory(Entity $entity): self
     {
-        return Result::failed("{$entity->getLabel()} has no inventory.");
+        return self::failed("{$entity->getLabel()} has no inventory.");
     }
 
     /** @var bool */

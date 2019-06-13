@@ -5,6 +5,7 @@ namespace ConorSmith\Hoarde\App;
 
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\Game;
+use ConorSmith\Hoarde\Domain\ScavengingHaul;
 use InvalidArgumentException;
 
 final class UnitOfWork
@@ -15,8 +16,9 @@ final class UnitOfWork
     public function __construct()
     {
         $this->objects = [
-            Game::class   => [],
-            Entity::class => [],
+            Game::class           => [],
+            Entity::class         => [],
+            ScavengingHaul::class => [],
         ];
     }
 
@@ -27,6 +29,9 @@ final class UnitOfWork
 
         } elseif ($object instanceof Game) {
             $this->objects[Game::class][] = $object;
+
+        } elseif ($object instanceof ScavengingHaul) {
+            $this->objects[ScavengingHaul::class][] = $object;
 
         } else {
             throw new InvalidArgumentException;
