@@ -6,6 +6,7 @@ namespace ConorSmith\Hoarde\Infra\Controller;
 use Aura\Session\Segment;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\Domain\Inventory;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use DomainException;
 use Psr\Http\Message\ResponseInterface;
@@ -61,6 +62,12 @@ final class TransferItems
         $inventoryA = $entityA->getInventory();
         $inventoryB = $entityB->getInventory();
 
+        $transientInventory = new Inventory(
+            Uuid::uuid4(),
+            $inventoryA->getCapacity(),
+            []
+        );
+
         if (!$entityA->getGameId()->equals($gameId)
             || !$entityB->getGameId()->equals($gameId)
         ) {
@@ -74,7 +81,7 @@ final class TransferItems
             foreach ($manifestA['items'] as $item) {
                 if (intval($item['quantity']) > 0) {
                     $inventoryA->decrementItemQuantity(Uuid::fromString($item['varietyId']), intval($item['quantity']));
-                    $inventoryB->incrementItemQuantity(
+                    $transientInventory->incrementItemQuantity(
                         Uuid::fromString($item['varietyId']),
                         intval($item['quantity']),
                         $this->varietyRepo
@@ -91,6 +98,15 @@ final class TransferItems
                         $this->varietyRepo
                     );
                 }
+            }
+
+            foreach ($transientInventory->getItems() as $item) {
+                $transientInventory->decrementItemQuantity($item->getVariety()->getId(), $item->getQuantity());
+                $inventoryB->incrementItemQuantity(
+                    $item->getVariety()->getId(),
+                    $item->getQuantity(),
+                    $this->varietyRepo
+                );
             }
         } catch (DomainException $e) {
             $response = new Response;
