@@ -210,7 +210,7 @@ for (var i = 0; i < fetchButtons.length; i++) {
         var entityId = e.currentTarget.dataset.entityId;
 
         var form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/fetch-water");
+        form.setAttribute("action", "/" + gameId + "/" + entityId + "/fetch-water");
         form.setAttribute("method", "POST");
         form.setAttribute("hidden", true);
 
@@ -219,12 +219,6 @@ for (var i = 0; i < fetchButtons.length; i++) {
         wellIdInput.setAttribute("name", "wellId");
         wellIdInput.setAttribute("value", wellId);
         form.appendChild(wellIdInput);
-
-        var entityIdInput = document.createElement("input");
-        entityIdInput.setAttribute("type", "hidden");
-        entityIdInput.setAttribute("name", "entityId");
-        entityIdInput.setAttribute("value", entityId);
-        form.appendChild(entityIdInput);
 
         document.body.appendChild(form);
 

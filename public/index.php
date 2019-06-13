@@ -143,11 +143,14 @@ $router->post("/{gameId}/transfer", new ConorSmith\Hoarde\Infra\Controller\Trans
     $sessionSegment
 ));
 
-$router->post("/{gameId}/fetch-water", new ConorSmith\Hoarde\Infra\Controller\FetchWater(
-    $gameRepository,
-    $entityRepository,
-    $varietyRepository,
-    $sessionSegment
+$router->post("/{gameId}/{entityId}/fetch-water", new ConorSmith\Hoarde\Infra\Controller\HaveEntityFetchWater(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityFetchesWater\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $unitOfWorkProcessor
+    )
 ));
 
 $router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Controller\HaveEntityBeginConstruction(
