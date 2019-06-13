@@ -50,6 +50,7 @@
                                        class="dropdown-item d-flex align-items-baseline justify-content-between js-use"
                                        data-entity-id="<?=$entity->id?>"
                                        data-item-id="<?=$resource->lastConsumedItem->id?>"
+                                       data-action-id="<?=\ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig::CONSUME?>"
                                     >
                                         <div>
                                             <i class="fas fa-history"></i>
@@ -68,6 +69,7 @@
                                        class="dropdown-item d-flex align-items-baseline justify-content-between js-use"
                                        data-entity-id="<?=$entity->id?>"
                                        data-item-id="<?=$item->id?>"
+                                       data-action-id="<?=\ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig::CONSUME?>"
                                     >
                                         Consume <?=$item->label?>
                                         <span class="badge"><?=$item->quantity?></span>
