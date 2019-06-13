@@ -8,9 +8,9 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Result
 {
-    public static function succeeded(): self
+    public static function succeeded(string $message = null): self
     {
-        return new self(true, null);
+        return new self(true, $message);
     }
 
     public static function failed(string $message): self

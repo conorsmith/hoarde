@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\UseCase\EntityDiscardsItem;
 
+use ConorSmith\Hoarde\App\Result;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Ramsey\Uuid\UuidInterface;
