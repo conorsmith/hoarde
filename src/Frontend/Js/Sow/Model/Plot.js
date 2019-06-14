@@ -16,4 +16,19 @@ class Plot {
             model.capacityUsed += item.quantity;
         });
     }
+
+    getContents() {
+        let contents = [];
+
+        Object.values(this.items).forEach(function (item) {
+            if (item.quantity > 0) {
+                contents.push({
+                    varietyId: item.inventoryItem.id,
+                    quantity: item.quantity
+                });
+            }
+        });
+
+        return contents;
+    }
 }

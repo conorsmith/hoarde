@@ -173,6 +173,16 @@ $router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\
     )
 ));
 
+$router->post("/{gameId}/{actorId}/sow/{targetId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntitySowPlot(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntitySowsPlot\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $unitOfWorkProcessor
+    )
+));
+
 $router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings(
     $gameRepository,
     $entityRepository,

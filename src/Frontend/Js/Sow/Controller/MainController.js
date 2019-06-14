@@ -14,12 +14,16 @@ class MainController {
         });
 
         this.eventBus.addEventListener("sow.itemModified", this.onItemModified.bind(this));
+
+        this.view.getSubmitButtonEl().addEventListener("click", this.onSubmit.bind(this));
     }
 
     onShow(e) {
         const controller = this;
 
         this.plot = new Plot(50);
+        this.entityId = this.view.el.dataset.entityId;
+        this.actorId = this.view.el.dataset.actorId;
 
         let inventory = new Inventory();
 
@@ -55,5 +59,22 @@ class MainController {
         this.plot.add(e.detail.item);
         this.view.repaintCapacityBar(this.plot);
         this.view.repaintFooter(this.plot);
+    }
+
+    onSubmit(e) {
+        let form = document.createElement("form");
+        form.setAttribute("action", "/" + this.gameId + "/" + this.actorId + "/sow/" + this.entityId);
+        form.setAttribute("method", "POST");
+        form.setAttribute("hidden", true);
+
+        let plotInput = document.createElement("input");
+        plotInput.setAttribute("type", "hidden");
+        plotInput.setAttribute("name", "plot");
+        plotInput.setAttribute("value", JSON.stringify(this.plot.getContents()));
+        form.appendChild(plotInput);
+
+        document.body.appendChild(form);
+
+        form.submit();
     }
 }

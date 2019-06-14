@@ -4,6 +4,10 @@ class ModalView {
         this.sliderTemplate = sliderTemplate;
     }
 
+    getSubmitButtonEl() {
+        return this.el.querySelector(".js-sow-submit");
+    }
+
     repaint(plot) {
         this.repaintCapacityBar(plot);
         this.repaintFooter(plot);
