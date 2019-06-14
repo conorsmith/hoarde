@@ -16,7 +16,7 @@
                     >
                         <div class="progress-bar"></div>
                     </div>
-                    <div style="font-size: 0.8rem; margin-left: 1rem; white-space: nowrap;">
+                    <div style="width: 4rem; font-size: 0.8rem; margin-left: 1rem; white-space: nowrap; text-align: right;">
                         <span class="js-capacity-used"></span> / <span class="js-capacity-total"></span>
                     </div>
                 </div>

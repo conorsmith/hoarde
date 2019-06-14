@@ -12,10 +12,14 @@ class MainController {
         $(this.view.el).on("show.bs.modal", function (e) {
             controller.onShow(e);
         });
+
+        this.eventBus.addEventListener("sow.itemModified", this.onItemModified.bind(this));
     }
 
     onShow(e) {
         const controller = this;
+
+        this.plot = new Plot(50);
 
         let inventory = new Inventory();
 
@@ -32,14 +36,24 @@ class MainController {
             }
         });
 
-        this.view.repaint(new Plot());
+        this.view.repaint(this.plot);
 
         Object.values(inventory.items).forEach(function (item) {
+            let plotItem = new PlotItem(item, 0);
+
             new SliderController(
                 controller.eventBus,
                 controller.view.createSliderView(item),
-                item
+                plotItem
             );
+
+            controller.plot.add(plotItem);
         });
+    }
+
+    onItemModified(e) {
+        this.plot.add(e.detail.item);
+        this.view.repaintCapacityBar(this.plot);
+        this.view.repaintFooter(this.plot);
     }
 }
