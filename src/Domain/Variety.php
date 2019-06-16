@@ -29,6 +29,9 @@ final class Variety
     /** @var bool */
     private $hasInventory;
 
+    /** @var ?int */
+    private $inventoryCapacity;
+
     /** @var iterable */
     private $actions;
 
@@ -43,6 +46,7 @@ final class Variety
         string $icon,
         string $description,
         bool $hasInventory,
+        ?int $inventoryCapacity,
         iterable $actions,
         ?Blueprint $blueprint
     ) {
@@ -52,6 +56,7 @@ final class Variety
         $this->icon = $icon;
         $this->description = $description;
         $this->hasInventory = $hasInventory;
+        $this->inventoryCapacity = $inventoryCapacity;
         $this->blueprint = $blueprint;
 
         $this->resourceContents = [];
@@ -112,6 +117,11 @@ final class Variety
     public function hasInventory(): bool
     {
         return $this->hasInventory;
+    }
+
+    public function getInventoryCapacity(): ?int
+    {
+        return $this->inventoryCapacity;
     }
 
     public function getActions(): iterable

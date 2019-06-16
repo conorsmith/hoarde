@@ -11,6 +11,7 @@ use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\Domain\Inventory;
 use ConorSmith\Hoarde\Domain\Variety;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
@@ -99,7 +100,7 @@ final class UseCase
         $actingEntity->getInventory()->decrementItemQuantity($itemVariety->getId(), 1);
 
         $placedEntity = new Entity(
-            Uuid::uuid4(),
+            $placedEntityId = Uuid::uuid4(),
             $game->getId(),
             $itemVariety->getId(),
             $itemVariety->getLabel(),
@@ -107,7 +108,7 @@ final class UseCase
             true,
             Construction::constructed(),
             [],
-            []
+            Inventory::empty($placedEntityId, $itemVariety)
         );
 
         $game->proceedToNextTurn();

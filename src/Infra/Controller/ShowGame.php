@@ -146,7 +146,7 @@ final class ShowGame
             $resourceNeeds[] = $this->presentResourceNeed($entity, $resourceNeed);
         }
 
-        $items = [];
+        $inventoryContents = [];
 
         if ($entity->hasInventory()) {
             foreach ($entity->getInventory()->getItems() as $item) {
@@ -177,7 +177,56 @@ final class ShowGame
                     }
                 }
 
-                $items[] = $presentedItem;
+                $inventoryContents[] = $presentedItem;
+            }
+
+            foreach ($entity->getInventory()->getEntities() as $inventoryEntity) {
+                $variety = $this->varietyRepo->find($inventoryEntity->getVarietyId());
+                $presentedEntity = (object) [
+                    'id'            => $inventoryEntity->getId(),
+                    'varietyId'     => $variety->getId(),
+                    'label'         => $inventoryEntity->getLabel(),
+                    'quantity'      => 1,
+                    'weight'        => $variety->getWeight(),
+                    'icon'          => $inventoryEntity->getIcon(),
+                    'resourceLabel' => implode(", ", array_map(function (Resource $resource) {
+                        return $resource->getLabel();
+                    }, $variety->getResources())),
+                    'description'   => nl2br($variety->getDescription()),
+                    'actions'       => array_values(array_map(function (Action $action) {
+                        return (object) [
+                            'id'    => $action->getId(),
+                            'label' => $action->getLabel(),
+                            'icon'  => $action->getIcon(),
+                        ];
+                    }, $variety->getActions())),
+                ];
+
+                foreach ($variety->getActions() as $action) {
+                    if ($action->canBePerformedBy($entity->getVarietyId())) {
+                        switch (strval($action->getId())) {
+                            case ActionRepositoryConfig::CONSUME:
+                            case ActionRepositoryConfig::PLACE:
+                                $jsClass = "js-use";
+                                break;
+                            case ActionRepositoryConfig::CONSTRUCT:
+                            case ActionRepositoryConfig::DIG:
+                                $jsClass = "js-construct";
+                                break;
+                            default:
+                                $jsClass = "";
+                        }
+
+                        $presentedEntity->performableActions[] = (object)[
+                            'id'      => $action->getId(),
+                            'label'   => $action->getLabel(),
+                            'icon'    => $action->getIcon(),
+                            'jsClass' => $jsClass,
+                        ];
+                    }
+                }
+
+                $inventoryContents[] = $presentedEntity;
             }
         }
 
@@ -200,11 +249,11 @@ final class ShowGame
                 'capacity'              => $inventory->getCapacity(),
                 'isAtCapacity'          => $inventory->getWeight() === $inventory->getCapacity(),
                 'weightPercentage'      => $inventory->getWeight() / $inventory->getCapacity() * 100,
-                'items'                 => $items,
+                'items'                 => $inventoryContents,
             ];
         }
 
-        if ($presentation->inventory) {
+        if (isset($presentation->inventory)) {
 
             if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
                 $crate = $this->getFirstEntityOfVariety(
@@ -227,21 +276,52 @@ final class ShowGame
             }
         }
 
+        if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::GARDEN_PLOT))) {
+            $presentation->incubator = [];
+
+            foreach ($entity->getInventory()->getEntities() as $inventoryEntity) {
+                $key = "{$inventoryEntity->getVarietyId()}-{$inventoryEntity->getConstruction()->getRemainingSteps()}";
+                if (!array_key_exists($key, $presentation->incubator)) {
+                    $variety = $this->varietyRepo->find($inventoryEntity->getVarietyId());
+                    $construction = $inventoryEntity->getConstruction();
+                    $presentation->incubator[$key] = (object)[
+                        'varietyId'    => $inventoryEntity->getVarietyId(),
+                        'label'        => $variety->getLabel(),
+                        'icon'         => $variety->getIcon(),
+                        'description'  => $variety->getDescription(),
+                        'construction' => (object)[
+                            'percentage'     => ($construction->getRequiredSteps() - $construction->getRemainingSteps())
+                                / $construction->getRequiredSteps() * 100,
+                            'remainingSteps' => $construction->getRemainingSteps(),
+                            'requiredSteps'  => $construction->getRequiredSteps(),
+                        ],
+                        'quantity'     => 1,
+                    ];
+                } else {
+                    $presentation->incubator[$key]->quantity++;
+                }
+            }
+
+            $presentation->incubator = array_values($presentation->incubator);
+        }
+
         return $presentation;
     }
 
     private function presentConstruction(Entity $entity, iterable $entities): stdClass
     {
+        $actor = null;
+
         if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
             $human = $this->findHuman($entities);
             $entityVariety = $this->varietyRepo->find($entity->getVarietyId());
-            $actor = (object) [
-                'id'       => $human->getId(),
-                'label'    => $human->getLabel(),
-                'hasTools' => $entityVariety->getBlueprint()->canContinueConstruction($human->getInventory()),
-            ];
-        } else {
-            $actor = null;
+            if ($entityVariety->hasBlueprint()) {
+                $actor = (object)[
+                    'id'       => $human->getId(),
+                    'label'    => $human->getLabel(),
+                    'hasTools' => $entityVariety->getBlueprint()->canContinueConstruction($human->getInventory()),
+                ];
+            }
         }
 
         return (object) [

@@ -88,6 +88,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'weight'      => 0,
             'icon'        => "seedling",
             'description' => "An area of soil designated for planting fruits and vegetables.",
+            'inventory'   => [
+                'capacity' => 999999999,
+            ],
             'blueprint'   => [
                 'tools'     => [
                     self::SHOVEL,
@@ -438,6 +441,11 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'actions'     => [
                 ActionRepositoryConfig::CONSUME,
             ],
+            'blueprint'   => [
+                'tools'     => [],
+                'materials' => [],
+                'turns'     => 84,
+            ],
         ],
     ];
 
@@ -486,6 +494,12 @@ final class VarietyRepositoryConfig implements VarietyRepository
             );
         }
 
+        $inventoryCapacity = null;
+
+        if (array_key_exists('inventory', self::VARIETIES[strval($id)])) {
+            $inventoryCapacity = self::VARIETIES[strval($id)]['inventory']['capacity'];
+        }
+
         return new Variety(
             $id,
             self::VARIETIES[strval($id)]['label'],
@@ -493,7 +507,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
             self::VARIETIES[strval($id)]['weight'],
             self::VARIETIES[strval($id)]['icon'],
             self::VARIETIES[strval($id)]['description'],
-            array_key_exists('inventory', self::VARIETIES[strval($id)]),
+            !is_null($inventoryCapacity),
+            $inventoryCapacity,
             $actions,
             $blueprint
         );

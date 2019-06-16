@@ -8,6 +8,7 @@ use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\Domain\Inventory;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
@@ -46,8 +47,10 @@ final class GenerateNewGame
         );
         $this->gameRepo->save($newGame);
 
+        $variety = $this->varietyRepo->find(Uuid::fromString(VarietyRepositoryConfig::HUMAN));
+
         $newEntity = new Entity(
-            Uuid::uuid4(),
+            $newEntityId = Uuid::uuid4(),
             $id,
             Uuid::fromString(VarietyRepositoryConfig::HUMAN),
             $request->getParsedBody()['label'],
@@ -55,7 +58,7 @@ final class GenerateNewGame
             true,
             Construction::constructed(),
             [],
-            []
+            Inventory::empty($newEntityId, $variety->getInventoryCapacity())
         );
         $newEntity->reset($this->varietyRepo, $this->resourceRepo);
         $this->entityRepo->save($newEntity);

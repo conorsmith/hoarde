@@ -140,8 +140,6 @@ final class UseCase
             }
         }
 
-        dd($plotEntities);
-
         foreach ($plotEntities as $entity) {
             $target->getInventory()->addEntity($entity);
         }

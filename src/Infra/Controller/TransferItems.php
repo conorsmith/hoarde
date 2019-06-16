@@ -65,6 +65,7 @@ final class TransferItems
         $transientInventory = new Inventory(
             Uuid::uuid4(),
             $inventoryA->getCapacity(),
+            [],
             []
         );
 

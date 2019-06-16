@@ -8,6 +8,16 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Inventory
 {
+    public static function empty(UuidInterface $entityId, Variety $variety): self
+    {
+        return new self(
+            $entityId,
+            $variety->getInventoryCapacity(),
+            [],
+            []
+        );
+    }
+
     /** @var UuidInterface */
     private $entityId;
 
@@ -17,11 +27,15 @@ final class Inventory
     /** @var Item[] */
     private $items;
 
-    public function __construct(UuidInterface $entityId, int $capacity, iterable $items)
+    /** @var Entity[] */
+    private $entities;
+
+    public function __construct(UuidInterface $entityId, int $capacity, iterable $items, iterable $entities)
     {
         $this->entityId = $entityId;
         $this->capacity = $capacity;
         $this->items = [];
+        $this->entities = [];
 
         foreach ($items as $item) {
             if (!$item instanceof Item) {
@@ -29,6 +43,14 @@ final class Inventory
             }
 
             $this->items[strval($item->getVariety()->getId())] = $item;
+        }
+
+        foreach ($entities as $entity) {
+            if (!$entity instanceof Entity) {
+                throw new DomainException;
+            }
+
+            $this->entities[strval($entity->getId())] = $entity;
         }
     }
 
@@ -51,6 +73,11 @@ final class Inventory
     public function getItems(): iterable
     {
         return $this->items;
+    }
+
+    public function getEntities(): iterable
+    {
+        return $this->entities;
     }
 
     public function containsItem(UuidInterface $varietyId): bool
@@ -87,6 +114,19 @@ final class Inventory
         }
 
         $this->items[strval($varietyId)] = $addedItem;
+    }
+
+    public function addEntity(Entity $addedEntity): void
+    {
+        if (array_key_exists(strval($addedEntity->getId()), $this->entities)) {
+            throw new DomainException;
+        }
+
+        if ($this->entityId->equals($addedEntity->getId())) {
+            throw new DomainException;
+        }
+
+        $this->entities[strval($addedEntity->getId())] = $addedEntity;
     }
 
     public function discardItem(UuidInterface $varietyId, int $quantityDiscarded): void

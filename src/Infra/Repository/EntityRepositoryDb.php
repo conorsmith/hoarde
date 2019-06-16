@@ -6,8 +6,10 @@ namespace ConorSmith\Hoarde\Infra\Repository;
 use ConorSmith\Hoarde\Domain\Construction;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
+use ConorSmith\Hoarde\Domain\Inventory;
 use ConorSmith\Hoarde\Domain\Item;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
+use ConorSmith\Hoarde\Domain\Variety;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Domain\ResourceNeed;
 use Doctrine\DBAL\Connection;
@@ -92,7 +94,7 @@ final class EntityRepositoryDb implements EntityRepository
                 $variety->hasBlueprint() ? $variety->getBlueprint()->getTurns() : 0
             ),
             $this->findResourceNeeds($id),
-            $variety->hasInventory() ? $this->findInventory($id) : null
+            $variety->hasInventory() ? $this->findInventory($id, $variety) : null
         );
     }
 
@@ -119,26 +121,36 @@ final class EntityRepositoryDb implements EntityRepository
         return $resourceNeeds;
     }
 
-    private function findInventory(UuidInterface $id): iterable
+    private function findInventory(UuidInterface $id, Variety $variety): Inventory
     {
         $itemRows = $this->db->fetchAll("SELECT * FROM entity_inventory WHERE entity_id = :id", [
             'id' => $id,
         ]);
 
-        $inventory = [];
+        $items = [];
 
         foreach ($itemRows as $row) {
             $item = $this->varietyRepository
                 ->find(Uuid::fromString($row['item_id']))
                 ->createItemWithQuantity(intval($row['quantity']));
-            $inventory[] = $item;
+            $items[] = $item;
         }
 
-        usort($inventory, function (Item $itemA, Item $itemB) {
+        usort($items, function (Item $itemA, Item $itemB) {
             return strnatcasecmp($itemA->getVariety()->getLabel(), $itemB->getVariety()->getLabel());
         });
 
-        return $inventory;
+        $entityRows = $this->db->fetchAll("SELECT * FROM entity_inventory_entities WHERE entity_id = :id", [
+            'id' => $id,
+        ]);
+
+        $entities = [];
+
+        foreach ($entityRows as $row) {
+            $entities[] = $this->find(Uuid::fromString($row['inventory_entity_id']));
+        }
+
+        return new Inventory($id, $variety->getInventoryCapacity(), $items, $entities);
     }
 
     public function save(Entity $entity): void
@@ -216,6 +228,13 @@ final class EntityRepositoryDb implements EntityRepository
                     'entity_id' => $entity->getId(),
                     'item_id'   => $item->getVariety()->getId(),
                     'quantity'  => $item->getQuantity(),
+                ]);
+            }
+
+            foreach ($entity->getInventory()->getEntities() as $inventoryEntity) {
+                $this->db->insert("entity_inventory_entities", [
+                    'entity_id'           => $entity->getId(),
+                    'inventory_entity_id' => $inventoryEntity->getId(),
                 ]);
             }
         }

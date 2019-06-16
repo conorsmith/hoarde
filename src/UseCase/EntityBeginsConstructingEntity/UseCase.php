@@ -10,6 +10,7 @@ use ConorSmith\Hoarde\Domain\Construction;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\Domain\Inventory;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -75,7 +76,7 @@ final class UseCase
         $blueprint->discardUsedMaterials($actorInventory, $otherInventories);
 
         $target = new Entity(
-            Uuid::uuid4(),
+            $targetId = Uuid::uuid4(),
             $game->getId(),
             $targetVariety->getId(),
             $targetVariety->getLabel(),
@@ -83,7 +84,7 @@ final class UseCase
             true,
             new Construction(false, $blueprint->getTurns() - 1, $blueprint->getTurns()),
             [],
-            []
+            Inventory::empty($targetId, $targetVariety)
         );
 
         $actor->wait();

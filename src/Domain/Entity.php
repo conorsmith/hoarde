@@ -48,7 +48,7 @@ final class Entity
         bool $isIntact,
         Construction $construction,
         iterable $resourceNeeds,
-        ?iterable $inventoryItems
+        ?Inventory $inventory
     ) {
         $this->id = $id;
         $this->gameId = $gameId;
@@ -57,6 +57,7 @@ final class Entity
         $this->icon = $icon;
         $this->isIntact = $isIntact;
         $this->construction = $construction;
+        $this->inventory = $inventory;
         $this->resourceNeeds = [];
 
         foreach ($resourceNeeds as $resourceNeed) {
@@ -65,17 +66,6 @@ final class Entity
             }
 
             $this->resourceNeeds[strval($resourceNeed->getResource()->getId())] = $resourceNeed;
-        }
-
-        if (!is_null($inventoryItems)) {
-
-            if ($this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
-                $capacity = 50000;
-            } else {
-                $capacity = 10000;
-            }
-
-            $this->inventory = new Inventory($this->id, $capacity, $inventoryItems);
         }
     }
 
@@ -314,6 +304,6 @@ final class Entity
             $varietyRepository
                 ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_STEW))
                 ->createItemWithQuantity(3),
-        ]);
+        ], []);
     }
 }

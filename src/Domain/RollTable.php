@@ -30,6 +30,25 @@ class RollTable
             $rollTable = $this->getShortTable();
         }
 
+        $rollTable[] = [
+            'rolls' => range(1, 1000),
+            'item'  => $this->varietyRepository
+                ->find(Uuid::fromString(VarietyRepositoryConfig::RADISH_SEED)),
+            'quantity' => [100, 100],
+        ];
+
+        $rollTable[] = [
+            'rolls' => range(1, 1000),
+            'item'  => $this->varietyRepository
+                ->find(Uuid::fromString(VarietyRepositoryConfig::ROPE)),
+        ];
+
+        $rollTable[] = [
+            'rolls' => range(1, 1000),
+            'item'  => $this->varietyRepository
+                ->find(Uuid::fromString(VarietyRepositoryConfig::SHOVEL)),
+        ];
+
         if ($entity->needsPringles()) {
             return $this->appendPringles($rollTable);
         } else {

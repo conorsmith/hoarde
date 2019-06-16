@@ -43,6 +43,61 @@
 
             <hr>
 
+            <div>
+                <?php foreach ($entity->incubator as $incubation) : ?>
+
+                    <div class="btn-group inventory-item d-flex justify-content-end"
+                         style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;"
+                    >
+
+                        <div class="btn btn-block flex-grow-1 d-flex justify-content-between inventory-item-label"
+                             style="text-align: left;"
+                        >
+                            <div style="white-space: nowrap;">
+                                <i class="fas fa-fw fa-<?=$incubation->icon?>"></i>
+                                <?=$incubation->label?>
+                            </div>
+                            <div>
+                                <span class="badge"><?=$incubation->quantity?></span>
+                            </div>
+                        </div>
+
+                        <button type="button"
+                                class="btn btn-light dropdown-toggle"
+                                data-toggle="dropdown"
+                                style="border-top-left-radius: 0;
+                                       border-bottom-left-radius: 0;
+                                       padding-top: 0.7rem;
+                                       padding-bottom: 0.5rem;"
+                            <?=($isIntact ? "" : "disabled")?>
+                        ></button>
+                        <div class="dropdown-menu dropdown-menu-right w-100">
+
+                            <h6 class="dropdown-header"><?=$incubation->label?></h6>
+
+                            <a href="#"
+                               class="dropdown-item disabled"
+                            >
+                              <i class="fas fa-fw fa-seedling"></i>
+                              Harvest
+                            </a>
+
+                        </div>
+
+                    </div>
+                    <div class="progress w-100"
+                         style="height: 0.4rem; border-top-left-radius: 0; border-top-right-radius: 0;"
+                    >
+                      <div class="progress-bar bg-primary"
+                           style="width: <?=$incubation->construction->percentage?>%;"
+                      ></div>
+                    </div>
+
+                <?php endforeach ?>
+            </div>
+
+            <hr>
+
             <div class="actions">
 
                 <button type="button"
