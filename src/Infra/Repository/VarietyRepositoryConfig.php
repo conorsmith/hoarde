@@ -49,6 +49,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
     public const TIMBER = "e2f811da-d77b-47b1-a167-1df513c2b04b";
     public const NAIL = "2808d535-38cd-4254-952f-c79aa2e66cd0";
     public const RADISH_SEED = "ce821bc9-0ee2-4ea9-abe8-7ee67efb5d39";
+    public const RADISH_PLANT = "3ce976fd-88cd-481f-bd94-17c88dac3d0e";
     public const RADISH = "24bc9c41-6894-42d0-81b1-18a3e849d262";
 
     private const DESCRIPTION_TEMPLATE_DRIL_FIGURINE = "A commemorative figurine of Twitter user @dril. Part of a set"
@@ -430,6 +431,21 @@ final class VarietyRepositoryConfig implements VarietyRepository
                 ActionRepositoryConfig::SOW,
             ],
         ],
+        self::RADISH_PLANT => [
+            'label'       => "Radish Plant",
+            'resources'   => [],
+            'weight'      => 1,
+            'icon'        => "seedling",
+            'description' => "A plant that will yield an edible root vegetable with a sharp flavour.",
+            'actions'     => [
+                ActionRepositoryConfig::HARVEST,
+            ],
+            'blueprint'   => [
+                'tools'     => [],
+                'materials' => [],
+                'turns'     => 84,
+            ],
+        ],
         self::RADISH => [
             'label'       => "Radish",
             'resources'   => [
@@ -440,11 +456,6 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'description' => "An edible root vegetable with a sharp flavour.",
             'actions'     => [
                 ActionRepositoryConfig::CONSUME,
-            ],
-            'blueprint'   => [
-                'tools'     => [],
-                'materials' => [],
-                'turns'     => 84,
             ],
         ],
     ];

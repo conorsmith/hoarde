@@ -13,6 +13,7 @@ final class ActionRepositoryConfig implements ActionRepository
     public const CONSTRUCT = "26105a98-d85e-4ecc-9c08-d9027174ab63";
     public const CONSUME = "427d031d-ee80-4452-bbb3-5d2d96ca554b";
     public const DIG = "0e2bb910-26fa-4832-8fb0-5cb4efb69aba";
+    public const HARVEST = "75f64f5e-0ac8-45cb-9514-2071b28f37e6";
     public const PLACE = "2afdf3f4-b77e-4391-a857-fab631a8c2be";
     public const SOW = "99b65213-9cee-42ec-9dfe-8a04a790469e";
 
@@ -34,6 +35,13 @@ final class ActionRepositoryConfig implements ActionRepository
         self::DIG       => [
             'label'               => "Dig",
             'icon'                => "tools",
+            'performingVarieties' => [
+                VarietyRepositoryConfig::HUMAN,
+            ],
+        ],
+        self::HARVEST   => [
+            'label'               => "Harvest",
+            'icon'                => "seedling",
             'performingVarieties' => [
                 VarietyRepositoryConfig::HUMAN,
             ],

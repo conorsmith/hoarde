@@ -116,7 +116,7 @@ final class UseCase
             $seedVarietyId = Uuid::fromString($plotItem['varietyId']);
 
             if ($seedVarietyId->equals(Uuid::fromString(VarietyRepositoryConfig::RADISH_SEED))) {
-                $plantVariety = $this->varietyRepository->find(Uuid::fromString(VarietyRepositoryConfig::RADISH));
+                $plantVariety = $this->varietyRepository->find(Uuid::fromString(VarietyRepositoryConfig::RADISH_PLANT));
             } else {
                 throw new DomainException;
             }
@@ -131,8 +131,8 @@ final class UseCase
                     true,
                     new Construction(
                         false,
-                        83,
-                        84
+                        $plantVariety->getBlueprint()->getTurns() - 1,
+                        $plantVariety->getBlueprint()->getTurns()
                     ),
                     [],
                     null
