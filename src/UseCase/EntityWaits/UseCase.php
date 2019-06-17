@@ -45,9 +45,11 @@ final class UseCase
         }
 
         $entity->wait();
-        $game->proceedToNextTurn();
 
         $unitOfWork = new UnitOfWork;
+
+        $game->proceedToNextTurn($this->entityRepository, $unitOfWork);
+
         $unitOfWork->save($game);
         $unitOfWork->save($entity);
         $unitOfWork->commit($this->unitOfWorkProcessor);

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Domain;
 
+use ConorSmith\Hoarde\App\UnitOfWork;
 use ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use DomainException;
@@ -135,6 +136,16 @@ final class Entity
     public function relabel(string $label): void
     {
         $this->label = $label;
+    }
+
+    public function proceedToNextTurn(UnitOfWork $unitOfWork): void
+    {
+        if ($this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::GARDEN_PLOT))) {
+            foreach ($this->inventory->getEntities() as $inventoryEntity) {
+                $inventoryEntity->construction = $inventoryEntity->construction->takeAStep();
+                $unitOfWork->save($inventoryEntity);
+            }
+        }
     }
 
     private function beforeAction(): void

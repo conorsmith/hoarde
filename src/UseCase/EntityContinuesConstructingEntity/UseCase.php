@@ -75,9 +75,11 @@ final class UseCase
         }
 
         $actor->construct($target);
-        $game->proceedToNextTurn();
 
         $unitOfWork = new UnitOfWork;
+
+        $game->proceedToNextTurn($this->entityRepository, $unitOfWork);
+
         $unitOfWork->save($game);
         $unitOfWork->save($actor);
         $unitOfWork->save($target);

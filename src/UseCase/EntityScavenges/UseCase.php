@@ -61,11 +61,12 @@ final class UseCase
         $rollTable = (new RollTable($this->varietyRepository))->forEntity($entity, $length);
         $haul = $entity->scavenge(new Scavenge($rollTable, $length));
 
+        $unitOfWork = new UnitOfWork;
+
         for ($i = 0; $i < $length; $i++) {
-            $game->proceedToNextTurn();
+            $game->proceedToNextTurn($this->entityRepository, $unitOfWork);
         }
 
-        $unitOfWork = new UnitOfWork;
         $unitOfWork->save($entity);
         $unitOfWork->save($haul);
         $unitOfWork->save($game);

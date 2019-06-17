@@ -45,11 +45,30 @@ final class EntityRepositoryDb implements EntityRepository
     /** @var ResourceRepository */
     private $resourceRepository;
 
+    /** @var array */
+    private $cache;
+
     public function __construct(Connection $db, VarietyRepository $varietyRepository, ResourceRepository $resourceRepository)
     {
         $this->db = $db;
         $this->varietyRepository = $varietyRepository;
         $this->resourceRepository = $resourceRepository;
+        $this->cache = [];
+    }
+
+    public function allInGame(UuidInterface $gameId): iterable
+    {
+        $rows = $this->db->fetchAll("SELECT * FROM entities WHERE game_id = :game_id", [
+            'game_id' => $gameId,
+        ]);
+
+        $entities = [];
+
+        foreach ($rows as $row) {
+            $entities[] = $this->reconstituteEntity($row);
+        }
+
+        return $entities;
     }
 
     public function find(UuidInterface $id): ?Entity
@@ -77,11 +96,15 @@ final class EntityRepositoryDb implements EntityRepository
             return null;
         }
 
+        if (array_key_exists($row['id'], $this->cache)) {
+            return $this->cache[$row['id']];
+        }
+
         $id = Uuid::fromString($row['id']);
 
         $variety = $this->varietyRepository->find(Uuid::fromString($row['variety_id']));
 
-        return new Entity(
+        $entity = new Entity(
             $id,
             Uuid::fromString($row['game_id']),
             Uuid::fromString($row['variety_id']),
@@ -96,6 +119,10 @@ final class EntityRepositoryDb implements EntityRepository
             $this->findResourceNeeds($id),
             $variety->hasInventory() ? $this->findInventory($id, $variety) : null
         );
+
+        $this->cache[$row['id']] = $entity;
+
+        return $entity;
     }
 
     private function findResourceNeeds(UuidInterface $id): iterable
@@ -220,6 +247,10 @@ final class EntityRepositoryDb implements EntityRepository
     {
         $this->db->delete("entity_inventory", [
             'entity_id' => strval($entity->getId()),
+        ]);
+
+        $this->db->delete("entity_inventory_entities", [
+            'entity_id' => $entity->getId(),
         ]);
 
         if ($entity->hasInventory()) {

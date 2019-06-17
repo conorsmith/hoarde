@@ -144,9 +144,10 @@ final class UseCase
             $target->getInventory()->addEntity($entity);
         }
 
-        $game->proceedToNextTurn();
+        $unitOfWork = new UnitOfWork;
 
-        $unitOfWork = new UnitOfWork();
+        $game->proceedToNextTurn($this->entityRepository, $unitOfWork);
+
         $unitOfWork->save($game);
         $unitOfWork->save($actor);
         $unitOfWork->save($target);

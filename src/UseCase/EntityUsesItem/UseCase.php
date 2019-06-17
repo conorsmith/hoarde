@@ -111,9 +111,10 @@ final class UseCase
             Inventory::empty($placedEntityId, $itemVariety)
         );
 
-        $game->proceedToNextTurn();
-
         $unitOfWork = new UnitOfWork;
+
+        $game->proceedToNextTurn($this->entityRepository, $unitOfWork);
+
         $unitOfWork->save($actingEntity);
         $unitOfWork->save($placedEntity);
         $unitOfWork->save($game);
