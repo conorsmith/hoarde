@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Domain;
 
-use ConorSmith\Hoarde\App\UnitOfWork;
 use Ramsey\Uuid\UuidInterface;
 
 final class Game
@@ -30,16 +29,17 @@ final class Game
         return $this->turnIndex;
     }
 
-    public function proceedToNextTurn(EntityRepository $entityRepository, UnitOfWork $unitOfWork): void
+    public function proceedToNextTurn(EntityRepository $entityRepository): iterable
     {
         $this->turnIndex++;
 
         $entities = $entityRepository->allInGame($this->id);
 
         foreach ($entities as $entity) {
-            $entity->proceedToNextTurn($unitOfWork);
-            $unitOfWork->save($entity);
+            $entity->proceedToNextTurn();
         }
+
+        return $entities;
     }
 
     public function restart(): void

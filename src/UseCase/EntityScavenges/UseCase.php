@@ -64,7 +64,11 @@ final class UseCase
         $unitOfWork = new UnitOfWork;
 
         for ($i = 0; $i < $length; $i++) {
-            $game->proceedToNextTurn($this->entityRepository, $unitOfWork);
+            $gameEntities = $game->proceedToNextTurn($this->entityRepository);
+        }
+
+        foreach ($gameEntities as $entity) {
+            $unitOfWork->save($entity);
         }
 
         $unitOfWork->save($entity);
