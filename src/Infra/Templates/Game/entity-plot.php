@@ -43,8 +43,8 @@
 
             <hr>
 
-            <div>
-                <?php foreach ($entity->incubator as $incubation) : ?>
+            <?php foreach ($entity->incubator as $incubation) : ?>
+                <div style="margin-bottom: 0.6rem;">
 
                     <div class="btn-group inventory-item d-flex justify-content-end"
                          style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;"
@@ -88,13 +88,13 @@
                     <div class="progress w-100"
                          style="height: 0.4rem; border-top-left-radius: 0; border-top-right-radius: 0;"
                     >
-                      <div class="progress-bar bg-primary"
+                      <div class="progress-bar <?=$incubation->construction->percentage >= 100 ? "bg-success" : "bg-primary"?>"
                            style="width: <?=$incubation->construction->percentage?>%;"
                       ></div>
                     </div>
 
-                <?php endforeach ?>
-            </div>
+                </div>
+            <?php endforeach ?>
 
             <hr>
 

@@ -303,6 +303,14 @@ final class ShowGame
             }
 
             $presentation->incubator = array_values($presentation->incubator);
+
+            usort($presentation->incubator, function ($entityA, $entityB) {
+                if ($entityA->construction->percentage === $entityB->construction->percentage) {
+                    return strcasecmp($entityA->label, $entityB->label);
+                }
+
+                return $entityA->construction->percentage > $entityB->construction->percentage ? -1 : 1;
+            });
         }
 
         return $presentation;
