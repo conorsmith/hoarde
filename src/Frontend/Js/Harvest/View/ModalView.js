@@ -4,6 +4,10 @@ class ModalView {
         this.sliderTemplate = sliderTemplate;
     }
 
+    getSubmitButton() {
+        return this.el.querySelector(".js-harvest-submit");
+    }
+
     repaint() {
         //
     }

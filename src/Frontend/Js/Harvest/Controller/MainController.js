@@ -13,6 +13,8 @@ class MainController {
 
         this.eventBus.addEventListener("harvest.selectEntity", this.onSelectEntity.bind(this));
         this.eventBus.addEventListener("harvest.quantityModified", this.onQuantityModified.bind(this));
+
+        this.view.getSubmitButton().addEventListener("click", this.onSubmit.bind(this));
     }
 
     onShow(e) {
@@ -70,5 +72,9 @@ class MainController {
 
     onQuantityModified(e) {
         this.harvest.setQuantity(e.detail.quantity);
+    }
+
+    onSubmit(e) {
+        console.log(e);
     }
 }
