@@ -31,4 +31,16 @@ class ModalView {
 
         return capacityCounterView;
     }
+
+    createSliderView(harvest) {
+        this.el.querySelector(".js-item-sliders").appendChild(
+            this.sliderTemplate.content.cloneNode(true)
+        );
+
+        let sliderView = new SliderView(this.el.querySelector(".js-item-sliders").lastElementChild);
+
+        sliderView.repaint(harvest);
+
+        return sliderView;
+    }
 }

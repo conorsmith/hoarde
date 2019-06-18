@@ -1,6 +1,7 @@
 class CapacityBar {
-    constructor(entity) {
+    constructor(entity, harvest) {
         this.entity = entity;
+        this.harvest = harvest;
     }
 
     selectEntity(entity) {
@@ -12,22 +13,30 @@ class CapacityBar {
     }
 
     getSecondSegmentWidth() {
-        return 0;
+        if (this.isOverCapacity()) {
+            return 100 - this.getFirstSegmentWidth();
+        } else {
+            return this.getHarvestWeight() / this.entity.inventory.capacity * 100;
+        }
     }
 
     isIncreasing() {
-        return false;
+        return true;
     }
 
     isOverCapacity() {
-        return false;
+        return this.entity.inventory.weight + this.getHarvestWeight() > this.entity.inventory.capacity;
     }
 
     getWeight() {
-        return this.entity.inventory.weight / 1000;
+        return (this.entity.inventory.weight / 1000) + (this.getHarvestWeight() / 1000);
     }
 
     getCapacity() {
         return this.entity.inventory.capacity / 1000;
+    }
+
+    getHarvestWeight() {
+        return this.harvest.weight * this.harvest.quantity;
     }
 }

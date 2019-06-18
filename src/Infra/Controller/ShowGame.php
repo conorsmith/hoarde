@@ -17,6 +17,7 @@ use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
+use DomainException;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -271,21 +272,29 @@ final class ShowGame
                 if (!array_key_exists($key, $presentation->incubator)) {
 
                     $variety = $this->varietyRepo->find($inventoryEntity->getVarietyId());
+
+                    if ($variety->getId()->equals(Uuid::fromString(VarietyRepositoryConfig::RADISH_PLANT))) {
+                        $harvestedVariety = $this->varietyRepo->find(Uuid::fromString(VarietyRepositoryConfig::RADISH));
+                    } else {
+                        throw new DomainException;
+                    }
+
                     $construction = $inventoryEntity->getConstruction();
 
                     $presentation->incubator[$key] = (object) [
-                        'varietyId'          => $inventoryEntity->getVarietyId(),
-                        'label'              => $variety->getLabel(),
-                        'icon'               => $variety->getIcon(),
-                        'description'        => $variety->getDescription(),
-                        'construction'       => (object)[
+                        'varietyId'              => $inventoryEntity->getVarietyId(),
+                        'label'                  => $variety->getLabel(),
+                        'icon'                   => $variety->getIcon(),
+                        'description'            => $variety->getDescription(),
+                        'construction'           => (object)[
                             'percentage'     => ($construction->getRequiredSteps() - $construction->getRemainingSteps())
                                 / $construction->getRequiredSteps() * 100,
                             'remainingSteps' => $construction->getRemainingSteps(),
                             'requiredSteps'  => $construction->getRequiredSteps(),
                         ],
-                        'performableActions' => [],
-                        'quantity'           => 1,
+                        'performableActions'     => [],
+                        'quantity'               => 1,
+                        'harvestedVarietyWeight' => $harvestedVariety->getWeight(),
                     ];
 
                     foreach ($variety->getActions() as $action) {
