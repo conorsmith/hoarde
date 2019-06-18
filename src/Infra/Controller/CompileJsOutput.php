@@ -25,6 +25,9 @@ final class CompileJsOutput
         } elseif ($args['fileName'] === "sow") {
             $output = $this->renderJsFiles("Sow");
 
+        } elseif ($args['fileName'] === "harvest") {
+            $output = $this->renderJsFiles("Harvest");
+
         } else {
 
             ob_start();

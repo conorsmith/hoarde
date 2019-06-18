@@ -65,6 +65,7 @@
     <?=$this->renderTemplate("Game/modal-drop.php")?>
     <?=$this->renderTemplate("Game/modal-settings.php")?>
     <?=$this->renderTemplate("Game/modal-sow.php")?>
+    <?=$this->renderTemplate("Game/modal-harvest.php")?>
 
     <?=$this->renderTemplate("Game/modal-scavenge.php", [
         'entity' => $human,

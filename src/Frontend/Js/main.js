@@ -10,6 +10,7 @@ var fetchButtons = document.getElementsByClassName("js-fetch");
 var constructButtons = document.getElementsByClassName("js-construct");
 var constructContinueButtons = document.getElementsByClassName("js-construct-continue");
 var sowButtons = document.getElementsByClassName("js-sow");
+var harvestButtons = document.getElementsByClassName("js-harvest");
 
 $(function () {
     $('[data-toggle="popover"]').popover({
@@ -279,11 +280,23 @@ for (var i = 0; i < sowButtons.length; i++) {
     }
 }
 
+for (var i = 0; i < harvestButtons.length; i++) {
+    harvestButtons[i].onclick = function (e) {
+        e.preventDefault();
+
+        document.getElementById("harvestModal").dataset.entityId = e.currentTarget.dataset.entityId;
+        document.getElementById("harvestModal").dataset.actorId = e.currentTarget.dataset.actorId;
+
+        $("#harvestModal").modal();
+    }
+}
+
 var eventBus = new EventBus();
 
 import {TransferController, TransferModalView} from "./transfer.js";
 import {MainController as ConstructController, ModalView as ConstructModalView} from "./construct.js";
 import {MainController as SowController, ModalView as SowModalView} from "./sow.js";
+import {MainController as HarvestController, ModalView as HarvestModalView} from "./harvest.js";
 
 new TransferController(
     eventBus,
@@ -312,6 +325,16 @@ new SowController(
     eventBus,
     new SowModalView(
         document.getElementById("sowModal"),
+        document.getElementById("transfer-item-slider")
+    ),
+    JSON.parse(document.getElementById("entities").value),
+    gameId
+);
+
+new HarvestController(
+    eventBus,
+    new HarvestModalView(
+        document.getElementById("harvestModal"),
         document.getElementById("transfer-item-slider")
     ),
     JSON.parse(document.getElementById("entities").value),
