@@ -204,24 +204,11 @@ final class ShowGame
 
                 foreach ($variety->getActions() as $action) {
                     if ($action->canBePerformedBy($entity->getVarietyId())) {
-                        switch (strval($action->getId())) {
-                            case ActionRepositoryConfig::CONSUME:
-                            case ActionRepositoryConfig::PLACE:
-                                $jsClass = "js-use";
-                                break;
-                            case ActionRepositoryConfig::CONSTRUCT:
-                            case ActionRepositoryConfig::DIG:
-                                $jsClass = "js-construct";
-                                break;
-                            default:
-                                $jsClass = "";
-                        }
-
                         $presentedEntity->performableActions[] = (object)[
                             'id'      => $action->getId(),
                             'label'   => $action->getLabel(),
                             'icon'    => $action->getIcon(),
-                            'jsClass' => $jsClass,
+                            'jsClass' => $this->findJsClassForAction($action),
                         ];
                     }
                 }
@@ -282,21 +269,35 @@ final class ShowGame
             foreach ($entity->getInventory()->getEntities() as $inventoryEntity) {
                 $key = "{$inventoryEntity->getVarietyId()}-{$inventoryEntity->getConstruction()->getRemainingSteps()}";
                 if (!array_key_exists($key, $presentation->incubator)) {
+
                     $variety = $this->varietyRepo->find($inventoryEntity->getVarietyId());
                     $construction = $inventoryEntity->getConstruction();
-                    $presentation->incubator[$key] = (object)[
-                        'varietyId'    => $inventoryEntity->getVarietyId(),
-                        'label'        => $variety->getLabel(),
-                        'icon'         => $variety->getIcon(),
-                        'description'  => $variety->getDescription(),
-                        'construction' => (object)[
+
+                    $presentation->incubator[$key] = (object) [
+                        'varietyId'          => $inventoryEntity->getVarietyId(),
+                        'label'              => $variety->getLabel(),
+                        'icon'               => $variety->getIcon(),
+                        'description'        => $variety->getDescription(),
+                        'construction'       => (object)[
                             'percentage'     => ($construction->getRequiredSteps() - $construction->getRemainingSteps())
                                 / $construction->getRequiredSteps() * 100,
                             'remainingSteps' => $construction->getRemainingSteps(),
                             'requiredSteps'  => $construction->getRequiredSteps(),
                         ],
-                        'quantity'     => 1,
+                        'performableActions' => [],
+                        'quantity'           => 1,
                     ];
+
+                    foreach ($variety->getActions() as $action) {
+                        $presentation->incubator[$key]->performableActions[] = (object) [
+                            'id'         => $action->getId(),
+                            'label'      => $action->getLabel(),
+                            'icon'       => $action->getIcon(),
+                            'jsClass'    => $this->findJsClassForAction($action),
+                            'isDisabled' => !$construction->isConstructed(),
+                        ];
+                    }
+
                 } else {
                     $presentation->incubator[$key]->quantity++;
                 }
@@ -478,6 +479,22 @@ final class ShowGame
         }
 
         return $presentation;
+    }
+
+    private function findJsClassForAction(Action $action): string
+    {
+        switch (strval($action->getId())) {
+            case ActionRepositoryConfig::CONSUME:
+            case ActionRepositoryConfig::PLACE:
+                return "js-use";
+            case ActionRepositoryConfig::CONSTRUCT:
+            case ActionRepositoryConfig::DIG:
+                return "js-construct";
+            case ActionRepositoryConfig::HARVEST:
+                return "js-harvest";
+            default:
+                return "";
+        }
     }
 
     private function renderTemplate(string $path, array $variables = []): string

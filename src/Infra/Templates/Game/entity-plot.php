@@ -75,12 +75,17 @@
 
                             <h6 class="dropdown-header"><?=$incubation->label?></h6>
 
-                            <a href="#"
-                               class="dropdown-item disabled"
-                            >
-                              <i class="fas fa-fw fa-seedling"></i>
-                              Harvest
-                            </a>
+                            <?php foreach ($incubation->performableActions as $action) : ?>
+                              <a href="#"
+                                 class="dropdown-item <?=$action->jsClass?> <?=$action->isDisabled ? "disabled" : ""?>"
+                                 data-entity-id="<?=$entity->id?>"
+                                 data-item-id="<?=$incubation->varietyId?>"
+                                 data-action-id="<?=$action->id?>"
+                              >
+                                <i class="fas fa-fw fa-<?=$action->icon?>"></i>
+                                  <?=$action->label?>
+                              </a>
+                            <?php endforeach ?>
 
                         </div>
 
