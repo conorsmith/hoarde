@@ -275,6 +275,8 @@ for (var i = 0; i < sowButtons.length; i++) {
 
         document.getElementById("sowModal").dataset.entityId = e.currentTarget.dataset.entityId;
         document.getElementById("sowModal").dataset.actorId = e.currentTarget.dataset.actorId;
+        document.getElementById("sowModal").dataset.capacityAvailable = e.currentTarget.dataset.capacityAvailable;
+        document.getElementById("sowModal").dataset.capacityUsed = e.currentTarget.dataset.capacityUsed;
 
         $("#sowModal").modal();
     }

@@ -21,7 +21,10 @@ class MainController {
     onShow(e) {
         const controller = this;
 
-        this.plot = new Plot(50);
+        this.plot = new Plot(
+            parseInt(this.view.el.dataset.capacityUsed, 10),
+            parseInt(this.view.el.dataset.capacityAvailable, 10)
+        );
         this.entityId = this.view.el.dataset.entityId;
         this.actorId = this.view.el.dataset.actorId;
 

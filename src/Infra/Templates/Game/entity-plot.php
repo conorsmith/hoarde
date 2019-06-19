@@ -110,6 +110,8 @@
                         class="btn btn-light btn-block js-sow"
                         data-actor-id="<?=$entity->construction->actor->id?>"
                         data-entity-id="<?=$entity->id?>"
+                        data-capacity-available="<?=50?>"
+                        data-capacity-used="<?=$entity->incubatorCapacityUsed?>"
                     <?=($isIntact && $entity->construction->isConstructed ? "" : "disabled")?>
                 >Sow Seeds</button>
 

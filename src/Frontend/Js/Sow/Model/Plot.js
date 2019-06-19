@@ -1,6 +1,7 @@
 class Plot {
-    constructor(capacityTotal) {
-        this.capacityUsed = 0;
+    constructor(capacityUsed, capacityTotal) {
+        this.capacityUsedInitially = capacityUsed;
+        this.capacityUsed = capacityUsed;
         this.capacityTotal = capacityTotal;
         this.items = {};
     }
@@ -10,7 +11,7 @@ class Plot {
 
         this.items[item.inventoryItem.id] = item;
 
-        this.capacityUsed = 0;
+        this.capacityUsed = this.capacityUsedInitially;
 
         Object.values(this.items).forEach(function (item) {
             model.capacityUsed += item.quantity;

@@ -266,6 +266,7 @@ final class ShowGame
 
         if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::GARDEN_PLOT))) {
             $presentation->incubator = [];
+            $presentation->incubatorCapacityUsed = 0;
 
             foreach ($entity->getInventory()->getEntities() as $inventoryEntity) {
                 $key = "{$inventoryEntity->getVarietyId()}-{$inventoryEntity->getConstruction()->getRemainingSteps()}";
@@ -310,6 +311,7 @@ final class ShowGame
                 } else {
                     $presentation->incubator[$key]->quantity++;
                 }
+                $presentation->incubatorCapacityUsed++;
             }
 
             $presentation->incubator = array_values($presentation->incubator);
