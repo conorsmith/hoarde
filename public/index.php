@@ -49,13 +49,15 @@ $unitOfWorkProcessor = new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
     $scavengingHaulRepository
 );
 
+$templateEngine = new ConorSmith\Hoarde\Infra\TemplateEngine;
+
 $router = new League\Route\Router;
 
 /**
  * ROUTES
  */
 
-$router->get("/", new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage);
+$router->get("/", new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage($templateEngine));
 
 $router->post("/", new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame(
     new \ConorSmith\Hoarde\UseCase\GameBegins\UseCase(
@@ -216,7 +218,7 @@ try {
         $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
     ));
 } catch (League\Route\Http\Exception\NotFoundException $e) {
-    $response = (new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage)();
+    $response = (new ConorSmith\Hoarde\Infra\Controller\ShowNotFoundPage($templateEngine))();
 }
 
 (new Zend\HttpHandlerRunner\Emitter\SapiEmitter)->emit($response);
