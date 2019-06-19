@@ -14,7 +14,8 @@
                 >
                     <div class="progress  align-self-center w-100 js-capacity-bar"
                     >
-                        <div class="progress-bar"></div>
+                        <div class="progress-bar bg-primary"></div>
+                        <div class="progress-bar bg-success"></div>
                     </div>
                     <div style="width: 4rem; font-size: 0.8rem; margin-left: 1rem; white-space: nowrap; text-align: right;">
                         <span class="js-capacity-used"></span> / <span class="js-capacity-total"></span>

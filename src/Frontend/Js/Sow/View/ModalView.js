@@ -16,16 +16,21 @@ class ModalView {
 
     repaintCapacityBar(plot) {
         let capacityBar = this.el.querySelector(".js-capacity-bar");
+        let staticBar = capacityBar.querySelectorAll(".progress-bar")[0];
+        let dynamicBar = capacityBar.querySelectorAll(".progress-bar")[1];
 
-        capacityBar.querySelector(".progress-bar").style.width = (plot.capacityUsed / plot.capacityTotal * 100) + "%";
-        this.el.querySelector(".js-capacity-used").innerText = plot.capacityUsed;
-        this.el.querySelector(".js-capacity-total").innerText = plot.capacityTotal;
+        staticBar.style.width = (plot.capacityUsedInitially / plot.capacityTotal * 100) + "%";
 
         if (plot.capacityUsed > plot.capacityTotal) {
-            this.el.querySelector(".progress-bar").classList.add("bg-danger");
+            dynamicBar.style.width = (100 - (plot.capacityUsedInitially / plot.capacityTotal * 100)) + "%";
+            dynamicBar.classList.add("bg-danger");
         } else {
-            this.el.querySelector(".progress-bar").classList.remove("bg-danger");
+            dynamicBar.style.width = ((plot.capacityUsed - plot.capacityUsedInitially) / plot.capacityTotal * 100) + "%";
+            dynamicBar.classList.remove("bg-danger");
         }
+
+        this.el.querySelector(".js-capacity-used").innerText = plot.capacityUsed;
+        this.el.querySelector(".js-capacity-total").innerText = plot.capacityTotal;
     }
 
     repaintFooter(plot) {
