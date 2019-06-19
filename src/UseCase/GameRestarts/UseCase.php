@@ -1,17 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace ConorSmith\Hoarde\UseCase\GameBegins;
+namespace ConorSmith\Hoarde\UseCase\GameRestarts;
 
+use ConorSmith\Hoarde\App\Result;
 use ConorSmith\Hoarde\App\UnitOfWork;
 use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
 use ConorSmith\Hoarde\Domain\EntityRepository;
-use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
-use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class UseCase
 {
@@ -44,29 +43,40 @@ final class UseCase
         $this->unitOfWorkProcessor = $unitOfWorkProcessor;
     }
 
-    public function __invoke(string $beginningEntityLabel, string $beginningEntityIcon): Result
+    public function __invoke(UuidInterface $gameId): Result
     {
-        $newGame = new Game(
-            $newGameId = Uuid::uuid4(),
-            $turnIndex = 0
-        );
+        $game = $this->gameRepository->find($gameId);
+        $oldEntities = $this->entityRepository->allInGame($gameId);
 
-        $variety = $this->varietyRepository->find(Uuid::fromString(VarietyRepositoryConfig::HUMAN));
+        if (is_null($game)) {
+            return Result::gameNotFound($gameId);
+        }
 
-        $beginningEntity = $newGame->createBeginningEntity(
-            $newGameId,
-            $variety,
-            $beginningEntityLabel,
-            $beginningEntityIcon,
+        if (count($oldEntities) === 0) {
+            return Result::failed("Game {$game->getId()} has no entities");
+        }
+
+        $oldBeginningEntity = $game->findBeginningEntity($oldEntities);
+
+        $newBeginningEntity = $game->createBeginningEntity(
+            $game->getId(),
+            $this->varietyRepository->find($oldBeginningEntity->getVarietyId()),
+            $oldBeginningEntity->getLabel(),
+            $oldBeginningEntity->getIcon(),
             $this->varietyRepository,
             $this->resourceRepository
         );
 
+        $game->restart();
+
         $unitOfWork = new UnitOfWork;
-        $unitOfWork->save($newGame);
-        $unitOfWork->save($beginningEntity);
+        $unitOfWork->save($game);
+        $unitOfWork->save($newBeginningEntity);
+        foreach ($oldEntities as $entity) {
+            $unitOfWork->delete($entity);
+        }
         $unitOfWork->commit($this->unitOfWorkProcessor);
 
-        return Result::succeeded($newGameId);
+        return Result::succeeded();
     }
 }

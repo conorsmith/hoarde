@@ -8,7 +8,6 @@ use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use DomainException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use RandomLib\Factory;
 
 final class Entity
 {
@@ -285,36 +284,5 @@ final class Entity
         foreach ($this->resourceNeeds as $key => $resourceNeed) {
             $this->resourceNeeds[$key] = $resourceNeed->consume();
         }
-    }
-
-    public function reset(VarietyRepository $varietyRepository, ResourceRepository $resourceRepository): void
-    {
-        $this->isIntact = true;
-
-        $this->resourceNeeds = [
-            ResourceRepositoryConfig::FOOD => new ResourceNeed(
-                $resourceRepository->find(Uuid::fromString(ResourceRepositoryConfig::FOOD)),
-                3,
-                0, // Hack
-                60,
-                null
-            ),
-            ResourceRepositoryConfig::WATER => new ResourceNeed(
-                $resourceRepository->find(Uuid::fromString(ResourceRepositoryConfig::WATER)),
-                3,
-                0, // Hack
-                100,
-                null
-            )
-        ];
-
-        $this->inventory = new Inventory($this->id, 10000, [
-            $varietyRepository
-                ->find(Uuid::fromString(VarietyRepositoryConfig::WATER_BOTTLE))
-                ->createItemWithQuantity(8),
-            $varietyRepository
-                ->find(Uuid::fromString(VarietyRepositoryConfig::TINNED_STEW))
-                ->createItemWithQuantity(3),
-        ], []);
     }
 }

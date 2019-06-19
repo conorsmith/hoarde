@@ -80,10 +80,13 @@ $router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\ShowGame(
 ));
 
 $router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\RestartGame(
-    $gameRepository,
-    $entityRepository,
-    $varietyRepository,
-    $resourceRepository
+    new \ConorSmith\Hoarde\UseCase\GameRestarts\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $resourceRepository,
+        $unitOfWorkProcessor
+    )
 ));
 
 $router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait(
