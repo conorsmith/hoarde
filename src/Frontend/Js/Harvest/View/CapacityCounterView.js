@@ -4,7 +4,9 @@ class CapacityCounterView {
     }
 
     repaint(capacityBar) {
-        this.el.querySelector(".js-inventory-weight").innerText = capacityBar.getWeight();
+        this.el.querySelector(".js-inventory-weight").innerText = capacityBar.getWeight().toLocaleString("en-IE", {
+            maximumFractionDigits: 3
+        });
         this.el.querySelector(".js-inventory-capacity").innerText = capacityBar.getCapacity();
     }
 }
