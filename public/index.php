@@ -201,9 +201,10 @@ $router->post("/{gameId}/{actorId}/harvest/{targetId}", new ConorSmith\Hoarde\In
 ));
 
 $router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings(
-    $gameRepository,
-    $entityRepository,
-    $sessionSegment
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\PlayerRelabelsEntity\UseCase(
+        $entityRepository
+    )
 ));
 
 /**
