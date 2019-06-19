@@ -172,6 +172,12 @@ class RollTable
                     ->find(Uuid::fromString(VarietyRepositoryConfig::DRIL_FIGURINE_1)),
             ],
             [
+                'rolls' => range(501, 530),
+                'item'  => $this->varietyRepository
+                    ->find(Uuid::fromString(VarietyRepositoryConfig::RADISH_SEED)),
+                'quantity' => [12, 33],
+            ],
+            [
                 'rolls' => range(421, 450),
                 'item'  => $this->varietyRepository
                     ->find(Uuid::fromString(VarietyRepositoryConfig::NAIL)),
