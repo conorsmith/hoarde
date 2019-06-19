@@ -58,10 +58,14 @@ $router = new League\Route\Router;
 $router->get("/", new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage);
 
 $router->post("/", new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame(
-    $gameRepository,
-    $entityRepository,
-    $varietyRepository,
-    $resourceRepository));
+    new \ConorSmith\Hoarde\UseCase\GameBegins\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $resourceRepository,
+        $unitOfWorkProcessor
+    )
+));
 
 $router->get("/{fileName}.js", new ConorSmith\Hoarde\Infra\Controller\CompileJsOutput);
 $router->get("/main.css", new ConorSmith\Hoarde\Infra\Controller\CompileCssOutput);
