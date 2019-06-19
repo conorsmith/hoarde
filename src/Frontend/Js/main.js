@@ -285,6 +285,7 @@ for (var i = 0; i < harvestButtons.length; i++) {
         e.preventDefault();
 
         document.getElementById("harvestModal").dataset.entityId = e.currentTarget.dataset.entityId;
+        document.getElementById("harvestModal").dataset.actorId = e.currentTarget.dataset.actorId;
         document.getElementById("harvestModal").dataset.varietyId = e.currentTarget.dataset.varietyId;
 
         $("#harvestModal").modal();

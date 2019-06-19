@@ -79,6 +79,7 @@
                               <a href="#"
                                  class="dropdown-item <?=$action->jsClass?> <?=$action->isDisabled ? "disabled" : ""?>"
                                  data-entity-id="<?=$entity->id?>"
+                                 data-actor-id="<?=$entity->construction->actor->id?>"
                                  data-variety-id="<?=$incubation->varietyId?>"
                                  data-action-id="<?=$action->id?>"
                               >

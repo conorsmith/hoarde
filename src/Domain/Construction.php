@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Domain;
 
+use DomainException;
+
 final class Construction
 {
     public static function constructed(): self
@@ -43,6 +45,10 @@ final class Construction
 
     public function takeAStep(): self
     {
+        if ($this->isConstructed) {
+            throw new DomainException;
+        }
+
         $newRemainingSteps = $this->remainingSteps - 1;
 
         return new self(

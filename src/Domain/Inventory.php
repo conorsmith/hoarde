@@ -149,6 +149,15 @@ final class Inventory
         $item->decrementBy($quantityDiscarded);
     }
 
+    public function discardEntity(Entity $discardEntity): void
+    {
+        if (!array_key_exists(strval($discardEntity->getId()), $this->entities)) {
+            throw new DomainException;
+        }
+
+        unset($this->entities[strval($discardEntity->getId())]);
+    }
+
     public function reduceItemQuantityTo(UuidInterface $varietyId, int $newQuantity): void
     {
         if ($newQuantity === 0) {

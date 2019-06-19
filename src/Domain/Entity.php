@@ -141,7 +141,9 @@ final class Entity
     {
         if ($this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::GARDEN_PLOT))) {
             foreach ($this->inventory->getEntities() as $inventoryEntity) {
-                $inventoryEntity->construction = $inventoryEntity->construction->takeAStep();
+                if (!$inventoryEntity->construction->isConstructed()) {
+                    $inventoryEntity->construction = $inventoryEntity->construction->takeAStep();
+                }
             }
         }
     }

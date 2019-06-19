@@ -183,6 +183,16 @@ $router->post("/{gameId}/{actorId}/sow/{targetId}", new ConorSmith\Hoarde\Infra\
     )
 ));
 
+$router->post("/{gameId}/{actorId}/harvest/{targetId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityHarvestPlot(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityHarvestsPlot\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $unitOfWorkProcessor
+    )
+));
+
 $router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings(
     $gameRepository,
     $entityRepository,
