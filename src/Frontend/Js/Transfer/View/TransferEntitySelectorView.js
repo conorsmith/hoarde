@@ -13,7 +13,9 @@ class TransferEntitySelectorView {
         view.el.innerHTML = "";
 
         entities.forEach(function (entity) {
-            if (entity.inventory !== undefined) {
+            if (entity.inventory !== undefined
+                && entity.varietyId !== "608e795a-2b62-436b-b636-74fd13ff076d" // Garden Plot
+            ) {
                 let menuItem = document.createElement("a");
 
                 menuItem.href = "#";
