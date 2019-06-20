@@ -146,10 +146,12 @@ $router->post("/{gameId}/drop", new ConorSmith\Hoarde\Infra\Controller\HaveEntit
 ));
 
 $router->post("/{gameId}/transfer", new ConorSmith\Hoarde\Infra\Controller\TransferItems(
-    $gameRepository,
-    $entityRepository,
-    $varietyRepository,
-    $sessionSegment
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntitiesTransferItems\UseCase(
+        $entityRepository,
+        $varietyRepository,
+        $unitOfWorkProcessor
+    )
 ));
 
 $router->post("/{gameId}/{entityId}/fetch-water", new ConorSmith\Hoarde\Infra\Controller\HaveEntityFetchWater(
