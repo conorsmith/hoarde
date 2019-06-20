@@ -8,6 +8,7 @@ use ConorSmith\Hoarde\App\UnitOfWork;
 use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Inventory;
+use ConorSmith\Hoarde\Domain\Transfer\Manifest;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use DomainException;
 use Ramsey\Uuid\Uuid;
@@ -34,27 +35,17 @@ final class UseCase
         $this->unitOfWorkProcessor = $unitOfWorkProcessor;
     }
 
-    public function __invoke(UuidInterface $gameId, array $manifests): Result
+    public function __invoke(UuidInterface $gameId, Manifest $manifestAToB, Manifest $manifestBToA): Result
     {
-        if (count($manifests) !== 2) {
-            return Result::failed("A transfer requires exactly two manifests");
-        }
-
-        $manifestA = $manifests[0];
-        $manifestB = $manifests[1];
-
-        $entityAId = Uuid::fromString($manifestA['entityId']);
-        $entityBId = Uuid::fromString($manifestB['entityId']);
-
-        $entityA = $this->entityRepository->findInGame($entityAId, $gameId);
-        $entityB = $this->entityRepository->findInGame($entityBId, $gameId);
+        $entityA = $this->entityRepository->findInGame($manifestAToB->getEntityId(), $gameId);
+        $entityB = $this->entityRepository->findInGame($manifestBToA->getEntityId(), $gameId);
 
         if (is_null($entityA)) {
-            return Result::entityNotFound($entityAId, $gameId);
+            return Result::entityNotFound($manifestAToB->getEntityId(), $gameId);
         }
 
         if (is_null($entityB)) {
-            return Result::entityNotFound($entityBId, $gameId);
+            return Result::entityNotFound($manifestBToA->getEntityId(), $gameId);
         }
 
         if (!$entityA->hasInventory()) {
@@ -68,44 +59,28 @@ final class UseCase
         $inventoryA = $entityA->getInventory();
         $inventoryB = $entityB->getInventory();
 
-        $transientInventory = new Inventory(
+        $transientInventory = Inventory::empty(
             Uuid::uuid4(),
-            $inventoryA->getCapacity(),
-            [],
-            []
+            $this->varietyRepository->find($entityA->getVarietyId())
         );
 
         try {
-            foreach ($manifestA['items'] as $item) {
-                if (intval($item['quantity']) > 0) {
-                    $inventoryA->decrementItemQuantity(Uuid::fromString($item['varietyId']), intval($item['quantity']));
-                    $transientInventory->incrementItemQuantity(
-                        Uuid::fromString($item['varietyId']),
-                        intval($item['quantity']),
-                        $this->varietyRepository
-                    );
-                }
-            }
+            $manifestAToB->transferItems(
+                $inventoryA,
+                $transientInventory,
+                $this->varietyRepository
+            );
+            $manifestBToA->transferItems(
+                $inventoryB,
+                $inventoryA,
+                $this->varietyRepository
+            );
+            $manifestAToB->transferItems(
+                $transientInventory,
+                $inventoryB,
+                $this->varietyRepository
+            );
 
-            foreach ($manifestB['items'] as $item) {
-                if (intval($item['quantity']) > 0) {
-                    $inventoryB->decrementItemQuantity(Uuid::fromString($item['varietyId']), intval($item['quantity']));
-                    $inventoryA->incrementItemQuantity(
-                        Uuid::fromString($item['varietyId']),
-                        intval($item['quantity']),
-                        $this->varietyRepository
-                    );
-                }
-            }
-
-            foreach ($transientInventory->getItems() as $item) {
-                $transientInventory->decrementItemQuantity($item->getVariety()->getId(), $item->getQuantity());
-                $inventoryB->incrementItemQuantity(
-                    $item->getVariety()->getId(),
-                    $item->getQuantity(),
-                    $this->varietyRepository
-                );
-            }
         } catch (DomainException $e) {
             return Result::failed($e->getMessage());
         }

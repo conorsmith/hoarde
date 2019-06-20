@@ -4,11 +4,13 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
+use ConorSmith\Hoarde\Domain\Transfer\Item;
+use ConorSmith\Hoarde\Domain\Transfer\Manifest;
 use ConorSmith\Hoarde\UseCase\EntitiesTransferItems\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\HtmlResponse;
 
 final class TransferItems
 {
@@ -31,15 +33,36 @@ final class TransferItems
         $gameId = Uuid::fromString($args['gameId']);
         $manifests = json_decode($request->getBody()->getContents(), true);
 
-        $result = $this->useCase->__invoke($gameId, $manifests);
-
-        if (!$result->isSuccessful()) {
-            $response = new Response;
-            $response->withStatus(400);
-            $response->getBody()->write($result->getMessage());
-            return $response;
+        if (count($manifests) !== 2) {
+            return new HtmlResponse("A transfer requires exactly two manifests", 400);
         }
 
-        return new Response;
+        $manifestAToB = $this->createManifestFromRequestData($manifests[0]);
+        $manifestBToA = $this->createManifestFromRequestData($manifests[1]);
+
+        $result = $this->useCase->__invoke($gameId, $manifestAToB, $manifestBToA);
+
+        if (!$result->isSuccessful()) {
+            return new HtmlResponse($result->getMessage(), 400);
+        }
+
+        return new HtmlResponse("");
+    }
+
+    private function createManifestFromRequestData(array $requestData): Manifest
+    {
+        $items = [];
+
+        foreach ($requestData['items'] as $manifestItem) {
+            $items[] = new Item(
+                Uuid::fromString($manifestItem['varietyId']),
+                intval($manifestItem['quantity'])
+            );
+        }
+
+        return new Manifest(
+            Uuid::fromString($requestData['entityId']),
+            $items
+        );
     }
 }
