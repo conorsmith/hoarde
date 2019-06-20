@@ -78,7 +78,8 @@ $router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\ShowGame(
     $resourceRepository,
     $actionRepository,
     $varietyRepository,
-    $sessionSegment
+    $sessionSegment,
+    $templateEngine
 ));
 
 $router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\RestartGame(

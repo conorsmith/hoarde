@@ -136,7 +136,7 @@
 
             <p><strong>Inventory</strong></p>
 
-            <?=$this->renderTemplate("Game/inventory.php", [
+            <?=$this->render("Game/inventory.php", [
                 'entity'   => $entity,
                 'isIntact' => $isIntact,
             ])?>

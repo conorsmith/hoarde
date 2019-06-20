@@ -38,22 +38,22 @@
 
       <?php foreach ($entities as $entity) : ?>
           <?php if ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::HUMAN) : ?>
-              <?=$this->renderTemplate("Game/entity-human.php", [
+              <?=$this->render("Game/entity-human.php", [
                   'entity'                => $entity,
                   'isIntact'              => $isIntact,
               ])?>
           <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::WOODEN_CRATE) : ?>
-              <?=$this->renderTemplate("Game/entity-crate.php", [
+              <?=$this->render("Game/entity-crate.php", [
                   'entity'                => $entity,
                   'isIntact'              => $isIntact,
               ])?>
           <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::WELL) : ?>
-              <?=$this->renderTemplate("Game/entity-well.php", [
+              <?=$this->render("Game/entity-well.php", [
                   'entity'   => $entity,
                   'isIntact' => $isIntact,
               ])?>
           <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::GARDEN_PLOT) : ?>
-              <?=$this->renderTemplate("Game/entity-plot.php", [
+              <?=$this->render("Game/entity-plot.php", [
                   'entity'   => $entity,
                   'isIntact' => $isIntact,
               ])?>
@@ -62,20 +62,20 @@
 
     </div>
 
-    <?=$this->renderTemplate("Game/modal-drop.php")?>
-    <?=$this->renderTemplate("Game/modal-settings.php")?>
-    <?=$this->renderTemplate("Game/modal-sow.php")?>
-    <?=$this->renderTemplate("Game/modal-harvest.php")?>
+    <?=$this->render("Game/modal-drop.php")?>
+    <?=$this->render("Game/modal-settings.php")?>
+    <?=$this->render("Game/modal-sow.php")?>
+    <?=$this->render("Game/modal-harvest.php")?>
 
-    <?=$this->renderTemplate("Game/modal-scavenge.php", [
+    <?=$this->render("Game/modal-scavenge.php", [
         'entity' => $human,
     ])?>
 
-    <?=$this->renderTemplate("Game/modal-construct.php", [
+    <?=$this->render("Game/modal-construct.php", [
         'constructions' => $constructions,
     ])?>
 
-    <?=$this->renderTemplate("Game/modal-transfer.php")?>
+    <?=$this->render("Game/modal-transfer.php")?>
 
     <input type="hidden" id="gameId" value="<?=$game->id?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($human->inventory->items)?>' />
@@ -83,11 +83,11 @@
     <input type="hidden" id="constructions" value='<?=json_encode($constructions)?>' />
     <input type="hidden" id="actions" value='<?=json_encode($actions)?>' />
 
-    <?=$this->renderTemplate("Game/template-scavenge-item-slider.php")?>
-    <?=$this->renderTemplate("Game/template-spinner.php")?>
-    <?=$this->renderTemplate("Game/template-transfer-item-slider.php")?>
-    <?=$this->renderTemplate("Game/template-item-popover.php")?>
-    <?=$this->renderTemplate("Game/template-construction-card.php")?>
+    <?=$this->render("Game/template-scavenge-item-slider.php")?>
+    <?=$this->render("Game/template-spinner.php")?>
+    <?=$this->render("Game/template-transfer-item-slider.php")?>
+    <?=$this->render("Game/template-item-popover.php")?>
+    <?=$this->render("Game/template-construction-card.php")?>
 
 </div>
 

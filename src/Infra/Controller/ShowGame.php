@@ -17,6 +17,7 @@ use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
+use ConorSmith\Hoarde\Infra\TemplateEngine;
 use DomainException;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
@@ -45,13 +46,17 @@ final class ShowGame
     /** @var Segment */
     private $session;
 
+    /** @var TemplateEngine */
+    private $templateEngine;
+
     public function __construct(
         GameRepository $gameRepo,
         EntityRepository $entityRepo,
         ResourceRepository $resourceRepo,
         ActionRepository $actionRepo,
         VarietyRepository $varietyRepo,
-        Segment $session
+        Segment $session,
+        TemplateEngine $templateEngine
     ) {
         $this->gameRepo = $gameRepo;
         $this->entityRepo = $entityRepo;
@@ -59,6 +64,7 @@ final class ShowGame
         $this->actionRepo = $actionRepo;
         $this->varietyRepo = $varietyRepo;
         $this->session = $session;
+        $this->templateEngine = $templateEngine;
     }
 
     public function __invoke(): ResponseInterface
@@ -81,7 +87,7 @@ final class ShowGame
             throw new RuntimeException("Game is missing human entity");
         }
 
-        $body = $this->renderTemplate("game.php", [
+        $body = $this->templateEngine->render("game.php", [
             'human'           => $this->presentEntity($human, $entities),
             'isIntact'        => $human->isIntact(),
             'alert'           => $this->presentAlert($this->session),
@@ -506,20 +512,5 @@ final class ShowGame
             default:
                 return "";
         }
-    }
-
-    private function renderTemplate(string $path, array $variables = []): string
-    {
-        extract($variables);
-
-        ob_start();
-
-        include __DIR__ . "/../Templates/{$path}";
-
-        $body = ob_get_contents();
-
-        ob_end_clean();
-
-        return $body;
     }
 }
