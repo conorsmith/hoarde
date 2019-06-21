@@ -1,4 +1,4 @@
-class TransferEntitySelectorView {
+class EntitySelectorView {
     constructor(el) {
         this.el = el;
     }

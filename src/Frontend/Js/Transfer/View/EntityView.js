@@ -1,12 +1,12 @@
-class TransferEntityView {
+class EntityView {
     constructor(el, itemSliderTemplate, itemPopoverTemplate) {
         this.el = el;
         this.itemSliderTemplate = itemSliderTemplate;
         this.itemPopoverTemplate = itemPopoverTemplate;
 
-        this.entitySelectorView = new TransferEntitySelectorView(this.el.querySelector(".js-entity-selector"))
-        this.inventoryWeightView = new TransferInventoryWeightView(this.el.querySelector(".js-inventory-weight"));
-        this.capacityBarView = new TransferCapacityBarView(this.el.querySelector(".js-capacity-bar"));
+        this.entitySelectorView = new EntitySelectorView(this.el.querySelector(".js-entity-selector"))
+        this.inventoryWeightView = new InventoryWeightView(this.el.querySelector(".js-inventory-weight"));
+        this.capacityBarView = new CapacityBarView(this.el.querySelector(".js-capacity-bar"));
     }
 
     repaint(entity) {

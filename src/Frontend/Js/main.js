@@ -296,7 +296,7 @@ for (var i = 0; i < harvestButtons.length; i++) {
 
 var eventBus = new EventBus();
 
-import {TransferController, TransferModalView} from "./transfer.js";
+import {MainController as TransferController, ModalView as TransferModalView} from "./transfer.js";
 import {MainController as ConstructController, ModalView as ConstructModalView} from "./construct.js";
 import {MainController as SowController, ModalView as SowModalView} from "./sow.js";
 import {MainController as HarvestController, ModalView as HarvestModalView} from "./harvest.js";

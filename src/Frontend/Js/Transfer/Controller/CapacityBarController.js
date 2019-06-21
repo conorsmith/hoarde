@@ -1,4 +1,4 @@
-class TransferCapacityBarController {
+class CapacityBarController {
     constructor(eventBus, view, model) {
         this.eventBus = eventBus;
         this.view = view;

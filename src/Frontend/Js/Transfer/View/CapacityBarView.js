@@ -1,4 +1,4 @@
-class TransferCapacityBarView {
+class CapacityBarView {
     constructor(el) {
         this.el = el;
     }

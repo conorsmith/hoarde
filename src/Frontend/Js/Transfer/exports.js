@@ -1,1 +1,1 @@
-export { TransferController, TransferModalView };
+export { MainController, ModalView };
