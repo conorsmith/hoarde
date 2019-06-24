@@ -65,6 +65,7 @@ final class PlayerViewsGame
         return new HtmlResponse($this->templateEngine->render("game.php", [
             'human'         => $this->entityPresentationFactory->createEntity(
                 $gameState->getHuman(),
+                $gameState->getHuman()->getId(),
                 $gameState->getEntities()
             ),
             'isIntact'      => $gameState->getHuman()->isIntact(),
@@ -76,6 +77,7 @@ final class PlayerViewsGame
                 function (Entity $entity) use ($gameState) {
                     return $this->entityPresentationFactory->createEntity(
                         $entity,
+                        $gameState->getHuman()->getId(),
                         $gameState->getEntities()
                     );
                 },

@@ -31,12 +31,14 @@ final class EntityFactory
         $this->resourceRepository = $resourceRepository;
     }
 
-    public function createEntity(DomainModel $entity, iterable $entities): stdClass
+    public function createEntity(DomainModel $entity, UuidInterface $actorId, iterable $entities): stdClass
     {
+        $actor = $this->findActor($actorId, $entities);
+
         $resourceNeeds = [];
 
         foreach ($entity->getResourceNeeds() as $resourceNeed) {
-            $resourceNeeds[] = $this->presentResourceNeed($entity, $resourceNeed);
+            $resourceNeeds[] = $this->presentResourceNeed($actor, $resourceNeed);
         }
 
         $inventoryContents = [];
@@ -220,7 +222,7 @@ final class EntityFactory
         return $presentation;
     }
 
-    private function presentResourceNeed(DomainModel $entity, ResourceNeed $resourceNeed): stdClass
+    private function presentResourceNeed(DomainModel $actor, ResourceNeed $resourceNeed): stdClass
     {
         $resource = $this->resourceRepository->find($resourceNeed->getResource()->getId());
 
@@ -230,14 +232,14 @@ final class EntityFactory
         $lastConsumedItem = null;
 
         if (!is_null($lastConsumedVarietyId)) {
-            foreach ($entity->getInventory()->getItems() as $item) {
+            foreach ($actor->getInventory()->getItems() as $item) {
                 if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
                     $lastConsumedItem = $this->presentItem($item);
                 }
             }
         }
 
-        foreach ($entity->getInventory()->getItems() as $item) {
+        foreach ($actor->getInventory()->getItems() as $item) {
             foreach ($item->getVariety()->getResources() as $itemResource) {
                 if ($itemResource->getId()->equals($resource->getId())
                     && !$item->getVariety()->getId()->equals($lastConsumedVarietyId)
@@ -341,5 +343,16 @@ final class EntityFactory
         }
 
         return null;
+    }
+
+    private function findActor(UuidInterface $actorId, iterable $entities): DomainModel
+    {
+        foreach ($entities as $entity) {
+            if ($entity->getId()->equals($actorId)) {
+                return $entity;
+            }
+        }
+
+        throw new DomainException;
     }
 }
