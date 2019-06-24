@@ -79,7 +79,7 @@
 
     <input type="hidden" id="gameId" value="<?=$game->id?>" />
     <input type="hidden" id="inventoryItems" value='<?=json_encode($human->inventory->items)?>' />
-    <input type="hidden" id="entities" value='<?=$encodedEntities?>' />
+    <input type="hidden" id="entities" value='<?=json_encode($entities)?>' />
     <input type="hidden" id="constructions" value='<?=json_encode($constructions)?>' />
     <input type="hidden" id="actions" value='<?=json_encode($actions)?>' />
 

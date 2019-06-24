@@ -75,11 +75,17 @@ $router->get("/main.css", new ConorSmith\Hoarde\Infra\Controller\CompileCssOutpu
 $router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\ShowGame(
     $gameRepository,
     $entityRepository,
-    $resourceRepository,
     $actionRepository,
     $varietyRepository,
     $sessionSegment,
-    $templateEngine
+    $templateEngine,
+    new ConorSmith\Hoarde\Infra\Presentation\EntityFactory(
+        $varietyRepository,
+        $resourceRepository
+    ),
+    new ConorSmith\Hoarde\Infra\Presentation\BlueprintFactory(
+        $varietyRepository
+    )
 ));
 
 $router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\RestartGame(
