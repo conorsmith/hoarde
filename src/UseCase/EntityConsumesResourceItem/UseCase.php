@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\UseCase\EntityConsumesResourceItem;
 
 use ConorSmith\Hoarde\App\Result;
+use ConorSmith\Hoarde\App\UnitOfWork;
+use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use Ramsey\Uuid\UuidInterface;
@@ -16,27 +18,43 @@ final class UseCase
     /** @var ResourceRepository */
     private $resourceRepository;
 
-    public function __construct(EntityRepository $entityRepository, ResourceRepository $resourceRepository)
-    {
+    /** @var UnitOfWorkProcessor */
+    private $unitOfWorkProcessor;
+
+    public function __construct(
+        EntityRepository $entityRepository,
+        ResourceRepository $resourceRepository,
+        UnitOfWorkProcessor $unitOfWorkProcessor
+    ) {
         $this->entityRepository = $entityRepository;
         $this->resourceRepository = $resourceRepository;
+        $this->unitOfWorkProcessor = $unitOfWorkProcessor;
     }
 
-    public function __invoke(UuidInterface $gameId, UuidInterface $entityId, UuidInterface $resourceId): Result
-    {
+    public function __invoke(
+        UuidInterface $gameId,
+        UuidInterface $entityId,
+        UuidInterface $actorId,
+        UuidInterface $resourceId
+    ): Result {
         $entity = $this->entityRepository->findInGame($entityId, $gameId);
+        $actor = $this->entityRepository->findInGame($actorId, $gameId);
         $resource = $this->resourceRepository->find($resourceId);
 
         if (is_null($entityId)) {
             return Result::entityNotFound($entityId, $gameId);
         }
 
+        if (is_null($actorId)) {
+            return Result::entityNotFound($actorId, $gameId);
+        }
+
         if (is_null($resource)) {
             return Result::failed("Resource {$resourceId} was not found.");
         }
 
-        if (!$entity->hasInventory()) {
-            return Result::entityHasNoInventory($entity);
+        if (!$actor->hasInventory()) {
+            return Result::entityHasNoInventory($actor);
         }
 
         $resourceNeed = $entity->findResourceNeed($resourceId);
@@ -45,13 +63,18 @@ final class UseCase
             return Result::failed("{$entity->getLabel()} has no need for {$resource->getLabel()}.");
         }
 
-        if (!$entity->hasItemWithResourceContent($resourceId)) {
-            return Result::failed("{$entity->getLabel()} has no {$resource->getLabel()}.");
+        if (!$actor->hasItemWithResourceContent($resourceId)) {
+            return Result::failed("{$actor->getLabel()} has no {$resource->getLabel()}.");
         }
 
-        $entity->consumeItemForResourceNeed($resourceId);
+        $entity->consumeItem(
+            $actor->takeItemForResourceNeed($resourceId)
+        );
 
-        $this->entityRepository->save($entity);
+        $unitOfWork = new UnitOfWork;
+        $unitOfWork->save($entity);
+        $unitOfWork->save($actor);
+        $unitOfWork->commit($this->unitOfWorkProcessor);
 
         if (!$entity->isIntact()) {
             return Result::actorExpired($entity);

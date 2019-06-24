@@ -44,6 +44,7 @@
                     <a href="#"
                        class="dropdown-item <?=$action->jsClass?>"
                        data-entity-id="<?=$entity->id?>"
+                       data-actor-id="<?=$action->actorId?>"
                        data-item-id="<?=$item->varietyId?>"
                        data-action-id="<?=$action->id?>"
                     >

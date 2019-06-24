@@ -19,6 +19,7 @@
                 <button type="button"
                         class="btn btn-light btn-block js-consume"
                         data-entity-id="<?=$entity->id?>"
+                        data-actor-id="<?=$resource->actorId?>"
                         data-resource-id="<?=$resource->id?>"
                     <?=(!$isIntact || $resource->noItems ? "disabled" : "")?>
                 >
@@ -37,6 +38,7 @@
                         <a href="#"
                            class="dropdown-item d-flex align-items-baseline justify-content-between js-use"
                            data-entity-id="<?=$entity->id?>"
+                           data-actor-id="<?=$resource->actorId?>"
                            data-item-id="<?=$resource->lastConsumedItem->id?>"
                            data-action-id="<?=\ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig::CONSUME?>"
                         >
@@ -56,6 +58,7 @@
                         <a href="#"
                            class="dropdown-item d-flex align-items-baseline justify-content-between js-use"
                            data-entity-id="<?=$entity->id?>"
+                           data-actor-id="<?=$resource->actorId?>"
                            data-item-id="<?=$item->id?>"
                            data-action-id="<?=\ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig::CONSUME?>"
                         >

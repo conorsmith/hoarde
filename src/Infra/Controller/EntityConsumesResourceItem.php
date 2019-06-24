@@ -30,9 +30,10 @@ final class EntityConsumesResourceItem
     {
         $gameId = Uuid::fromString($args['gameId']);
         $entityId = Uuid::fromString($_POST['entityId']);
+        $actorId = Uuid::fromString($_POST['actorId']);
         $resourceId = Uuid::fromString($_POST['resourceId']);
 
-        $result = $this->useCase->__invoke($gameId, $entityId, $resourceId);
+        $result = $this->useCase->__invoke($gameId, $entityId, $actorId, $resourceId);
 
         if (!$result->isSuccessful()) {
             $this->session->setFlash("danger", $result->getMessage());

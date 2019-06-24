@@ -123,7 +123,8 @@ $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\Entity
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityConsumesResourceItem\UseCase(
         $entityRepository,
-        $resourceRepository
+        $resourceRepository,
+        $unitOfWorkProcessor
     )
 ));
 

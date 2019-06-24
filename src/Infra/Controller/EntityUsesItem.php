@@ -30,10 +30,11 @@ final class EntityUsesItem
     {
         $gameId = Uuid::fromString($args['gameId']);
         $entityId = Uuid::fromString($args['entityId']);
+        $actorId = Uuid::fromString($_POST['actorId']);
         $itemId = Uuid::fromString($_POST['item']);
         $actionId = Uuid::fromString($_POST['actionId']);
 
-        $result = $this->useCase->__invoke($gameId, $entityId, $itemId, $actionId);
+        $result = $this->useCase->__invoke($gameId, $entityId, $actorId, $itemId, $actionId);
 
         if (!$result->isSuccessful()) {
             $this->session->setFlash("danger", $result->getMessage());

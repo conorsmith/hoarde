@@ -134,12 +134,19 @@ for (var i = 0; i < useButtons.length; i++) {
 
         var itemId = e.currentTarget.dataset.itemId;
         var entityId = e.currentTarget.dataset.entityId;
+        var actorId = e.currentTarget.dataset.actorId;
         var actionId = e.currentTarget.dataset.actionId;
 
         var form = document.createElement("form");
         form.setAttribute("action", "/" + gameId + "/" + entityId + "/use");
         form.setAttribute("method", "POST");
         form.setAttribute("hidden", true);
+
+        var actorIdInput = document.createElement("input");
+        actorIdInput.setAttribute("type", "hidden");
+        actorIdInput.setAttribute("name", "actorId");
+        actorIdInput.setAttribute("value", actorId);
+        form.appendChild(actorIdInput);
 
         var itemInput = document.createElement("input");
         itemInput.setAttribute("type", "hidden");
@@ -169,6 +176,7 @@ for (var i = 0; i < consumeButtons.length; i++) {
 
         var resourceId = e.currentTarget.dataset.resourceId;
         var entityId = e.currentTarget.dataset.entityId;
+        var actorId = e.currentTarget.dataset.actorId;
 
         var form = document.createElement("form");
         form.setAttribute("action", "/" + gameId + "/consume");
@@ -186,6 +194,12 @@ for (var i = 0; i < consumeButtons.length; i++) {
         entityIdInput.setAttribute("name", "entityId");
         entityIdInput.setAttribute("value", entityId);
         form.appendChild(entityIdInput);
+
+        var actorIdInput = document.createElement("input");
+        actorIdInput.setAttribute("type", "hidden");
+        actorIdInput.setAttribute("name", "actorId");
+        actorIdInput.setAttribute("value", actorId);
+        form.appendChild(actorIdInput);
 
         document.body.appendChild(form);
 

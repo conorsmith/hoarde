@@ -47,11 +47,13 @@ final class UseCase
     public function __invoke(
         UuidInterface $gameId,
         UuidInterface $entityId,
+        UuidInterface $actorId,
         UuidInterface $itemVarietyId,
         UuidInterface $actionId
     ): Result {
         $game = $this->gameRepository->find($gameId);
         $entity = $this->entityRepository->findInGame($entityId, $gameId);
+        $actor = $this->entityRepository->findInGame($actorId, $gameId);
         $itemVariety = $this->varietyRepository->find($itemVarietyId);
 
         if (is_null($game)) {
@@ -62,20 +64,24 @@ final class UseCase
             return Result::entityNotFound($entityId, $gameId);
         }
 
+        if (is_null($actor)) {
+            return Result::entityNotFound($actorId, $gameId);
+        }
+
         if (is_null($itemVariety)) {
             return Result::varietyNotFound($itemVarietyId);
         }
 
-        if (!$entity->hasInventory()) {
-            return Result::failed("Entity {$entityId} has no inventory.");
+        if (!$actor->hasInventory()) {
+            return Result::failed("{$actor->getLabel()} has no inventory.");
         }
 
-        if (!$entity->getInventory()->containsItem($itemVarietyId)) {
-            return Result::failed("{$entity->getLabel()} does not have {$itemVariety->getLabel()}.");
+        if (!$actor->getInventory()->containsItem($itemVarietyId)) {
+            return Result::failed("{$actor->getLabel()} does not have {$itemVariety->getLabel()}.");
         }
 
         if ($actionId->equals(Uuid::fromString(ActionRepositoryConfig::CONSUME))) {
-            $this->consume($entity, $itemVariety);
+            $this->consume($entity, $actor, $itemVariety);
 
         } elseif ($actionId->equals(Uuid::fromString(ActionRepositoryConfig::PLACE))) {
             $this->place($game, $entity, $itemVariety);
@@ -88,11 +94,14 @@ final class UseCase
         return Result::succeeded();
     }
 
-    private function consume(Entity $entity, Variety $itemVariety): void
+    private function consume(Entity $entity, Entity $actor, Variety $itemVariety): void
     {
-        $entity->consumeItem($itemVariety->getId());
+        $entity->consumeItem($actor->takeItem($itemVariety->getId()));
 
-        $this->entityRepository->save($entity);
+        $unitOfWork = new UnitOfWork;
+        $unitOfWork->save($entity);
+        $unitOfWork->save($actor);
+        $unitOfWork->commit($this->unitOfWorkProcessor);
     }
 
     private function place(Game $game, Entity $actingEntity, Variety $itemVariety): void

@@ -177,7 +177,14 @@ final class Entity
         return count($inventoryItemsWithResource) > 0;
     }
 
-    public function consumeItemForResourceNeed(UuidInterface $resourceId): void
+    public function takeItem(UuidInterface $id): Item
+    {
+        $item = $this->inventory->getItem($id);
+        $this->inventory->removeQuantityFromItem($item, 1);
+        return $item;
+    }
+
+    public function takeItemForResourceNeed(UuidInterface $resourceId): Item
     {
         $resourceNeed = $this->findResourceNeed($resourceId);
 
@@ -190,8 +197,12 @@ final class Entity
         if (!is_null($lastConsumedVarietyId)
             && $this->inventory->containsItem($lastConsumedVarietyId)
         ) {
-            $this->consumeItem($lastConsumedVarietyId);
-            return;
+            $item = $this->inventory->getItem($lastConsumedVarietyId);
+            $this->inventory->removeQuantityFromItem(
+                $item,
+                1
+            );
+            return $item;
         }
 
         $inventoryItemsWithResource = [];
@@ -201,17 +212,27 @@ final class Entity
         }
 
         if (count($inventoryItemsWithResource) > 0) {
-            $this->consumeItem($inventoryItemsWithResource[0]->getVariety()->getId());
-            return;
+            $this->inventory->removeQuantityFromItem(
+                $inventoryItemsWithResource[0],
+                1
+            );
+            return $inventoryItemsWithResource[0];
         }
 
         throw new DomainException;
     }
 
-    public function consumeItem(UuidInterface $id): Item
+    public function consumeItemFromInventory(UuidInterface $id): Item
     {
         $item = $this->inventory->getItem($id);
+        $this->consumeItem($item);
+        $this->inventory->removeQuantityFromItem($item, 1);
 
+        return $item;
+    }
+
+    public function consumeItem(Item $item): void
+    {
         foreach ($item->getVariety()->getResources() as $resource) {
             if ($resource->getId()->equals(Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262"))) {
                 $this->usePringles();
@@ -220,10 +241,6 @@ final class Entity
                 $this->useResourceReplenishingItem($resource->getId(), $item->getVariety());
             }
         }
-
-        $this->inventory->removeQuantityFromItem($item, 1);
-
-        return $item;
     }
 
     private function useResourceReplenishingItem(UuidInterface $resourceId, Variety $variety)

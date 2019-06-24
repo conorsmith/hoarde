@@ -65,6 +65,7 @@ final class EntityFactory
 
                         $presentedItem->performableActions[] = (object)[
                             'id'      => $action->getId(),
+                            'actorId' => $actor->getId(),
                             'label'   => $action->getLabel(),
                             'icon'    => $action->getIcon(),
                             'jsClass' => $jsClass,
@@ -101,6 +102,7 @@ final class EntityFactory
                     if ($action->canBePerformedBy($entity->getVarietyId())) {
                         $presentedEntity->performableActions[] = (object)[
                             'id'      => $action->getId(),
+                            'actorId' => $entity->getId(),
                             'label'   => $action->getLabel(),
                             'icon'    => $action->getIcon(),
                             'jsClass' => $this->findJsClassForAction($action),
@@ -251,6 +253,7 @@ final class EntityFactory
 
         return (object) [
             'id'               => $resource->getId(),
+            'actorId'          => $actor->getId(),
             'label'            => $resource->getLabel(),
             'level'            => $resourceNeed->getCurrentLevel(),
             'segmentWidth'     => 100 / $resourceNeed->getMaximumLevel(),
