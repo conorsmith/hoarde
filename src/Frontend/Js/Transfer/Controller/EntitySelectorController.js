@@ -1,4 +1,4 @@
-class TransferEntitySelectorController {
+class EntitySelectorController {
     constructor(eventBus, view, model, entities) {
         this.eventBus = eventBus;
         this.view = view;

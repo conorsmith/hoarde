@@ -1,4 +1,4 @@
-class TransferEntityController {
+class EntityController {
     constructor(eventBus, view, model, entities) {
         this.eventBus = eventBus;
         this.view = view;
@@ -7,7 +7,7 @@ class TransferEntityController {
             return entity.construction.isConstructed;
         });
 
-        this.entitySelectorController = new TransferEntitySelectorController(
+        this.entitySelectorController = new EntitySelectorController(
             this.eventBus,
             this.view.entitySelectorView,
             this.model,
@@ -32,20 +32,20 @@ class TransferEntityController {
 
         this.view.repaint(this.model.entityFrom);
 
-        new TransferCapacityBarController(
+        new CapacityBarController(
             this.eventBus,
             this.view.capacityBarView,
             this.model
         );
 
-        new TransferInventoryWeightController(
+        new InventoryWeightController(
             this.eventBus,
             this.view.inventoryWeightView,
             this.model
         );
 
         this.model.itemsFrom.forEach(function (transferItem) {
-            let itemSliderView = TransferItemSliderView.fromTemplate(
+            let itemSliderView = ItemSliderView.fromTemplate(
                 controller.view.el.querySelector(".js-item-sliders"),
                 controller.view.itemSliderTemplate.content.cloneNode(true),
                 controller.view.itemPopoverTemplate.content.cloneNode(true),
@@ -53,13 +53,13 @@ class TransferEntityController {
                 transferItem
             );
 
-            new TransferItemRangeInputController(
+            new ItemRangeInputController(
                 controller.eventBus,
                 itemSliderView.itemRangeInputView,
                 transferItem
             );
 
-            new TransferItemCounterController(
+            new ItemCounterController(
                 controller.eventBus,
                 itemSliderView.itemCounterView,
                 transferItem

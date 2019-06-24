@@ -1,4 +1,4 @@
-class TransferItemCounterView {
+class ItemCounterView {
     constructor(el) {
         this.el = el;
     }

@@ -1,4 +1,4 @@
-class TransferController {
+class MainController {
     constructor(eventBus, view, entities, gameId) {
         this.eventBus = eventBus;
         this.view = view;
@@ -8,7 +8,7 @@ class TransferController {
         this.transfers = [];
         this.entityControllers = [];
 
-        new TransferErrorController(
+        new ErrorController(
             this.eventBus,
             this.view.errorView,
             new Error("")
@@ -86,7 +86,7 @@ class TransferController {
         this.view.entityViews.forEach(function (entityView) {
             let transfer = controller.transfers[i++];
 
-            controller.entityControllers.push(new TransferEntityController(
+            controller.entityControllers.push(new EntityController(
                 controller.eventBus,
                 entityView,
                 transfer,

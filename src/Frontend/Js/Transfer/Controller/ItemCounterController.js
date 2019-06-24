@@ -1,4 +1,4 @@
-class TransferInventoryWeightController {
+class ItemCounterController {
     constructor(eventBus, view, model) {
         this.eventBus = eventBus;
         this.view = view;
@@ -9,11 +9,15 @@ class TransferInventoryWeightController {
 
     addEventListeners(controller) {
         this.eventBus.addEventListener("transfer.itemModified", function (e) {
-            controller.onItemModified(e);
+            controller.onItemModified(e)
         });
     }
 
     onItemModified(e) {
-        this.view.repaint(this.model.getNewInventoryWeight());
+        if (e.detail.item.entityId === this.model.entityId
+            && e.detail.item.varietyId === this.model.varietyId
+        ) {
+            this.view.repaint(e.detail.item);
+        }
     }
 }

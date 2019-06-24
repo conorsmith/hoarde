@@ -1,4 +1,4 @@
-class TransferErrorController {
+class ErrorController {
     constructor(eventBus, view, model) {
         this.eventBus = eventBus;
         this.view = view;
