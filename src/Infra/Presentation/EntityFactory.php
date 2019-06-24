@@ -120,7 +120,7 @@ final class EntityFactory
             'isHuman'                    => $entity->getVarietyId()->equals(
                 Uuid::fromString(VarietyRepositoryConfig::HUMAN)
             ),
-            'construction'               => $this->presentConstruction($entity, $entities),
+            'construction'               => $this->presentConstruction($entity, $actor),
             'resourceNeeds'              => $resourceNeeds,
         ];
 
@@ -299,27 +299,24 @@ final class EntityFactory
         }
     }
 
-    private function presentConstruction(DomainModel $entity, iterable $entities): stdClass
+    private function presentConstruction(DomainModel $entity, DomainModel $actor): stdClass
     {
-        $actor = null;
+        $actorPresentation = null;
+        $entityVariety = $this->varietyRepository->find($entity->getVarietyId());
 
-        if (!$entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
-            $human = $this->findHuman($entities);
-            $entityVariety = $this->varietyRepository->find($entity->getVarietyId());
-            if ($entityVariety->hasBlueprint()) {
-                $actor = (object)[
-                    'id'       => $human->getId(),
-                    'label'    => $human->getLabel(),
-                    'hasTools' => $entityVariety->getBlueprint()->canContinueConstruction($human->getInventory()),
-                ];
-            }
+        if ($entityVariety->hasBlueprint()) {
+            $actorPresentation = (object) [
+                'id'       => $actor->getId(),
+                'label'    => $actor->getLabel(),
+                'hasTools' => $entityVariety->getBlueprint()->canContinueConstruction($actor->getInventory()),
+            ];
         }
 
         return (object) [
             'isConstructed'  => $entity->getConstruction()->isConstructed(),
             'remainingSteps' => $entity->getConstruction()->getRemainingSteps(),
             'requiredSteps'  => $entity->getConstruction()->getRequiredSteps(),
-            'actor'          => $actor,
+            'actor'          => $actorPresentation,
         ];
     }
 
@@ -327,17 +324,6 @@ final class EntityFactory
     {
         foreach ($entities as $entity) {
             if ($entity->getVarietyId()->equals($varietyId)) {
-                return $entity;
-            }
-        }
-
-        return null;
-    }
-
-    private function findHuman(iterable $entities): ?DomainModel
-    {
-        foreach ($entities as $entity) {
-            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
                 return $entity;
             }
         }
