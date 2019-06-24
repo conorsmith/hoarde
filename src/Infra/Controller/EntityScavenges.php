@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
-use ConorSmith\Hoarde\UseCase\EntityWaits\UseCase;
+use ConorSmith\Hoarde\UseCase\EntityScavenges\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 
-final class HaveEntityWait
+final class EntityScavenges
 {
     /** @var Segment */
     private $session;
@@ -30,15 +30,23 @@ final class HaveEntityWait
     {
         $gameId = Uuid::fromString($args['gameId']);
         $entityId = Uuid::fromString($args['entityId']);
+        $length = intval(json_decode($request->getBody()->getContents(), true)['length']);
 
-        $result = $this->useCase->__invoke($gameId, $entityId);
+        $result = $this->useCase->__invoke($gameId, $entityId, $length);
 
         if (!$result->isSuccessful()) {
-            $this->session->setFlash("danger", $result->getMessage());
+            $response = new Response;
+            $response = $response->withStatus(400);
+            $response->getBody()->write(json_encode([
+                'message' => $result->getMessage(),
+            ]));
+            return $response;
         }
 
         $response = new Response;
-        $response = $response->withHeader("Location", "/{$gameId}");
+        $response->getBody()->write(json_encode([
+            'haul' => $result->getHaul(),
+        ]));
         return $response;
     }
 }

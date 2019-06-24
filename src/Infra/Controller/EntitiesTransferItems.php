@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\HtmlResponse;
 
-final class TransferItems
+final class EntitiesTransferItems
 {
     /** @var Segment */
     private $session;

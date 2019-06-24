@@ -17,7 +17,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\HtmlResponse;
 
-final class ShowGame
+final class PlayerViewsGame
 {
     /** @var UseCase */
     private $useCase;

@@ -59,7 +59,7 @@ $router = new League\Route\Router;
 
 $router->get("/", new ConorSmith\Hoarde\Infra\Controller\ShowLandingPage($templateEngine));
 
-$router->post("/", new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame(
+$router->post("/", new ConorSmith\Hoarde\Infra\Controller\GameBegins(
     new \ConorSmith\Hoarde\UseCase\GameBegins\UseCase(
         $gameRepository,
         $entityRepository,
@@ -72,7 +72,7 @@ $router->post("/", new ConorSmith\Hoarde\Infra\Controller\GenerateNewGame(
 $router->get("/{fileName}.js", new ConorSmith\Hoarde\Infra\Controller\CompileJsOutput);
 $router->get("/main.css", new ConorSmith\Hoarde\Infra\Controller\CompileCssOutput);
 
-$router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\ShowGame(
+$router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\PlayerViewsGame(
     new ConorSmith\Hoarde\UseCase\PlayerViewsGame\UseCase(
         $gameRepository,
         $entityRepository,
@@ -90,7 +90,7 @@ $router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\ShowGame(
     )
 ));
 
-$router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\RestartGame(
+$router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\GameRestarts(
     new \ConorSmith\Hoarde\UseCase\GameRestarts\UseCase(
         $gameRepository,
         $entityRepository,
@@ -100,7 +100,7 @@ $router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\Restar
     )
 ));
 
-$router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controller\HaveEntityWait(
+$router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controller\EntityWaits(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityWaits\UseCase(
         $gameRepository,
@@ -109,7 +109,7 @@ $router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controlle
     )
 ));
 
-$router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller\HaveEntityUseItem(
+$router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller\EntityUsesItem(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityUsesItem\UseCase(
         $gameRepository,
@@ -119,7 +119,7 @@ $router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller
     )
 ));
 
-$router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\HaveEntityConsumeResource(
+$router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\EntityConsumesResourceItem(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityConsumesResourceItem\UseCase(
         $entityRepository,
@@ -127,7 +127,7 @@ $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\HaveEn
     )
 ));
 
-$router->post("/{gameId}/{entityId}/scavenge", new ConorSmith\Hoarde\Infra\Controller\HaveEntityScavenge(
+$router->post("/{gameId}/{entityId}/scavenge", new ConorSmith\Hoarde\Infra\Controller\EntityScavenges(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityScavenges\UseCase(
         $gameRepository,
@@ -137,7 +137,7 @@ $router->post("/{gameId}/{entityId}/scavenge", new ConorSmith\Hoarde\Infra\Contr
     )
 ));
 
-$router->post("/{gameId}/{entityId}/scavenge/{haulId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityAddHaulToInventory(
+$router->post("/{gameId}/{entityId}/scavenge/{haulId}", new ConorSmith\Hoarde\Infra\Controller\EntityAddsScavengingHaul(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityAddsScavengingHaul\UseCase(
         $entityRepository,
@@ -146,7 +146,7 @@ $router->post("/{gameId}/{entityId}/scavenge/{haulId}", new ConorSmith\Hoarde\In
     )
 ));
 
-$router->post("/{gameId}/drop", new ConorSmith\Hoarde\Infra\Controller\HaveEntityDropItem(
+$router->post("/{gameId}/drop", new ConorSmith\Hoarde\Infra\Controller\EntityDiscardsItem(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityDiscardsItem\UseCase(
         $entityRepository,
@@ -154,7 +154,7 @@ $router->post("/{gameId}/drop", new ConorSmith\Hoarde\Infra\Controller\HaveEntit
     )
 ));
 
-$router->post("/{gameId}/transfer", new ConorSmith\Hoarde\Infra\Controller\TransferItems(
+$router->post("/{gameId}/transfer", new ConorSmith\Hoarde\Infra\Controller\EntitiesTransferItems(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntitiesTransferItems\UseCase(
         $entityRepository,
@@ -163,7 +163,7 @@ $router->post("/{gameId}/transfer", new ConorSmith\Hoarde\Infra\Controller\Trans
     )
 ));
 
-$router->post("/{gameId}/{entityId}/fetch-water", new ConorSmith\Hoarde\Infra\Controller\HaveEntityFetchWater(
+$router->post("/{gameId}/{entityId}/fetch-water", new ConorSmith\Hoarde\Infra\Controller\EntityFetchesWater(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityFetchesWater\UseCase(
         $gameRepository,
@@ -173,7 +173,7 @@ $router->post("/{gameId}/{entityId}/fetch-water", new ConorSmith\Hoarde\Infra\Co
     )
 ));
 
-$router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Controller\HaveEntityBeginConstruction(
+$router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Controller\EntityBeginsConstructingEntity(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityBeginsConstructingEntity\UseCase(
         $gameRepository,
@@ -183,7 +183,7 @@ $router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Contr
     )
 ));
 
-$router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityContinueConstruct(
+$router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityContinuesConstructingEntity(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityContinuesConstructingEntity\UseCase(
         $gameRepository,
@@ -193,7 +193,7 @@ $router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\
     )
 ));
 
-$router->post("/{gameId}/{actorId}/sow/{targetId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntitySowPlot(
+$router->post("/{gameId}/{actorId}/sow/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntitySowsPlot(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntitySowsPlot\UseCase(
         $gameRepository,
@@ -203,7 +203,7 @@ $router->post("/{gameId}/{actorId}/sow/{targetId}", new ConorSmith\Hoarde\Infra\
     )
 ));
 
-$router->post("/{gameId}/{actorId}/harvest/{targetId}", new ConorSmith\Hoarde\Infra\Controller\HaveEntityHarvestPlot(
+$router->post("/{gameId}/{actorId}/harvest/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityHarvestsPlot(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityHarvestsPlot\UseCase(
         $gameRepository,
@@ -213,7 +213,7 @@ $router->post("/{gameId}/{actorId}/harvest/{targetId}", new ConorSmith\Hoarde\In
     )
 ));
 
-$router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Controller\UpdateEntitySettings(
+$router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Controller\PlayerRelabelsEntity(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\PlayerRelabelsEntity\UseCase(
         $entityRepository

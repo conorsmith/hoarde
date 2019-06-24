@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 
-class HaveEntityAddHaulToInventory
+class EntityAddsScavengingHaul
 {
     /** @var Segment */
     private $session;

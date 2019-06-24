@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 
-final class HaveEntityUseItem
+final class EntityUsesItem
 {
     /** @var Segment */
     private $session;

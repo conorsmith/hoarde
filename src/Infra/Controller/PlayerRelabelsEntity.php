@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
-use ConorSmith\Hoarde\UseCase\EntityContinuesConstructingEntity\UseCase;
+use ConorSmith\Hoarde\UseCase\PlayerRelabelsEntity\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 
-final class HaveEntityContinueConstruct
+final class PlayerRelabelsEntity
 {
     /** @var Segment */
     private $session;
@@ -29,10 +29,10 @@ final class HaveEntityContinueConstruct
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $gameId = Uuid::fromString($args['gameId']);
-        $actorId = Uuid::fromString($args['actorId']);
-        $targetId = Uuid::fromString($args['targetId']);
+        $entityId = Uuid::fromString($args['entityId']);
+        $label = $_POST['label'];
 
-        $result = $this->useCase->__invoke($gameId, $actorId, $targetId);
+        $result = $this->useCase->__invoke($gameId, $entityId, $label);
 
         if (!$result->isSuccessful()) {
             $this->session->setFlash("danger", $result->getMessage());

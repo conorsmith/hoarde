@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
-use ConorSmith\Hoarde\UseCase\EntityConsumesResourceItem\UseCase;
+use ConorSmith\Hoarde\UseCase\EntityDiscardsItem\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 
-final class HaveEntityConsumeResource
+final class EntityDiscardsItem
 {
     /** @var Segment */
     private $session;
@@ -30,11 +30,14 @@ final class HaveEntityConsumeResource
     {
         $gameId = Uuid::fromString($args['gameId']);
         $entityId = Uuid::fromString($_POST['entityId']);
-        $resourceId = Uuid::fromString($_POST['resourceId']);
+        $itemId = Uuid::fromString($_POST['item']);
+        $droppedQuantity = intval($_POST['quantity']);
 
-        $result = $this->useCase->__invoke($gameId, $entityId, $resourceId);
+        $result = $this->useCase->__invoke($gameId, $entityId, $itemId, $droppedQuantity);
 
-        if (!$result->isSuccessful()) {
+        if ($result->isSuccessful()) {
+            $this->session->setFlash("info", $result->getMessage());
+        } else {
             $this->session->setFlash("danger", $result->getMessage());
         }
 
