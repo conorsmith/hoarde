@@ -139,11 +139,16 @@ final class Entity
     public function proceedToNextTurn(): void
     {
         if ($this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::GARDEN_PLOT))) {
+
+            $this->beforeAction();
+            $this->afterAction();
+
             foreach ($this->inventory->getEntities() as $inventoryEntity) {
                 if (!$inventoryEntity->construction->isConstructed()) {
                     $inventoryEntity->construction = $inventoryEntity->construction->takeAStep();
                 }
             }
+
         }
     }
 
