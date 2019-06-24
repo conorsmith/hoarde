@@ -73,10 +73,12 @@ $router->get("/{fileName}.js", new ConorSmith\Hoarde\Infra\Controller\CompileJsO
 $router->get("/main.css", new ConorSmith\Hoarde\Infra\Controller\CompileCssOutput);
 
 $router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\ShowGame(
-    $gameRepository,
-    $entityRepository,
-    $actionRepository,
-    $varietyRepository,
+    new ConorSmith\Hoarde\UseCase\PlayerViewsGame\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $actionRepository
+    ),
     $sessionSegment,
     $templateEngine,
     new ConorSmith\Hoarde\Infra\Presentation\EntityFactory(
