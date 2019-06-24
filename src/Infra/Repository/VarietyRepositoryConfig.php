@@ -57,13 +57,18 @@ final class VarietyRepositoryConfig implements VarietyRepository
 
     private const VARIETIES = [
         self::HUMAN => [
-            'label'       => "Human",
-            'resources'   => [],
-            'weight'      => 75000,
-            'icon'        => "user",
-            'description' => "Homo sapiens, the only extant members of the subtribe Hominina.",
-            'inventory'   => [
+            'label'                    => "Human",
+            'resources'                => [],
+            'weight'                   => 75000,
+            'icon'                     => "user",
+            'description'              => "Homo sapiens, the only extant members of the subtribe Hominina.",
+            'inventory'                => [
                 'capacity' => 10000,
+            ],
+            'resource_need_capacities' => [
+                ResourceRepositoryConfig::WATER    => 5,
+                ResourceRepositoryConfig::FOOD     => 10,
+                ResourceRepositoryConfig::PRINGLES => 12,
             ],
         ],
         self::WELL => [
@@ -84,20 +89,23 @@ final class VarietyRepositoryConfig implements VarietyRepository
             ],
         ],
         self::GARDEN_PLOT => [
-            'label'       => "Garden Plot",
-            'resources'   => [],
-            'weight'      => 0,
-            'icon'        => "seedling",
-            'description' => "An area of soil designated for planting fruits and vegetables.",
-            'inventory'   => [
+            'label'                    => "Garden Plot",
+            'resources'                => [],
+            'weight'                   => 0,
+            'icon'                     => "seedling",
+            'description'              => "An area of soil designated for planting fruits and vegetables.",
+            'inventory'                => [
                 'capacity' => 999999999,
             ],
-            'blueprint'   => [
+            'blueprint'                => [
                 'tools'     => [
                     self::SHOVEL,
                 ],
                 'materials' => [],
                 'turns'     => 4,
+            ],
+            'resource_need_capacities' => [
+                ResourceRepositoryConfig::WATER => 12,
             ],
         ],
         self::WATER_BOTTLE => [
@@ -511,6 +519,12 @@ final class VarietyRepositoryConfig implements VarietyRepository
             $inventoryCapacity = self::VARIETIES[strval($id)]['inventory']['capacity'];
         }
 
+        $resourceNeedCapacities = [];
+
+        if (array_key_exists('resource_need_capacities', self::VARIETIES[strval($id)])) {
+            $resourceNeedCapacities = self::VARIETIES[strval($id)]['resource_need_capacities'];
+        }
+
         return new Variety(
             $id,
             self::VARIETIES[strval($id)]['label'],
@@ -521,7 +535,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
             !is_null($inventoryCapacity),
             $inventoryCapacity,
             $actions,
-            $blueprint
+            $blueprint,
+            $resourceNeedCapacities
         );
     }
 

@@ -38,6 +38,9 @@ final class Variety
     /** @var ?Blueprint */
     private $blueprint;
 
+    /** @var iterable */
+    private $resourceNeedCapacities;
+
     public function __construct(
         UuidInterface $id,
         string $label,
@@ -48,7 +51,8 @@ final class Variety
         bool $hasInventory,
         ?int $inventoryCapacity,
         iterable $actions,
-        ?Blueprint $blueprint
+        ?Blueprint $blueprint,
+        iterable $resourceNeedCapacities
     ) {
         $this->id = $id;
         $this->label = $label;
@@ -61,6 +65,7 @@ final class Variety
 
         $this->resourceContents = [];
         $this->actions = [];
+        $this->resourceNeedCapacities = [];
 
         foreach ($resourceContents as $resourceContent) {
             if (!$resourceContent instanceof ResourceContent) {
@@ -76,6 +81,14 @@ final class Variety
             }
 
             $this->actions[strval($action->getId())] = $action;
+        }
+
+        foreach ($resourceNeedCapacities as $resourceId => $capacity) {
+            if (!is_int($capacity)) {
+                throw new DomainException;
+            }
+
+            $this->resourceNeedCapacities[$resourceId] = $capacity;
         }
     }
 
@@ -137,6 +150,11 @@ final class Variety
     public function getBlueprint(): ?Blueprint
     {
         return $this->blueprint;
+    }
+
+    public function getResourceNeedCapacities(): iterable
+    {
+        return $this->resourceNeedCapacities;
     }
 
     public function createItemWithQuantity(int $quantity): Item

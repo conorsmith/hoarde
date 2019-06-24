@@ -19,21 +19,10 @@ use Throwable;
 
 final class EntityRepositoryDb implements EntityRepository
 {
-    private const RESOURCE_MAXIMUMS_FOR_ENTITY = [
-        ResourceRepositoryConfig::WATER    => 5,
-        ResourceRepositoryConfig::FOOD     => 10,
-        ResourceRepositoryConfig::PRINGLES => 12,
-    ];
-
     private const RESOURCE_AMOUNTS_FOR_ENTITY = [
         ResourceRepositoryConfig::WATER    => 100,
         ResourceRepositoryConfig::FOOD     => 60,
         ResourceRepositoryConfig::PRINGLES => 1,
-    ];
-
-    private const CONSTRUCTION_MAXIMUMS_FOR_ENTITY = [
-        VarietyRepositoryConfig::WELL         => 10,
-        VarietyRepositoryConfig::WOODEN_CRATE => 3,
     ];
 
     /** @var Connection */
@@ -116,7 +105,7 @@ final class EntityRepositoryDb implements EntityRepository
                 intval($row['construction_level']),
                 $variety->hasBlueprint() ? $variety->getBlueprint()->getTurns() : 0
             ),
-            $this->findResourceNeeds($id),
+            $this->findResourceNeeds($id, $variety),
             $variety->hasInventory() ? $this->findInventory($id, $variety) : null
         );
 
@@ -125,7 +114,7 @@ final class EntityRepositoryDb implements EntityRepository
         return $entity;
     }
 
-    private function findResourceNeeds(UuidInterface $id): iterable
+    private function findResourceNeeds(UuidInterface $id, Variety $variety): iterable
     {
         $rows = $this->db->fetchAll("SELECT * FROM entity_resources WHERE entity_id = :id", [
             'id' => $id,
@@ -137,7 +126,7 @@ final class EntityRepositoryDb implements EntityRepository
             $resourceNeeds[] = new ResourceNeed(
                 $this->resourceRepository->find(Uuid::fromString($row['resource_id'])),
                 intval($row['level']),
-                self::RESOURCE_MAXIMUMS_FOR_ENTITY[$row['resource_id']],
+                $variety->getResourceNeedCapacities()[$row['resource_id']],
                 self::RESOURCE_AMOUNTS_FOR_ENTITY[$row['resource_id']],
                 is_null($row['last_consumed_variety_id'])
                     ? null
