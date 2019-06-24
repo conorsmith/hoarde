@@ -257,6 +257,7 @@ final class Entity
                 $resourceRepository->find(Uuid::fromString(ResourceRepositoryConfig::PRINGLES)),
                 12,
                 12,
+                1,
                 Uuid::fromString("5234c112-05be-4b15-80df-3c2b67e88262")
             );
         }
