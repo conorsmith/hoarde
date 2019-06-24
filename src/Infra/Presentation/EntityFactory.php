@@ -119,6 +119,7 @@ final class EntityFactory
             'varietyId'                  => $entity->getVarietyId(),
             'label'                      => $entity->getLabel(),
             'icon'                       => $entity->getIcon(),
+            'isIntact'                   => $entity->isIntact(),
             'isHuman'                    => $entity->getVarietyId()->equals(
                 Uuid::fromString(VarietyRepositoryConfig::HUMAN)
             ),

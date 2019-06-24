@@ -21,7 +21,7 @@
                         data-entity-id="<?=$entity->id?>"
                         data-actor-id="<?=$resource->actorId?>"
                         data-resource-id="<?=$resource->id?>"
-                    <?=(!$isIntact || $resource->noItems ? "disabled" : "")?>
+                    <?=(!($isIntact && $entity->isIntact) || $resource->noItems ? "disabled" : "")?>
                 >
                     Consume <?=$resource->label?>
                 </button>
@@ -29,7 +29,7 @@
                 <button type="button"
                         class="btn btn-light dropdown-toggle"
                         data-toggle="dropdown"
-                    <?=(!$isIntact || $resource->noItems ? "disabled" : "")?>
+                    <?=(!($isIntact && $entity->isIntact) || $resource->noItems ? "disabled" : "")?>
                 ></button>
 
                 <div class="dropdown-menu dropdown-menu-right w-100">

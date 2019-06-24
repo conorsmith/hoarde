@@ -3,7 +3,11 @@
         <div class="card-body">
 
             <h5 class="card-title">
-                <i class="fas fa-fw fa-<?=$entity->icon?>"></i>
+                <?php if ($entity->isIntact) : ?>
+                  <i class="fas fa-fw fa-<?=$entity->icon?>"></i>
+                <?php else : ?>
+                  <i class="fas fa-fw fa-skull-crossbones"></i>
+                <?php endif ?>
                 <?=$entity->label?>
                 <?php if (!$entity->construction->isConstructed) : ?>
                     <span class="text-muted"
@@ -41,7 +45,7 @@
                         data-actor-id="<?=$entity->construction->actor->id?>"
                         data-target-id="<?=$entity->id?>"
                         data-construction-variety-id="<?=$entity->varietyId?>"
-                    <?=($isIntact && $entity->construction->actor->hasTools ? "" : "disabled")?>
+                    <?=($isIntact && $entity->isIntact && $entity->construction->actor->hasTools ? "" : "disabled")?>
                 >Continue Construction</button>
 
             <?php endif ?>
@@ -59,7 +63,11 @@
                              style="text-align: left;"
                         >
                             <div style="white-space: nowrap;">
-                                <i class="fas fa-fw fa-<?=$incubation->icon?>"></i>
+                                <?php if ($incubation->isIntact) : ?>
+                                    <i class="fas fa-fw fa-<?=$incubation->icon?>"></i>
+                                <?php else : ?>
+                                    <i class="fas fa-fw fa-skull-crossbones"></i>
+                                <?php endif ?>
                                 <?=$incubation->label?>
                             </div>
                             <div>
@@ -74,7 +82,7 @@
                                        border-bottom-left-radius: 0;
                                        padding-top: 0.7rem;
                                        padding-bottom: 0.5rem;"
-                            <?=($isIntact ? "" : "disabled")?>
+                            <?=($isIntact && $entity->isIntact ? "" : "disabled")?>
                         ></button>
                         <div class="dropdown-menu dropdown-menu-right w-100">
 
@@ -99,7 +107,7 @@
                     <div class="progress w-100"
                          style="height: 0.4rem; border-top-left-radius: 0; border-top-right-radius: 0;"
                     >
-                      <div class="progress-bar <?=$incubation->construction->percentage >= 100 ? "bg-success" : "bg-primary"?>"
+                      <div class="progress-bar <?=$incubation->isIntact ? ($incubation->construction->percentage >= 100 ? "bg-success" : "bg-primary") : "bg-danger"?>"
                            style="width: <?=$incubation->construction->percentage?>%;"
                       ></div>
                     </div>
@@ -117,7 +125,7 @@
                         data-entity-id="<?=$entity->id?>"
                         data-capacity-available="<?=50?>"
                         data-capacity-used="<?=$entity->incubatorCapacityUsed?>"
-                    <?=($isIntact && $entity->construction->isConstructed ? "" : "disabled")?>
+                    <?=($isIntact && $entity->isIntact && $entity->construction->isConstructed ? "" : "disabled")?>
                 >Sow Seeds</button>
 
             </div>

@@ -143,9 +143,15 @@ final class Entity
             $this->beforeAction();
             $this->afterAction();
 
-            foreach ($this->inventory->getEntities() as $inventoryEntity) {
-                if (!$inventoryEntity->construction->isConstructed()) {
-                    $inventoryEntity->construction = $inventoryEntity->construction->takeAStep();
+            if ($this->isIntact) {
+                foreach ($this->inventory->getEntities() as $inventoryEntity) {
+                    if (!$inventoryEntity->construction->isConstructed()) {
+                        $inventoryEntity->construction = $inventoryEntity->construction->takeAStep();
+                    }
+                }
+            } else {
+                foreach ($this->inventory->getEntities() as $inventoryEntity) {
+                    $inventoryEntity->isIntact = false;
                 }
             }
 
