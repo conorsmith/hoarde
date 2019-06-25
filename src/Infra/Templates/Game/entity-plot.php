@@ -82,7 +82,7 @@
                                        border-bottom-left-radius: 0;
                                        padding-top: 0.7rem;
                                        padding-bottom: 0.5rem;"
-                            <?=($isIntact && $entity->isIntact ? "" : "disabled")?>
+                            <?=($isIntact ? "" : "disabled")?>
                         ></button>
                         <div class="dropdown-menu dropdown-menu-right w-100">
 

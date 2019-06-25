@@ -202,7 +202,7 @@ final class EntityFactory
                             'label'      => $action->getLabel(),
                             'icon'       => $action->getIcon(),
                             'jsClass'    => $this->findJsClassForAction($action),
-                            'isDisabled' => !$construction->isConstructed(),
+                            'isDisabled' => !$construction->isConstructed() || !$inventoryEntity->isIntact(),
                         ];
                     }
 
