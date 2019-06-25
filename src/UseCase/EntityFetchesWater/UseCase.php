@@ -91,8 +91,8 @@ final class UseCase
         $unitOfWork = new UnitOfWork;
 
         $gameEntities = $game->proceedToNextTurn($this->entityRepository);
-        foreach ($gameEntities as $entity) {
-            $unitOfWork->save($entity);
+        foreach ($gameEntities as $gameEntity) {
+            $unitOfWork->save($gameEntity);
         }
 
         $unitOfWork->save($game);
