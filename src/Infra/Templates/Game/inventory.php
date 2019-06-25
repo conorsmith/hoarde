@@ -61,7 +61,7 @@
                    data-item-id="<?=$item->varietyId?>"
                 >
                     <i class="fas fa-fw fa-trash"></i>
-                    Drop
+                    Discard
                 </a>
 
                 <a href="#"

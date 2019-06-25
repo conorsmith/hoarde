@@ -44,8 +44,8 @@ $("#dropModal").on("show.bs.modal", function (e) {
 
     e.target.dataset.itemId = item.varietyId;
     e.target.dataset.entityId = entity.id;
-    e.target.querySelector(".js-drop-title").innerHTML = "Drop " + item.label;
-    e.target.querySelector(".js-drop-submit").innerHTML = "Drop 0";
+    e.target.querySelector(".js-drop-title").innerHTML = "Discard " + item.label;
+    e.target.querySelector(".js-drop-submit").innerHTML = "Discard 0";
     document.getElementById("js-drop-slider").value = 0;
     document.getElementById("js-drop-slider").max = item.quantity;
     document.getElementById("js-drop-tickmarks").innerHTML = "";
@@ -85,7 +85,7 @@ $("#settingsModal").on("show.bs.modal", function (e) {
 
 document.getElementById("js-drop-slider").addEventListener("input", function (e) {
     var submit = document.getElementById("dropModal").querySelector(".js-drop-submit");
-    submit.innerHTML = "Drop " + e.target.value;
+    submit.innerHTML = "Discard " + e.target.value;
     submit.dataset.itemQuantity = e.target.value;
 });
 

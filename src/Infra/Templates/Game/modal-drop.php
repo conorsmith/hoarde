@@ -17,7 +17,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary js-drop-submit">Drop 0</button>
+                <button type="button" class="btn btn-primary js-drop-submit w-100"></button>
             </div>
         </div>
     </div>
