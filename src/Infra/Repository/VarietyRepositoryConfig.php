@@ -101,7 +101,9 @@ final class VarietyRepositoryConfig implements VarietyRepository
                 'tools'     => [
                     self::SHOVEL,
                 ],
-                'materials' => [],
+                'materials' => [
+                    self::WATER_BOTTLE => 3,
+                ],
                 'turns'     => 4,
             ],
             'resource_need_capacities' => [
