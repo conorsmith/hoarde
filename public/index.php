@@ -155,6 +155,15 @@ $router->post("/{gameId}/drop", new ConorSmith\Hoarde\Infra\Controller\EntityDis
     )
 ));
 
+$router->post("/{gameId}/{entityId}/discard-from-incubator", new ConorSmith\Hoarde\Infra\Controller\EntityDiscardsFromIncubator(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityDiscardsFromIncubator\UseCase(
+        $entityRepository,
+        $varietyRepository,
+        $unitOfWorkProcessor
+    )
+));
+
 $router->post("/{gameId}/transfer", new ConorSmith\Hoarde\Infra\Controller\EntitiesTransferItems(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntitiesTransferItems\UseCase(

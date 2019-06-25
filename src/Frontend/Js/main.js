@@ -56,33 +56,6 @@ $("#dropModal").on("show.bs.modal", function (e) {
     }
 });
 
-$("#settingsModal").on("show.bs.modal", function (e) {
-    let entity;
-    let labelInput = e.target.querySelector("input[name='label']");
-
-    entities.forEach(function (potentialEntity) {
-        if (potentialEntity.id === e.relatedTarget.dataset.entityId) {
-            entity = potentialEntity;
-        }
-    });
-
-    e.target.querySelector(".js-settings-title").innerHTML = entity.label + " Settings";
-    labelInput.value = entity.label;
-
-    e.target.querySelector(".js-settings-submit").addEventListener("click", function (e) {
-        var form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/" + entity.id + "/settings");
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        form.appendChild(labelInput);
-
-        document.body.appendChild(form);
-
-        form.submit();
-    });
-});
-
 document.getElementById("js-drop-slider").addEventListener("input", function (e) {
     var submit = document.getElementById("dropModal").querySelector(".js-drop-submit");
     submit.innerHTML = "Discard " + e.target.value;
@@ -123,6 +96,102 @@ document.getElementById("dropModal").querySelector(".js-drop-submit").onclick = 
 
     form.submit();
 };
+
+$("#discardIncubationModal").on("show.bs.modal", function (e) {
+    let button = e.relatedTarget;
+
+    let entity = entities.find(function (entity) {
+        return entity.id === button.dataset.entityId;
+    });
+
+    let incubation = entity.incubator.find(function (incubation) {
+        return incubation.varietyId === button.dataset.varietyId
+            && incubation.construction.remainingSteps === parseInt(button.dataset.remainingSteps, 10);
+    });
+
+    e.target.dataset.varietyId = incubation.varietyId;
+    e.target.dataset.remainingSteps = incubation.construction.remainingSteps;
+    e.target.dataset.entityId = entity.id;
+    e.target.querySelector(".js-drop-title").innerHTML = "Discard " + incubation.label;
+    e.target.querySelector(".js-drop-submit").innerHTML = "Discard 0";
+    e.target.querySelector(".js-drop-slider").value = 0;
+    e.target.querySelector(".js-drop-slider").max = incubation.quantity;
+    e.target.querySelector(".js-drop-tickmarks").innerHTML = "";
+    for (var i = 0; i <= incubation.quantity; i++) {
+        var tickmark = document.createElement("option");
+        tickmark.value = i;
+        e.target.querySelector(".js-drop-tickmarks").appendChild(tickmark);
+    }
+});
+
+document.getElementById("discardIncubationModal").querySelector(".js-drop-slider").addEventListener("input", function (e) {
+    var submit = document.getElementById("discardIncubationModal").querySelector(".js-drop-submit");
+    submit.innerHTML = "Discard " + e.target.value;
+    submit.dataset.quantity = e.target.value;
+});
+
+document.getElementById("discardIncubationModal").querySelector(".js-drop-submit").onclick = function (e) {
+    e.preventDefault();
+
+    var varietyId = document.getElementById("discardIncubationModal").dataset.varietyId;
+    var entityId = document.getElementById("discardIncubationModal").dataset.entityId;
+    var remainingSteps = document.getElementById("discardIncubationModal").dataset.remainingSteps;
+    var quantity = e.currentTarget.dataset.quantity;
+
+    var form = document.createElement("form");
+    form.setAttribute("action", "/" + gameId + "/" + entityId + "/discard-from-incubator");
+    form.setAttribute("method", "POST");
+    form.setAttribute("hidden", true);
+
+    var varietyIdInput = document.createElement("input");
+    varietyIdInput.setAttribute("type", "hidden");
+    varietyIdInput.setAttribute("name", "varietyId");
+    varietyIdInput.setAttribute("value", varietyId);
+    form.appendChild(varietyIdInput);
+
+    var remainingStepsInput = document.createElement("input");
+    remainingStepsInput.setAttribute("type", "hidden");
+    remainingStepsInput.setAttribute("name", "remainingSteps");
+    remainingStepsInput.setAttribute("value", remainingSteps);
+    form.appendChild(remainingStepsInput);
+
+    var quantityInput = document.createElement("input");
+    quantityInput.setAttribute("type", "hidden");
+    quantityInput.setAttribute("name", "quantity");
+    quantityInput.setAttribute("value", quantity);
+    form.appendChild(quantityInput);
+
+    document.body.appendChild(form);
+
+    form.submit();
+};
+
+$("#settingsModal").on("show.bs.modal", function (e) {
+    let entity;
+    let labelInput = e.target.querySelector("input[name='label']");
+
+    entities.forEach(function (potentialEntity) {
+        if (potentialEntity.id === e.relatedTarget.dataset.entityId) {
+            entity = potentialEntity;
+        }
+    });
+
+    e.target.querySelector(".js-settings-title").innerHTML = entity.label + " Settings";
+    labelInput.value = entity.label;
+
+    e.target.querySelector(".js-settings-submit").addEventListener("click", function (e) {
+        var form = document.createElement("form");
+        form.setAttribute("action", "/" + gameId + "/" + entity.id + "/settings");
+        form.setAttribute("method", "POST");
+        form.setAttribute("hidden", true);
+
+        form.appendChild(labelInput);
+
+        document.body.appendChild(form);
+
+        form.submit();
+    });
+});
 
 for (var i = 0; i < useButtons.length; i++) {
     useButtons[i].onclick = function (e) {

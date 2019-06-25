@@ -101,6 +101,18 @@
                               </a>
                             <?php endforeach ?>
 
+                            <a href="#"
+                               class="dropdown-item"
+                               data-toggle="modal"
+                               data-target="#discardIncubationModal"
+                               data-entity-id="<?=$entity->id?>"
+                               data-variety-id="<?=$incubation->varietyId?>"
+                               data-remaining-steps="<?=$incubation->construction->remainingSteps?>"
+                            >
+                                <i class="fas fa-fw fa-trash"></i>
+                                Discard
+                            </a>
+
                         </div>
 
                     </div>
