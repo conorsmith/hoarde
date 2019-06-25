@@ -11,6 +11,7 @@ var constructButtons = document.getElementsByClassName("js-construct");
 var constructContinueButtons = document.getElementsByClassName("js-construct-continue");
 var sowButtons = document.getElementsByClassName("js-sow");
 var harvestButtons = document.getElementsByClassName("js-harvest");
+var repairButtons = document.getElementsByClassName("js-repair");
 
 $(function () {
     $('[data-toggle="popover"]').popover({
@@ -323,6 +324,17 @@ for (var i = 0; i < constructButtons.length; i++) {
     }
 }
 
+for (var i = 0; i < repairButtons.length; i++) {
+    repairButtons[i].onclick = function (e) {
+        e.preventDefault();
+
+        document.getElementById("repairModal").dataset.actorId = e.currentTarget.dataset.actorId;
+        document.getElementById("repairModal").dataset.entityId = e.currentTarget.dataset.entityId;
+
+        $("#repairModal").modal();
+    }
+}
+
 for (var i = 0; i < constructContinueButtons.length; i++) {
     constructContinueButtons[i].onclick = function (e) {
         e.preventDefault();
@@ -383,6 +395,7 @@ import {MainController as TransferController, ModalView as TransferModalView} fr
 import {MainController as ConstructController, ModalView as ConstructModalView} from "./construct.js";
 import {MainController as SowController, ModalView as SowModalView} from "./sow.js";
 import {MainController as HarvestController, ModalView as HarvestModalView} from "./harvest.js";
+import {MainController as RepairController, ModalView as RepairModalView} from "./repair.js";
 
 new TransferController(
     eventBus,
@@ -424,6 +437,17 @@ new HarvestController(
         document.getElementById("transfer-item-slider")
     ),
     JSON.parse(document.getElementById("entities").value),
+    gameId
+);
+
+new RepairController(
+    eventBus,
+    new RepairModalView(
+        document.getElementById("repairModal"),
+        document.getElementById("construction-card")
+    ),
+    JSON.parse(document.getElementById("entities").value),
+    JSON.parse(document.getElementById("constructions").value),
     gameId
 );
 

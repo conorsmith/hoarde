@@ -57,4 +57,13 @@ final class Construction
             $this->requiredSteps
         );
     }
+
+    public function startOver(): self
+    {
+        return new self(
+            false,
+            $this->requiredSteps - 1,
+            $this->requiredSteps
+        );
+    }
 }

@@ -67,6 +67,7 @@
     <?=$this->render("Game/modal-settings.php")?>
     <?=$this->render("Game/modal-sow.php")?>
     <?=$this->render("Game/modal-harvest.php")?>
+    <?=$this->render("Game/modal-repair.php")?>
 
     <?=$this->render("Game/modal-scavenge.php", [
         'entity' => $human,

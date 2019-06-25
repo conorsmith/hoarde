@@ -28,6 +28,9 @@ final class CompileJsOutput
         } elseif ($args['fileName'] === "harvest") {
             $output = $this->renderJsFiles("Harvest");
 
+        } elseif ($args['fileName'] === "repair") {
+            $output = $this->renderJsFiles("Repair");
+
         } else {
 
             ob_start();

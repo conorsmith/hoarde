@@ -16,11 +16,6 @@
                 <?php endif ?>
             </h5>
 
-            <?=$this->render("Game/resource-needs.php", [
-                'entity'   => $entity,
-                'isIntact' => $isIntact,
-            ])?>
-
             <?php if (!$entity->construction->isConstructed) : ?>
                 <div class="progress construction"
                      style="margin-bottom: 0.6rem;"
@@ -45,10 +40,17 @@
                         data-actor-id="<?=$entity->construction->actor->id?>"
                         data-target-id="<?=$entity->id?>"
                         data-construction-variety-id="<?=$entity->varietyId?>"
-                    <?=($isIntact && $entity->isIntact && $entity->construction->actor->hasTools ? "" : "disabled")?>
+                    <?=($isIntact && $entity->construction->actor->hasTools ? "" : "disabled")?>
                 >Continue Construction</button>
 
+                <hr>
+
             <?php endif ?>
+
+            <?=$this->render("Game/resource-needs.php", [
+                'entity'   => $entity,
+                'isIntact' => $isIntact,
+            ])?>
 
             <hr>
 
@@ -139,6 +141,14 @@
                         data-capacity-used="<?=$entity->incubatorCapacityUsed?>"
                     <?=($isIntact && $entity->isIntact && $entity->construction->isConstructed ? "" : "disabled")?>
                 >Sow Seeds</button>
+
+                <?php if (!$entity->isIntact && $entity->construction->isConstructed) : ?>
+                    <button type="button"
+                            class="btn btn-light btn-block js-repair"
+                            data-actor-id="<?=$entity->construction->actor->id?>"
+                            data-entity-id="<?=$entity->id?>"
+                    >Repair</button>
+                <?php endif ?>
 
             </div>
 

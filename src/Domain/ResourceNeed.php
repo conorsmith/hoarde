@@ -100,4 +100,15 @@ final class ResourceNeed
             $variety->getId()
         );
     }
+
+    public function fullyReplenish(): self
+    {
+        return new self(
+            $this->resource,
+            $this->maximumLevel,
+            $this->maximumLevel,
+            $this->amountPerLevel,
+            $this->lastConsumedVarietyId
+        );
+    }
 }

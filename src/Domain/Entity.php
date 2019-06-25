@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Domain;
 
+use ConorSmith\Hoarde\Infra\Repository\ActionRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\ResourceRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use DomainException;
@@ -134,6 +135,15 @@ final class Entity
     public function relabel(string $label): void
     {
         $this->label = $label;
+    }
+
+    public function repair(): void
+    {
+        if ($this->isIntact) {
+            throw new DomainException;
+        }
+
+        $this->construction = $this->construction->startOver();
     }
 
     public function proceedToNextTurn(): void
@@ -275,7 +285,39 @@ final class Entity
 
         $target->construction = $target->construction->takeAStep();
 
+        if ($target->construction->isConstructed()) {
+            $target->completeConstruction();
+        }
+
         $this->afterAction();
+    }
+
+    private function completeConstruction(): void
+    {
+        if ($this->varietyId->equals(Uuid::fromString(VarietyRepositoryConfig::GARDEN_PLOT))) {
+
+            if ($this->isIntact) {
+
+                $resourceRepository = new ResourceRepositoryConfig;
+                $varietyRepository = new VarietyRepositoryConfig($resourceRepository, new ActionRepositoryConfig);
+
+                $variety = $varietyRepository->find($this->varietyId);
+
+                $this->resourceNeeds[ResourceRepositoryConfig::WATER] = new ResourceNeed(
+                    $resourceRepository->find(Uuid::fromString(ResourceRepositoryConfig::WATER)),
+                    $variety->getResourceNeedCapacities()[ResourceRepositoryConfig::WATER],
+                    $variety->getResourceNeedCapacities()[ResourceRepositoryConfig::WATER],
+                    500,
+                    null
+                );
+
+            } else {
+                $this->isIntact = true;
+
+                $this->resourceNeeds[ResourceRepositoryConfig::WATER]
+                    = $this->resourceNeeds[ResourceRepositoryConfig::WATER]->fullyReplenish();
+            }
+        }
     }
 
     public function scavenge(Scavenge $scavenge): ScavengingHaul

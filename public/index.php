@@ -193,6 +193,16 @@ $router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Contr
     )
 ));
 
+$router->post("/{gameId}/{actorId}/repair/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityBeginsRepairingEntity(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityBeginsRepairingEntity\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $unitOfWorkProcessor
+    )
+));
+
 $router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityContinuesConstructingEntity(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityContinuesConstructingEntity\UseCase(
