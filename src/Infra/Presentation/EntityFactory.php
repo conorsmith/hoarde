@@ -183,6 +183,7 @@ final class EntityFactory
                         'varietyId'              => $inventoryEntity->getVarietyId(),
                         'label'                  => $variety->getLabel(),
                         'icon'                   => $variety->getIcon(),
+                        'isIntact'               => $inventoryEntity->isIntact(),
                         'description'            => $variety->getDescription(),
                         'construction'           => (object)[
                             'percentage'     => ($construction->getRequiredSteps() - $construction->getRemainingSteps())
