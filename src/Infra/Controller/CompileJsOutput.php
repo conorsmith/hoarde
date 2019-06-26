@@ -31,6 +31,9 @@ final class CompileJsOutput
         } elseif ($args['fileName'] === "repair") {
             $output = $this->renderJsFiles("Repair");
 
+        } elseif ($args['fileName'] === "sort") {
+            $output = $this->renderJsFiles("Sort");
+
         } else {
 
             ob_start();

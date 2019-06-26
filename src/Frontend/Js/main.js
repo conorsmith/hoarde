@@ -389,6 +389,14 @@ for (var i = 0; i < harvestButtons.length; i++) {
     }
 }
 
+document.querySelectorAll(".js-sort").forEach(function (button) {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        $("#sortModal").modal();
+    });
+});
+
 document.querySelectorAll(".js-restart").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
@@ -411,6 +419,7 @@ import {MainController as ConstructController, ModalView as ConstructModalView} 
 import {MainController as SowController, ModalView as SowModalView} from "./sow.js";
 import {MainController as HarvestController, ModalView as HarvestModalView} from "./harvest.js";
 import {MainController as RepairController, ModalView as RepairModalView} from "./repair.js";
+import {MainController as SortController, ModalView as SortModalView} from "./sort.js";
 
 new TransferController(
     eventBus,
@@ -463,6 +472,14 @@ new RepairController(
     ),
     JSON.parse(document.getElementById("entities").value),
     JSON.parse(document.getElementById("constructions").value),
+    gameId
+);
+
+new SortController(
+    eventBus,
+    new SortModalView(
+        document.getElementById("sortModal"),
+    ),
     gameId
 );
 

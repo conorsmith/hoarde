@@ -125,6 +125,12 @@ final class EntityFactory
             ),
             'construction'               => $this->presentConstruction($entity, $actor),
             'resourceNeeds'              => $resourceNeeds,
+            'isPlaced'                   => in_array(strval($entity->getVarietyId()), [
+                VarietyRepositoryConfig::HUMAN,
+                VarietyRepositoryConfig::WOODEN_CRATE,
+                VarietyRepositoryConfig::WELL,
+                VarietyRepositoryConfig::GARDEN_PLOT,
+            ]),
         ];
 
         if ($entity->hasInventory()) {

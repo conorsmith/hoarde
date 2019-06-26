@@ -137,6 +137,11 @@ final class Entity
         $this->label = $label;
     }
 
+    public function setOrderIndex(int $index): void
+    {
+        //
+    }
+
     public function repair(): void
     {
         if ($this->isIntact) {

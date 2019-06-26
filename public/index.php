@@ -240,6 +240,14 @@ $router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Contr
     )
 ));
 
+$router->post("/{gameId}/sort", new ConorSmith\Hoarde\Infra\Controller\PlayerSortsEntities(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\PlayerSortsEntities\UseCase(
+        $entityRepository,
+        $unitOfWorkProcessor
+    )
+));
+
 /**
  * DISPATCH REQUEST
  */
