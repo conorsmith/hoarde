@@ -128,6 +128,7 @@ final class UseCase
                     $plantVariety->getId(),
                     $plantVariety->getLabel(),
                     $plantVariety->getIcon(),
+                    $orderIndex = 0,
                     true,
                     new Construction(
                         false,

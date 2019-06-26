@@ -47,7 +47,7 @@ final class EntityRepositoryDb implements EntityRepository
 
     public function allInGame(UuidInterface $gameId): iterable
     {
-        $rows = $this->db->fetchAll("SELECT * FROM entities WHERE game_id = :game_id", [
+        $rows = $this->db->fetchAll("SELECT * FROM entities WHERE game_id = :game_id ORDER BY order_index ASC", [
             'game_id' => $gameId,
         ]);
 
@@ -99,6 +99,7 @@ final class EntityRepositoryDb implements EntityRepository
             Uuid::fromString($row['variety_id']),
             $row['label'],
             $row['icon'],
+            intval($row['order_index']),
             $row['intact'] === "1",
             new Construction(
                 $row['is_constructed'] === "1",
@@ -199,6 +200,7 @@ final class EntityRepositoryDb implements EntityRepository
                 'variety_id'         => $entity->getVarietyId(),
                 'label'              => $entity->getLabel(),
                 'icon'               => $entity->getIcon(),
+                'order_index'        => $entity->getOrderIndex(),
                 'intact'             => $entity->isIntact(),
                 'is_constructed'     => $entity->getConstruction()->isConstructed() ? "1" : "0",
                 'construction_level' => $entity->getConstruction()->getRemainingSteps(),
@@ -207,6 +209,7 @@ final class EntityRepositoryDb implements EntityRepository
             $this->db->update("entities", [
                 'label'              => $entity->getLabel(),
                 'icon'               => $entity->getIcon(),
+                'order_index'        => $entity->getOrderIndex(),
                 'intact'             => $entity->isIntact() ? "1" : "0",
                 'is_constructed'     => $entity->getConstruction()->isConstructed() ? "1" : "0",
                 'construction_level' => $entity->getConstruction()->getRemainingSteps(),

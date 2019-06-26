@@ -98,6 +98,7 @@ final class Game
             Uuid::fromString(VarietyRepositoryConfig::HUMAN),
             $label,
             $icon,
+            $orderIndex = 0,
             $isIntact = true,
             Construction::constructed(),
             $resourceNeeds,

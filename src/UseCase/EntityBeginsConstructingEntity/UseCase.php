@@ -81,6 +81,7 @@ final class UseCase
             $targetVariety->getId(),
             $targetVariety->getLabel(),
             $targetVariety->getIcon(),
+            $orderIndex = 1,
             true,
             new Construction(false, $blueprint->getTurns() - 1, $blueprint->getTurns()),
             [],

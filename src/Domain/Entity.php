@@ -27,6 +27,9 @@ final class Entity
     /** @var string */
     private $icon;
 
+    /** @var int */
+    private $orderIndex;
+
     /** @var bool */
     private $isIntact;
 
@@ -45,6 +48,7 @@ final class Entity
         UuidInterface $varietyId,
         string $label,
         string $icon,
+        int $orderIndex,
         bool $isIntact,
         Construction $construction,
         iterable $resourceNeeds,
@@ -55,6 +59,7 @@ final class Entity
         $this->varietyId = $varietyId;
         $this->label = $label;
         $this->icon = $icon;
+        $this->orderIndex = $orderIndex;
         $this->isIntact = $isIntact;
         $this->construction = $construction;
         $this->inventory = $inventory;
@@ -92,6 +97,11 @@ final class Entity
     public function getIcon(): string
     {
         return $this->icon;
+    }
+
+    public function getOrderIndex(): int
+    {
+        return $this->orderIndex;
     }
 
     public function isIntact(): bool
@@ -137,9 +147,9 @@ final class Entity
         $this->label = $label;
     }
 
-    public function setOrderIndex(int $index): void
+    public function setOrderIndex(int $orderIndex): void
     {
-        //
+        $this->orderIndex = $orderIndex;
     }
 
     public function repair(): void

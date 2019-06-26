@@ -114,6 +114,7 @@ final class UseCase
             $itemVariety->getId(),
             $itemVariety->getLabel(),
             $itemVariety->getIcon(),
+            $orderIndex = 1,
             true,
             Construction::constructed(),
             [],
