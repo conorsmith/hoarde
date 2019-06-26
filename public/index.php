@@ -37,6 +37,8 @@ $entityRepository = new ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb(
     $resourceRepository
 );
 
+$locationRepository = new ConorSmith\Hoarde\Infra\Repository\LocationRepositoryDb($db);
+
 $scavengingHaulRepository = new \ConorSmith\Hoarde\Infra\Repository\ScavengingHaulRepositoryDb(
     $db,
     $varietyRepository
@@ -46,6 +48,7 @@ $unitOfWorkProcessor = new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
     $db,
     $gameRepository,
     $entityRepository,
+    $locationRepository,
     $scavengingHaulRepository
 );
 

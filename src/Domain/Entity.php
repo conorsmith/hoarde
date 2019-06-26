@@ -60,6 +60,7 @@ final class Entity
     ) {
         $this->id = $id;
         $this->gameId = $gameId;
+        $this->locationId = $locationId;
         $this->varietyId = $varietyId;
         $this->label = $label;
         $this->icon = $icon;

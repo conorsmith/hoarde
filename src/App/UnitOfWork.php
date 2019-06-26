@@ -5,6 +5,7 @@ namespace ConorSmith\Hoarde\App;
 
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\Game;
+use ConorSmith\Hoarde\Domain\Location;
 use ConorSmith\Hoarde\Domain\ScavengingHaul;
 use InvalidArgumentException;
 
@@ -21,12 +22,14 @@ final class UnitOfWork
         $this->savedObjects = [
             Game::class           => [],
             Entity::class         => [],
+            Location::class       => [],
             ScavengingHaul::class => [],
         ];
 
         $this->deletedObjects = [
             Game::class           => [],
             Entity::class         => [],
+            Location::class       => [],
             ScavengingHaul::class => [],
         ];
     }

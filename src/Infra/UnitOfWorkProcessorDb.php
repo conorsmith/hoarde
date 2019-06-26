@@ -6,9 +6,11 @@ namespace ConorSmith\Hoarde\Infra;
 use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\Game;
+use ConorSmith\Hoarde\Domain\Location;
 use ConorSmith\Hoarde\Domain\ScavengingHaul;
 use ConorSmith\Hoarde\Infra\Repository\EntityRepositoryDb;
 use ConorSmith\Hoarde\Infra\Repository\GameRepositoryDb;
+use ConorSmith\Hoarde\Infra\Repository\LocationRepositoryDb;
 use ConorSmith\Hoarde\Infra\Repository\ScavengingHaulRepositoryDb;
 use Doctrine\DBAL\Connection;
 use Throwable;
@@ -25,6 +27,7 @@ final class UnitOfWorkProcessorDb implements UnitOfWorkProcessor
         Connection $db,
         GameRepositoryDb $gameRepositoryDb,
         EntityRepositoryDb $entityRepositoryDb,
+        LocationRepositoryDb $locationRepositoryDb,
         ScavengingHaulRepositoryDb $scavengingHaulRepositoryDb
     ) {
         $this->db = $db;
@@ -32,6 +35,7 @@ final class UnitOfWorkProcessorDb implements UnitOfWorkProcessor
         $this->repositories = [
             Game::class           => $gameRepositoryDb,
             Entity::class         => $entityRepositoryDb,
+            Location::class       => $locationRepositoryDb,
             ScavengingHaul::class => $scavengingHaulRepositoryDb,
         ];
     }

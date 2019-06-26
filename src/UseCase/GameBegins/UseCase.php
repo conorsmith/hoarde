@@ -5,9 +5,11 @@ namespace ConorSmith\Hoarde\UseCase\GameBegins;
 
 use ConorSmith\Hoarde\App\UnitOfWork;
 use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
+use ConorSmith\Hoarde\Domain\Coordinates;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\Domain\Location;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
@@ -53,7 +55,11 @@ final class UseCase
 
         $variety = $this->varietyRepository->find(Uuid::fromString(VarietyRepositoryConfig::HUMAN));
 
-        $beginningLocationId = Uuid::uuid4();
+        $beginningLocation = new Location(
+            $beginningLocationId = Uuid::uuid4(),
+            Coordinates::origin(),
+            5
+        );
 
         $beginningEntity = $newGame->createBeginningEntity(
             $newGameId,
@@ -67,6 +73,7 @@ final class UseCase
 
         $unitOfWork = new UnitOfWork;
         $unitOfWork->save($newGame);
+        $unitOfWork->save($beginningLocation);
         $unitOfWork->save($beginningEntity);
         $unitOfWork->commit($this->unitOfWorkProcessor);
 
