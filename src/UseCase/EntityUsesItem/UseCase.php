@@ -111,6 +111,7 @@ final class UseCase
         $placedEntity = new Entity(
             $placedEntityId = Uuid::uuid4(),
             $game->getId(),
+            $actingEntity->getLocationId(),
             $itemVariety->getId(),
             $itemVariety->getLabel(),
             $itemVariety->getIcon(),

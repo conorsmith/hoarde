@@ -78,6 +78,7 @@ final class UseCase
         $target = new Entity(
             $targetId = Uuid::uuid4(),
             $game->getId(),
+            $actor->getLocationId(),
             $targetVariety->getId(),
             $targetVariety->getLabel(),
             $targetVariety->getIcon(),

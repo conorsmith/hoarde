@@ -125,6 +125,7 @@ final class UseCase
                 $plotEntities[] = new Entity(
                     Uuid::uuid4(),
                     $game->getId(),
+                    $target->getLocationId(),
                     $plantVariety->getId(),
                     $plantVariety->getLabel(),
                     $plantVariety->getIcon(),

@@ -96,6 +96,9 @@ final class EntityRepositoryDb implements EntityRepository
         $entity = new Entity(
             $id,
             Uuid::fromString($row['game_id']),
+            $row['location_id']
+                ? Uuid::fromString($row['location_id'])
+                : Uuid::fromString("00000000-0000-0000-0000-000000000000"),
             Uuid::fromString($row['variety_id']),
             $row['label'],
             $row['icon'],
@@ -197,6 +200,7 @@ final class EntityRepositoryDb implements EntityRepository
             $this->db->insert("entities", [
                 'id'                 => $entity->getId(),
                 'game_id'            => $entity->getGameId(),
+                'location_id'        => $entity->getLocationId(),
                 'variety_id'         => $entity->getVarietyId(),
                 'label'              => $entity->getLabel(),
                 'icon'               => $entity->getIcon(),
@@ -207,6 +211,7 @@ final class EntityRepositoryDb implements EntityRepository
             ]);
         } else {
             $this->db->update("entities", [
+                'location_id'        => $entity->getLocationId(),
                 'label'              => $entity->getLabel(),
                 'icon'               => $entity->getIcon(),
                 'order_index'        => $entity->getOrderIndex(),

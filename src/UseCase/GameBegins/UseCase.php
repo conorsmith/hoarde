@@ -53,8 +53,11 @@ final class UseCase
 
         $variety = $this->varietyRepository->find(Uuid::fromString(VarietyRepositoryConfig::HUMAN));
 
+        $beginningLocationId = Uuid::uuid4();
+
         $beginningEntity = $newGame->createBeginningEntity(
             $newGameId,
+            $beginningLocationId,
             $variety,
             $beginningEntityLabel,
             $beginningEntityIcon,

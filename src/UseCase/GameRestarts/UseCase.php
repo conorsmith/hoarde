@@ -10,6 +10,7 @@ use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class UseCase
@@ -58,8 +59,11 @@ final class UseCase
 
         $oldBeginningEntity = $game->findBeginningEntity($oldEntities);
 
+        $newBeginningLocationId = Uuid::uuid4();
+
         $newBeginningEntity = $game->createBeginningEntity(
             $game->getId(),
+            $newBeginningLocationId,
             $this->varietyRepository->find($oldBeginningEntity->getVarietyId()),
             $oldBeginningEntity->getLabel(),
             $oldBeginningEntity->getIcon(),

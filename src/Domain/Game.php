@@ -53,6 +53,7 @@ final class Game
 
     public function createBeginningEntity(
         UuidInterface $gameId,
+        UuidInterface $locationId,
         Variety $variety,
         string $label,
         string $icon,
@@ -95,6 +96,7 @@ final class Game
         $beginningEntity = new Entity(
             $beginningEntityId,
             $gameId,
+            $locationId,
             Uuid::fromString(VarietyRepositoryConfig::HUMAN),
             $label,
             $icon,

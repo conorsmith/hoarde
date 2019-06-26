@@ -19,6 +19,9 @@ final class Entity
     private $gameId;
 
     /** @var UuidInterface */
+    private $locationId;
+
+    /** @var UuidInterface */
     private $varietyId;
 
     /** @var string */
@@ -45,6 +48,7 @@ final class Entity
     public function __construct(
         UuidInterface $id,
         UuidInterface $gameId,
+        UuidInterface $locationId,
         UuidInterface $varietyId,
         string $label,
         string $icon,
@@ -82,6 +86,11 @@ final class Entity
     public function getGameId(): UuidInterface
     {
         return $this->gameId;
+    }
+
+    public function getLocationId(): UuidInterface
+    {
+        return $this->locationId;
     }
 
     public function getVarietyId(): UuidInterface
