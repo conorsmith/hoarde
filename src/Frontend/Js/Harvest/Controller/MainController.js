@@ -28,9 +28,13 @@ class MainController {
                     && incubation.construction.remainingSteps === 0;
             });
 
+        let initialEntity = this.entities.find(function (entity) {
+            return entity.isHuman;
+        });
+
         this.entityId = e.currentTarget.dataset.entityId;
         this.actorId = e.currentTarget.dataset.actorId;
-        this.entitySelector = new EntitySelector(this.entities, this.entities[0]);
+        this.entitySelector = new EntitySelector(this.entities, initialEntity);
         this.harvest = new Harvest(
             harvestableEntities.varietyId,
             harvestableEntities.label,
@@ -39,7 +43,7 @@ class MainController {
             0,
             harvestableEntities.quantity
         );
-        this.capacityBar = new CapacityBar(this.entities[0], this.harvest);
+        this.capacityBar = new CapacityBar(initialEntity, this.harvest);
 
         this.view.repaint();
 
