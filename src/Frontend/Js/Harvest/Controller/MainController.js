@@ -18,6 +18,11 @@ class MainController {
     }
 
     onShow(e) {
+
+        let initialEntity = this.entities.find(function (entity) {
+            return entity.isHuman;
+        });
+
         let harvestableEntities = this.entities
             .find(function (entity) {
                 return entity.id === e.currentTarget.dataset.entityId;
@@ -28,13 +33,14 @@ class MainController {
                     && incubation.construction.remainingSteps === 0;
             });
 
-        let initialEntity = this.entities.find(function (entity) {
-            return entity.isHuman;
+        let storageEntities = this.entities.filter(function (entity) {
+            return entity.inventory
+                && !entity.incubator;
         });
 
         this.entityId = e.currentTarget.dataset.entityId;
         this.actorId = e.currentTarget.dataset.actorId;
-        this.entitySelector = new EntitySelector(this.entities, initialEntity);
+        this.entitySelector = new EntitySelector(storageEntities, initialEntity);
         this.harvest = new Harvest(
             harvestableEntities.varietyId,
             harvestableEntities.label,
