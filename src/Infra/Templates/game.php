@@ -22,10 +22,17 @@
       <ol class="breadcrumb d-flex justify-content-between">
         <div class="text-muted align-self-center">Turn <?=$game->turnIndex?></div>
         <div class="text-muted align-self-center" style="font-weight: 900; font-size: 0.8rem;">HOARDE</div>
-        <div>
-          <form method="POST" action="/<?=$game->id?>/restart">
-            <button type="submit" class="btn btn-link btn-sm">Restart</button>
-          </form>
+        <div class="dropdown">
+          <a href="#"
+             class="btn btn-sm btn-link dropdown-toggle"
+             role="button"
+             data-toggle="dropdown"
+          >
+            Menu
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a href="#" class="dropdown-item js-restart">Restart Game</a>
+          </div>
         </div>
       </ol>
     </nav>

@@ -389,6 +389,21 @@ for (var i = 0; i < harvestButtons.length; i++) {
     }
 }
 
+document.querySelectorAll(".js-restart").forEach(function (button) {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        let form = document.createElement("form");
+        form.setAttribute("action", "/" + gameId + "/restart");
+        form.setAttribute("method", "POST");
+        form.setAttribute("hidden", true);
+
+        document.body.appendChild(form);
+
+        form.submit();
+    });
+});
+
 var eventBus = new EventBus();
 
 import {MainController as TransferController, ModalView as TransferModalView} from "./transfer.js";
