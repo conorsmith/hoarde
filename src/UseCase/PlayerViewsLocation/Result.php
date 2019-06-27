@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ConorSmith\Hoarde\UseCase\PlayerViewsGame;
+namespace ConorSmith\Hoarde\UseCase\PlayerViewsLocation;
 
 use ConorSmith\Hoarde\App\Result as GeneralResult;
 

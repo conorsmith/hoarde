@@ -1,15 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace ConorSmith\Hoarde\UseCase\PlayerViewsGame;
+namespace ConorSmith\Hoarde\UseCase\PlayerViewsLocation;
 
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\Game;
+use ConorSmith\Hoarde\Domain\Location;
 
 final class GameState
 {
     /** @var Game */
     private $game;
+
+    /** @var Location */
+    private $location;
 
     /** @var Entity */
     private $human;
@@ -25,12 +29,14 @@ final class GameState
 
     public function __construct(
         Game $game,
+        Location $location,
         Entity $human,
         iterable $entities,
         iterable $actions,
         iterable $varietiesWithBlueprints
     ) {
         $this->game = $game;
+        $this->location = $location;
         $this->human = $human;
         $this->entities = $entities;
         $this->actions = $actions;
@@ -40,6 +46,11 @@ final class GameState
     public function getGame(): Game
     {
         return $this->game;
+    }
+
+    public function getLocation(): Location
+    {
+        return $this->location;
     }
 
     public function getHuman(): Entity

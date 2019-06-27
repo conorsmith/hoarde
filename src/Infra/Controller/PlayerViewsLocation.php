@@ -11,13 +11,13 @@ use ConorSmith\Hoarde\Infra\Presentation\BlueprintFactory;
 use ConorSmith\Hoarde\Infra\Presentation\EntityFactory;
 use ConorSmith\Hoarde\Infra\Presentation\Game;
 use ConorSmith\Hoarde\Infra\TemplateEngine;
-use ConorSmith\Hoarde\UseCase\PlayerViewsGame\UseCase;
+use ConorSmith\Hoarde\UseCase\PlayerViewsLocation\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\HtmlResponse;
 
-final class PlayerViewsGame
+final class PlayerViewsLocation
 {
     /** @var UseCase */
     private $useCase;

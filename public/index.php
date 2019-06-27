@@ -77,9 +77,10 @@ $router->post("/", new ConorSmith\Hoarde\Infra\Controller\GameBegins(
 $router->get("/{fileName}.js", new ConorSmith\Hoarde\Infra\Controller\CompileJsOutput);
 $router->get("/main.css", new ConorSmith\Hoarde\Infra\Controller\CompileCssOutput);
 
-$router->get("/{gameId}/{locationId}", new ConorSmith\Hoarde\Infra\Controller\PlayerViewsGame(
-    new ConorSmith\Hoarde\UseCase\PlayerViewsGame\UseCase(
+$router->get("/{gameId}/{locationId}", new ConorSmith\Hoarde\Infra\Controller\PlayerViewsLocation(
+    new ConorSmith\Hoarde\UseCase\PlayerViewsLocation\UseCase(
         $gameRepository,
+        $locationRepository,
         $entityRepository,
         $varietyRepository,
         $actionRepository
