@@ -96,6 +96,11 @@ $router->get("/{gameId}/{locationId}", new ConorSmith\Hoarde\Infra\Controller\Pl
     )
 ));
 
+$router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\PlayerViewsGame(
+    $locationRepository,
+    $templateEngine
+));
+
 $router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\GameRestarts(
     new \ConorSmith\Hoarde\UseCase\GameRestarts\UseCase(
         $gameRepository,
