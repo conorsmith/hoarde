@@ -10,6 +10,7 @@ use ConorSmith\Hoarde\Infra\Presentation\Alert;
 use ConorSmith\Hoarde\Infra\Presentation\BlueprintFactory;
 use ConorSmith\Hoarde\Infra\Presentation\EntityFactory;
 use ConorSmith\Hoarde\Infra\Presentation\Game;
+use ConorSmith\Hoarde\Infra\Presentation\Location;
 use ConorSmith\Hoarde\Infra\TemplateEngine;
 use ConorSmith\Hoarde\UseCase\PlayerViewsLocation\UseCase;
 use Psr\Http\Message\ResponseInterface;
@@ -64,6 +65,10 @@ final class PlayerViewsLocation
         $gameState = $result->getGameState();
 
         return new HtmlResponse($this->templateEngine->render("game.php", [
+            'game'          => new Game(
+                $gameState->getGame()
+            ),
+            'location'      => new Location($gameState->getLocation()),
             'human'         => $this->entityPresentationFactory->createEntity(
                 $gameState->getHuman(),
                 $gameState->getHuman()->getId(),
@@ -71,9 +76,6 @@ final class PlayerViewsLocation
             ),
             'isIntact'      => $gameState->getHuman()->isIntact(),
             'alert'         => Alert::fromSession($this->session),
-            'game'          => new Game(
-                $gameState->getGame()
-            ),
             'entities'      => array_map(
                 function (Entity $entity) use ($gameState) {
                     return $this->entityPresentationFactory->createEntity(
