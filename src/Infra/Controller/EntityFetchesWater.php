@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
+use ConorSmith\Hoarde\App\FindActorLocation;
 use ConorSmith\Hoarde\UseCase\EntityFetchesWater\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,12 +19,17 @@ final class EntityFetchesWater
     /** @var UseCase */
     private $useCase;
 
+    /** @var FindActorLocation */
+    private $findActorLocation;
+
     public function __construct(
         Segment $session,
-        UseCase $useCase
+        UseCase $useCase,
+        FindActorLocation $findActorLocation
     ) {
         $this->session = $session;
         $this->useCase = $useCase;
+        $this->findActorLocation = $findActorLocation;
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
@@ -38,8 +44,10 @@ final class EntityFetchesWater
             $this->session->setFlash("danger", $result->getMessage());
         }
 
+        $locationId = $this->findActorLocation->__invoke($gameId, $entityId);
+
         $response = new Response;
-        $response = $response->withHeader("Location", "/{$gameId}");
+        $response = $response->withHeader("Location", "/{$gameId}/{$locationId}");
         return $response;
     }
 }

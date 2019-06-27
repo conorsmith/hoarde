@@ -39,7 +39,7 @@ final class UseCase
         $this->actionRepository = $actionRepository;
     }
 
-    public function __invoke(UuidInterface $gameId): Result
+    public function __invoke(UuidInterface $gameId, UuidInterface $locationId): Result
     {
         $game = $this->gameRepository->find($gameId);
         $entities = $this->entityRepository->allInGame($gameId);

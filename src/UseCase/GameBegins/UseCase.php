@@ -77,6 +77,6 @@ final class UseCase
         $unitOfWork->save($beginningEntity);
         $unitOfWork->commit($this->unitOfWorkProcessor);
 
-        return Result::succeeded($newGameId);
+        return Result::succeeded($newGameId, $beginningLocationId);
     }
 }

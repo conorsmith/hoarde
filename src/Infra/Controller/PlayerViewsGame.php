@@ -51,8 +51,9 @@ final class PlayerViewsGame
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $gameId = Uuid::fromString($args['gameId']);
+        $locationId = Uuid::fromString($args['locationId']);
 
-        $result = $this->useCase->__invoke($gameId);
+        $result = $this->useCase->__invoke($gameId, $locationId);
 
         if (!$result->isSuccessful()) {
             return new HtmlResponse($this->templateEngine->render("error.php", [

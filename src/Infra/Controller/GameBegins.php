@@ -26,7 +26,7 @@ final class GameBegins
         );
 
         $response = new Response;
-        $response = $response->withHeader("Location", "/{$result->getGameId()}");
+        $response = $response->withHeader("Location", "/{$result->getGameId()}/{$result->getBeginningLocationId()}");
         return $response;
     }
 }

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\UseCase\GameRestarts;
 
-use ConorSmith\Hoarde\App\Result;
 use ConorSmith\Hoarde\App\UnitOfWork;
 use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
 use ConorSmith\Hoarde\Domain\EntityRepository;
@@ -81,6 +80,6 @@ final class UseCase
         }
         $unitOfWork->commit($this->unitOfWorkProcessor);
 
-        return Result::succeeded();
+        return Result::succeeded($newBeginningLocationId);
     }
 }

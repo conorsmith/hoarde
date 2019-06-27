@@ -26,7 +26,7 @@ final class GameRestarts
         $result = $this->useCase->__invoke($gameId);
 
         $response = new Response;
-        $response = $response->withHeader("Location", "/{$gameId}");
+        $response = $response->withHeader("Location", "/{$gameId}/{$result->getBeginningLocationId()}");
         return $response;
     }
 }

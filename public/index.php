@@ -52,6 +52,8 @@ $unitOfWorkProcessor = new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
     $scavengingHaulRepository
 );
 
+$findActorLocation = new ConorSmith\Hoarde\App\FindActorLocation($entityRepository);
+
 $templateEngine = new ConorSmith\Hoarde\Infra\TemplateEngine;
 
 $router = new League\Route\Router;
@@ -75,7 +77,7 @@ $router->post("/", new ConorSmith\Hoarde\Infra\Controller\GameBegins(
 $router->get("/{fileName}.js", new ConorSmith\Hoarde\Infra\Controller\CompileJsOutput);
 $router->get("/main.css", new ConorSmith\Hoarde\Infra\Controller\CompileCssOutput);
 
-$router->get("/{gameId}", new ConorSmith\Hoarde\Infra\Controller\PlayerViewsGame(
+$router->get("/{gameId}/{locationId}", new ConorSmith\Hoarde\Infra\Controller\PlayerViewsGame(
     new ConorSmith\Hoarde\UseCase\PlayerViewsGame\UseCase(
         $gameRepository,
         $entityRepository,
@@ -109,7 +111,8 @@ $router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controlle
         $gameRepository,
         $entityRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller\EntityUsesItem(
@@ -119,7 +122,8 @@ $router->post("/{gameId}/{entityId}/use", new ConorSmith\Hoarde\Infra\Controller
         $entityRepository,
         $varietyRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\EntityConsumesResourceItem(
@@ -128,7 +132,8 @@ $router->post("/{gameId}/consume", new ConorSmith\Hoarde\Infra\Controller\Entity
         $entityRepository,
         $resourceRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/{entityId}/scavenge", new ConorSmith\Hoarde\Infra\Controller\EntityScavenges(
@@ -155,7 +160,8 @@ $router->post("/{gameId}/drop", new ConorSmith\Hoarde\Infra\Controller\EntityDis
     new ConorSmith\Hoarde\UseCase\EntityDiscardsItem\UseCase(
         $entityRepository,
         $varietyRepository
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/{entityId}/discard-from-incubator", new ConorSmith\Hoarde\Infra\Controller\EntityDiscardsFromIncubator(
@@ -164,7 +170,8 @@ $router->post("/{gameId}/{entityId}/discard-from-incubator", new ConorSmith\Hoar
         $entityRepository,
         $varietyRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/transfer", new ConorSmith\Hoarde\Infra\Controller\EntitiesTransferItems(
@@ -183,7 +190,8 @@ $router->post("/{gameId}/{entityId}/fetch-water", new ConorSmith\Hoarde\Infra\Co
         $entityRepository,
         $varietyRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Controller\EntityBeginsConstructingEntity(
@@ -193,7 +201,8 @@ $router->post("/{gameId}/{actorId}/construct", new ConorSmith\Hoarde\Infra\Contr
         $entityRepository,
         $varietyRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/{actorId}/repair/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityBeginsRepairingEntity(
@@ -203,7 +212,8 @@ $router->post("/{gameId}/{actorId}/repair/{targetId}", new ConorSmith\Hoarde\Inf
         $entityRepository,
         $varietyRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityContinuesConstructingEntity(
@@ -213,7 +223,8 @@ $router->post("/{gameId}/{actorId}/construct/{targetId}", new ConorSmith\Hoarde\
         $entityRepository,
         $varietyRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/{actorId}/sow/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntitySowsPlot(
@@ -223,7 +234,8 @@ $router->post("/{gameId}/{actorId}/sow/{targetId}", new ConorSmith\Hoarde\Infra\
         $entityRepository,
         $varietyRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/{actorId}/harvest/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityHarvestsPlot(
@@ -233,14 +245,16 @@ $router->post("/{gameId}/{actorId}/harvest/{targetId}", new ConorSmith\Hoarde\In
         $entityRepository,
         $varietyRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/{entityId}/settings", new ConorSmith\Hoarde\Infra\Controller\PlayerRelabelsEntity(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\PlayerRelabelsEntity\UseCase(
         $entityRepository
-    )
+    ),
+    $findActorLocation
 ));
 
 $router->post("/{gameId}/sort", new ConorSmith\Hoarde\Infra\Controller\PlayerSortsEntities(
@@ -248,7 +262,8 @@ $router->post("/{gameId}/sort", new ConorSmith\Hoarde\Infra\Controller\PlayerSor
     new ConorSmith\Hoarde\UseCase\PlayerSortsEntities\UseCase(
         $entityRepository,
         $unitOfWorkProcessor
-    )
+    ),
+    $findActorLocation
 ));
 
 /**
