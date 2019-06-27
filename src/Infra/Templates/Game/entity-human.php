@@ -18,44 +18,75 @@
 
             <div class="actions">
 
-                <div class="btn-group btn-flex">
-                    <button type="button"
-                            class="btn btn-light btn-block js-scavenge"
-                            data-length="1"
-                            data-entity-id="<?=$entity->id?>"
-                        <?=(!$isIntact ? "disabled" : "")?>
-                    >
-                        Scavenge
-                    </button>
+              <div class="btn-group btn-flex">
+                <button type="button"
+                        class="btn btn-light btn-block js-scavenge"
+                        data-length="1"
+                        data-entity-id="<?=$entity->id?>"
+                    <?=(!$isIntact ? "disabled" : "")?>
+                >
+                  Scavenge
+                </button>
 
-                    <button type="button"
-                            class="btn btn-light dropdown-toggle"
-                            data-toggle="dropdown"
-                        <?=(!$isIntact ? "disabled" : "")?>
-                    ></button>
+                <button type="button"
+                        class="btn btn-light dropdown-toggle"
+                        data-toggle="dropdown"
+                    <?=(!$isIntact ? "disabled" : "")?>
+                ></button>
 
-                    <div class="dropdown-menu dropdown-menu-right w-100">
+                <div class="dropdown-menu dropdown-menu-right w-100">
 
-                        <a href="#"
-                           class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
-                           data-length="1"
-                           data-entity-id="<?=$entity->id?>"
-                        >
-                            Short Scavenge
-                            <span class="badge">1 turn</span>
-                        </a>
+                  <a href="#"
+                     class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
+                     data-length="1"
+                     data-entity-id="<?=$entity->id?>"
+                  >
+                    Short Scavenge
+                    <span class="badge">1 turn</span>
+                  </a>
 
-                        <a href="#"
-                           class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
-                           data-length="3"
-                           data-entity-id="<?=$entity->id?>"
-                        >
-                            Long Scavenge
-                            <span class="badge">3 turns</span>
-                        </a>
+                  <a href="#"
+                     class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
+                     data-length="3"
+                     data-entity-id="<?=$entity->id?>"
+                  >
+                    Long Scavenge
+                    <span class="badge">3 turns</span>
+                  </a>
 
-                    </div>
                 </div>
+              </div>
+
+              <div class="btn-group w-100">
+                <a href="#"
+                   class="btn btn-light js-travel"
+                   data-direction="west"
+                   data-actor-id="<?=$entity->id?>"
+                >
+                  <i class="fas fa-fw fa-arrow-left"></i>
+                </a>
+                <a href="#"
+                   class="btn btn-light js-travel"
+                   data-direction="north"
+                   data-actor-id="<?=$entity->id?>"
+                >
+                  <i class="fas fa-fw fa-arrow-up"></i>
+                </a>
+                <a href="#"
+                   class="btn btn-light js-travel"
+                   data-direction="south"
+                   data-actor-id="<?=$entity->id?>"
+                >
+                  <i class="fas fa-fw fa-arrow-down"></i>
+                </a>
+                <a href="#"
+                   class="btn btn-light js-travel"
+                   data-direction="east"
+                   data-actor-id="<?=$entity->id?>"
+                >
+                  <i class="fas fa-fw fa-arrow-right"></i>
+                </a>
+              </div>
 
             </div>
 
