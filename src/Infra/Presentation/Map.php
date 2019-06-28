@@ -11,6 +11,7 @@ final class Map
 {
     public function __construct(DomainModel $map)
     {
+        dd($map);
         $this->rows = [];
 
         $i = 0;
