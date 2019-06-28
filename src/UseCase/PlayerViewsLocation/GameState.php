@@ -6,6 +6,7 @@ namespace ConorSmith\Hoarde\UseCase\PlayerViewsLocation;
 use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\Game;
 use ConorSmith\Hoarde\Domain\Location;
+use ConorSmith\Hoarde\Domain\Map;
 
 final class GameState
 {
@@ -27,13 +28,17 @@ final class GameState
     /** @var iterable */
     private $varietiesWithBlueprints;
 
+    /** @var Map */
+    private $map;
+
     public function __construct(
         Game $game,
         Location $location,
         Entity $human,
         iterable $entities,
         iterable $actions,
-        iterable $varietiesWithBlueprints
+        iterable $varietiesWithBlueprints,
+        Map $map
     ) {
         $this->game = $game;
         $this->location = $location;
@@ -41,6 +46,7 @@ final class GameState
         $this->entities = $entities;
         $this->actions = $actions;
         $this->varietiesWithBlueprints = $varietiesWithBlueprints;
+        $this->map = $map;
     }
 
     public function getGame(): Game
@@ -71,5 +77,10 @@ final class GameState
     public function getVarietiesWithBlueprints(): iterable
     {
         return $this->varietiesWithBlueprints;
+    }
+
+    public function getMap(): Map
+    {
+        return $this->map;
     }
 }

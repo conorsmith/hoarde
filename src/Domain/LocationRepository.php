@@ -7,6 +7,7 @@ use Ramsey\Uuid\UuidInterface;
 
 interface LocationRepository
 {
+    public function allWithCoordinates(iterable $setOfCoordinates, UuidInterface $gameId): iterable;
     public function findInGame(UuidInterface $id, UuidInterface $gameId): ?Location;
     public function findOrigin(UuidInterface $gameId): ?Location;
     public function findByCoordinates(Coordinates $coordinates, UuidInterface $gameId): ?Location;

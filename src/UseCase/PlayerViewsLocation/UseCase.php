@@ -9,6 +9,7 @@ use ConorSmith\Hoarde\Domain\Entity;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\LocationRepository;
+use ConorSmith\Hoarde\Domain\Map;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Ramsey\Uuid\Uuid;
@@ -65,13 +66,23 @@ final class UseCase
             return Result::failed(GeneralResult::failed("Location {$locationId} has no human entity"));
         }
 
+        $setOfCoordinates = $location->getCoordinates()->allCoordinatesInSquare(5);
+
         return Result::succeeded(new GameState(
             $game,
             $location,
             $human,
             $entities,
             $this->actionRepository->all(),
-            $this->varietyRepository->allWithBlueprints()
+            $this->varietyRepository->allWithBlueprints(),
+            new Map(
+                $setOfCoordinates,
+                $this->locationRepository->allWithCoordinates(
+                    $setOfCoordinates,
+                    $gameId
+                ),
+                $entities
+            )
         ));
     }
 

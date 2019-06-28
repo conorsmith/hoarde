@@ -7,6 +7,7 @@ use ConorSmith\Hoarde\Domain\Coordinates;
 use ConorSmith\Hoarde\Domain\Location;
 use ConorSmith\Hoarde\Domain\LocationRepository;
 use Doctrine\DBAL\Connection;
+use PDO;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -18,6 +19,45 @@ final class LocationRepositoryDb implements LocationRepository
     public function __construct(Connection $db)
     {
         $this->db = $db;
+    }
+
+    public function allWithCoordinates(iterable $setOfCoordinates, UuidInterface $gameId): iterable
+    {
+        $xCoordinates = [];
+        $yCoordinates = [];
+
+        foreach ($setOfCoordinates as $coordinates) {
+            $xCoordinates[] = $coordinates->getX();
+            $yCoordinates[] = $coordinates->getY();
+        }
+
+        $rows = $this->db->executeQuery(
+            "
+                SELECT * FROM locations
+                  WHERE game_id = :game_id
+                    AND x_coordinate IN (:x_coordinates)
+                    AND y_coordinate IN (:y_coordinates)
+            ",
+            [
+                'game_id'       => $gameId,
+                'x_coordinates' => $xCoordinates,
+                'y_coordinates' => $yCoordinates,
+            ],
+            [
+                'game_id'       => PDO::PARAM_INT,
+                'x_coordinates' => Connection::PARAM_INT_ARRAY,
+                'y_coordinates' => Connection::PARAM_INT_ARRAY,
+            ]
+        )
+            ->fetchAll();
+
+        $locations = [];
+
+        foreach ($rows as $row) {
+            $locations[] = $this->reconstituteLocation($row);
+        }
+
+        return $locations;
     }
 
     public function findInGame(UuidInterface $id, UuidInterface $gameId): ?Location

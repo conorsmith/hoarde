@@ -50,6 +50,8 @@
       >
         <a href="#"
            class="btn btn-sm btn-secondary"
+           data-toggle="modal"
+           data-target="#mapModal"
         >
           <i class="fas fa-fw fa-map-marker-alt"></i> <?=$location->coordinates?>
         </a>
@@ -95,6 +97,9 @@
     <?=$this->render("Game/modal-sow.php")?>
     <?=$this->render("Game/modal-harvest.php")?>
     <?=$this->render("Game/modal-repair.php")?>
+    <?=$this->render("Game/modal-map.php", [
+        'map' => $map,
+    ])?>
 
     <?=$this->render("Game/modal-scavenge.php", [
         'entity' => $human,

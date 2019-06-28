@@ -98,6 +98,17 @@
     margin-bottom: 0;
 }
 
+.map .btn-group:not(:first-child) .btn {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top-width: 0;
+}
+
+.map .btn-group:not(:last-child) .btn {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
 @keyframes rotating {
     from {
         -ms-transform: rotate(0deg);
