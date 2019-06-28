@@ -51,6 +51,8 @@ final class LocationRepositoryDb implements LocationRepository
         )
             ->fetchAll();
 
+        dd($rows);
+
         $locations = [];
 
         foreach ($rows as $row) {
