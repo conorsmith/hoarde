@@ -49,7 +49,7 @@ final class UseCase
     {
         $game = $this->gameRepository->find($gameId);
         $location = $this->locationRepository->findInGame($locationId, $gameId);
-        $entities = $this->entityRepository->allInGame($gameId);
+        $entities = $this->entityRepository->allInLocation($locationId, $gameId);
 
         if (is_null($game)) {
             return Result::failed(GeneralResult::gameNotFound($gameId));
@@ -62,7 +62,7 @@ final class UseCase
         $human = $this->findHuman($entities);
 
         if (is_null($human)) {
-            return Result::failed(GeneralResult::failed("Game {$gameId} has no human entity"));
+            return Result::failed(GeneralResult::failed("Location {$locationId} has no human entity"));
         }
 
         return Result::succeeded(new GameState(

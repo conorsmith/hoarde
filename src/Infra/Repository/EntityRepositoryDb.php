@@ -60,6 +60,25 @@ final class EntityRepositoryDb implements EntityRepository
         return $entities;
     }
 
+    public function allInLocation(UuidInterface $locationId, UuidInterface $gameId): iterable
+    {
+        $rows = $this->db->fetchAll(
+            "SELECT * FROM entities WHERE location_id = :location_id AND game_id = :game_id ORDER BY order_index ASC",
+            [
+                'location_id' => $locationId,
+                'game_id' => $gameId,
+            ]
+        );
+
+        $entities = [];
+
+        foreach ($rows as $row) {
+            $entities[] = $this->reconstituteEntity($row);
+        }
+
+        return $entities;
+    }
+
     public function find(UuidInterface $id): ?Entity
     {
         $row = $this->db->fetchAssoc("SELECT * FROM entities WHERE id = :id", [
