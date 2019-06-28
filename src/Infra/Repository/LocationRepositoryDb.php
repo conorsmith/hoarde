@@ -44,7 +44,7 @@ final class LocationRepositoryDb implements LocationRepository
                 'y_coordinates' => $yCoordinates,
             ],
             [
-                'game_id'       => PDO::PARAM_INT,
+                'game_id'       => PDO::PARAM_STR,
                 'x_coordinates' => Connection::PARAM_INT_ARRAY,
                 'y_coordinates' => Connection::PARAM_INT_ARRAY,
             ]
