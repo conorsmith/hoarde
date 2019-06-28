@@ -45,10 +45,14 @@
     </div>
 
     <div class="card bg-light" style="margin-bottom: 1rem;">
-      <div class="card-body d-flex align-items-center justify-content-between">
-        <div>
+      <div class="card-body d-flex align-items-center justify-content-between"
+           style="padding: 0.75rem;"
+      >
+        <a href="#"
+           class="btn btn-sm btn-secondary"
+        >
           <i class="fas fa-fw fa-map-marker-alt"></i> <?=$location->coordinates?>
-        </div>
+        </a>
         <div class="progress w-50">
           <div class="progress-bar"
                style="width: <?=$location->remainingScavengingLevel?>%"
