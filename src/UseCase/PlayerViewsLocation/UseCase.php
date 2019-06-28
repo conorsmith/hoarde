@@ -50,7 +50,8 @@ final class UseCase
     {
         $game = $this->gameRepository->find($gameId);
         $location = $this->locationRepository->findInGame($locationId, $gameId);
-        $entities = $this->entityRepository->allInLocation($locationId, $gameId);
+        $localEntities = $this->entityRepository->allInLocation($locationId, $gameId);
+        $allEntities = $this->entityRepository->allInGame($gameId);
 
         if (is_null($game)) {
             return Result::failed(GeneralResult::gameNotFound($gameId));
@@ -60,7 +61,7 @@ final class UseCase
             return Result::failed(GeneralResult::failed("Location {$locationId} was not found."));
         }
 
-        $human = $this->findHuman($entities);
+        $human = $this->findHuman($localEntities);
 
         if (is_null($human)) {
             return Result::failed(GeneralResult::failed("Location {$locationId} has no human entity"));
@@ -72,7 +73,7 @@ final class UseCase
             $game,
             $location,
             $human,
-            $entities,
+            $localEntities,
             $this->actionRepository->all(),
             $this->varietyRepository->allWithBlueprints(),
             new Map(
@@ -81,7 +82,7 @@ final class UseCase
                     $setOfCoordinates,
                     $gameId
                 ),
-                $entities
+                $allEntities
             )
         ));
     }

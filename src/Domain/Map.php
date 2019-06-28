@@ -92,11 +92,24 @@ final class Map
             return $entities;
         }
 
+        $notabilityWeights = [
+            VarietyRepositoryConfig::HUMAN        => 1,
+            VarietyRepositoryConfig::GARDEN_PLOT  => 25,
+            VarietyRepositoryConfig::WELL         => 50,
+            VarietyRepositoryConfig::WOODEN_CRATE => 100,
+        ];
+
         foreach ($this->entitiesByLocation[self::createKey($coordinates)] as $entity) {
-            if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
+            if (array_key_exists(strval($entity->getVarietyId()), $notabilityWeights)) {
                 $entities[] = $entity;
             }
         }
+
+        usort($entities, function (Entity $entityA, Entity $entityB) use ($notabilityWeights) {
+            return $notabilityWeights[strval($entityA->getVarietyId())] < $notabilityWeights[strval($entityB->getVarietyId())]
+                ? 1
+                : -1;
+        });
 
         return $entities;
     }
