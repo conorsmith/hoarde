@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Domain;
 
+use DomainException;
 use Ramsey\Uuid\UuidInterface;
 
 final class Location
@@ -49,5 +50,19 @@ final class Location
     public function getScavengingLevel(): int
     {
         return $this->scavengingLevel;
+    }
+
+    public function isScavengedClean(): bool
+    {
+        return $this->scavengingLevel === 0;
+    }
+
+    public function scavenge(): void
+    {
+        if ($this->isScavengedClean()) {
+            throw new DomainException;
+        }
+
+        $this->scavengingLevel--;
     }
 }

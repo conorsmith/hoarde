@@ -38,9 +38,11 @@
       </ol>
     </nav>
 
-    <?php if (!is_null($alert)) : ?>
-      <div class="alert alert-<?=$alert->classSuffix?>"><?=$alert->message?></div>
-    <?php endif ?>
+    <div class="alert-container">
+      <?php if (!is_null($alert)) : ?>
+        <div class="alert alert-<?=$alert->classSuffix?>"><?=$alert->message?></div>
+      <?php endif ?>
+    </div>
 
     <div class="card bg-light" style="margin-bottom: 1rem;">
       <div class="card-body d-flex align-items-center justify-content-between">

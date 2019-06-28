@@ -8,6 +8,7 @@ use ConorSmith\Hoarde\App\UnitOfWork;
 use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
+use ConorSmith\Hoarde\Domain\LocationRepository;
 use ConorSmith\Hoarde\Domain\Resource;
 use ConorSmith\Hoarde\Domain\RollTable;
 use ConorSmith\Hoarde\Domain\Scavenge;
@@ -23,6 +24,9 @@ final class UseCase
     /** @var EntityRepository */
     private $entityRepository;
 
+    /** @var LocationRepository */
+    private $locationRepository;
+
     /** @var VarietyRepository */
     private $varietyRepository;
 
@@ -32,11 +36,13 @@ final class UseCase
     public function __construct(
         GameRepository $gameRepository,
         EntityRepository $entityRepository,
+        LocationRepository $locationRepository,
         VarietyRepository $varietyRepository,
         UnitOfWorkProcessor $unitOfWorkProcessor
     ) {
         $this->gameRepository = $gameRepository;
         $this->entityRepository = $entityRepository;
+        $this->locationRepository = $locationRepository;
         $this->varietyRepository = $varietyRepository;
         $this->unitOfWorkProcessor = $unitOfWorkProcessor;
     }
@@ -58,6 +64,18 @@ final class UseCase
             return Result::failedBecause(GeneralResult::entityNotFound($entityId, $gameId));
         }
 
+        $location = $this->locationRepository->findInGame($entity->getLocationId(), $gameId);
+
+        if (is_null($location)) {
+            return Result::failedBecause(GeneralResult::failed("Location {$entity->getLocationId()} was not found."));
+        }
+
+        if ($location->isScavengedClean()) {
+            return Result::failedBecause(GeneralResult::failed("This location has been scavenged clean."));
+        }
+
+        $location->scavenge();
+
         $rollTable = (new RollTable($this->varietyRepository))->forEntity($entity, $length);
         $haul = $entity->scavenge(new Scavenge($rollTable, $length));
 
@@ -73,6 +91,7 @@ final class UseCase
 
         $unitOfWork->save($entity);
         $unitOfWork->save($haul);
+        $unitOfWork->save($location);
         $unitOfWork->save($game);
         $unitOfWork->commit($this->unitOfWorkProcessor);
 

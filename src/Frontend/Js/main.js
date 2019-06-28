@@ -609,6 +609,21 @@ for (var i = 0; i < scavengeButtons.length; i++) {
         xhr.onload = function () {
             var response = JSON.parse(this.response);
 
+            if (response.message !== undefined) {
+                let container = document.querySelector(".alert-container");
+                container.innerHTML = "";
+
+                let alert = document.createElement("div");
+                alert.classList.add("alert", "alert-danger");
+                alert.innerText = response.message;
+
+                container.appendChild(alert);
+
+                button.innerText = button.dataset.buttonText;
+
+                return;
+            }
+
             haul = new Haul(response.haul.id, response.haul.items, inventory);
 
             if (haul.isEmpty()) {

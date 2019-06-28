@@ -158,6 +158,7 @@ $router->post("/{gameId}/{entityId}/scavenge", new ConorSmith\Hoarde\Infra\Contr
     new ConorSmith\Hoarde\UseCase\EntityScavenges\UseCase(
         $gameRepository,
         $entityRepository,
+        $locationRepository,
         $varietyRepository,
         $unitOfWorkProcessor
     )
