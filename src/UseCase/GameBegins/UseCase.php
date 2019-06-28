@@ -57,6 +57,7 @@ final class UseCase
 
         $beginningLocation = new Location(
             $beginningLocationId = Uuid::uuid4(),
+            $newGameId,
             Coordinates::origin(),
             5
         );

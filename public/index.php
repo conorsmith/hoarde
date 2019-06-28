@@ -111,6 +111,17 @@ $router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\GameRe
     )
 ));
 
+$router->post("/{gameId}/{actorId}/travel", new ConorSmith\Hoarde\Infra\Controller\EntityTravels(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityTravels\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $locationRepository,
+        $unitOfWorkProcessor
+    ),
+    $findActorLocation
+));
+
 $router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controller\EntityWaits(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityWaits\UseCase(

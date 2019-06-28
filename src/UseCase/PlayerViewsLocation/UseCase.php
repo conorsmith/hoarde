@@ -48,7 +48,7 @@ final class UseCase
     public function __invoke(UuidInterface $gameId, UuidInterface $locationId): Result
     {
         $game = $this->gameRepository->find($gameId);
-        $location = $this->locationRepository->find($locationId);
+        $location = $this->locationRepository->findInGame($locationId, $gameId);
         $entities = $this->entityRepository->allInGame($gameId);
 
         if (is_null($game)) {

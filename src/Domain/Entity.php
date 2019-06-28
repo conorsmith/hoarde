@@ -207,6 +207,15 @@ final class Entity
         }
     }
 
+    public function travelTo(Location $location): void
+    {
+        $this->beforeAction();
+
+        $this->locationId = $location->getId();
+
+        $this->afterAction();
+    }
+
     public function hasItemWithResourceContent(UuidInterface $resourceId): bool
     {
         $inventoryItemsWithResource = [];

@@ -31,4 +31,22 @@ final class Coordinates
     {
         return $this->y;
     }
+
+    public function translate(Direction $direction): self
+    {
+        $xTranslation = 0;
+        $yTranslation = 0;
+
+        if ($direction->isNorth()) {
+            $yTranslation = 1;
+        } elseif ($direction->isSouth()) {
+            $yTranslation = -1;
+        } elseif ($direction->isEast()) {
+            $xTranslation = 1;
+        } elseif ($direction->isWest()) {
+            $xTranslation = -1;
+        }
+
+        return new self($this->x + $xTranslation, $this->y + $yTranslation);
+    }
 }

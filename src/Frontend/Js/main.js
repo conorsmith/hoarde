@@ -412,6 +412,30 @@ document.querySelectorAll(".js-restart").forEach(function (button) {
     });
 });
 
+document.querySelectorAll(".js-travel").forEach(function (button) {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        let actorId = this.dataset.actorId;
+        let direction = this.dataset.direction;
+
+        let form = document.createElement("form");
+        form.setAttribute("action", "/" + gameId + "/" + actorId + "/travel");
+        form.setAttribute("method", "POST");
+        form.setAttribute("hidden", true);
+
+        let input = document.createElement("input");
+        input.setAttribute("type", "hidden");
+        input.setAttribute("name", "direction");
+        input.setAttribute("value", direction);
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+
+        form.submit();
+    });
+});
+
 var eventBus = new EventBus();
 
 import {MainController as TransferController, ModalView as TransferModalView} from "./transfer.js";

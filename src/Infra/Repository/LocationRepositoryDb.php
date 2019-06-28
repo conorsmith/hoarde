@@ -20,10 +20,11 @@ final class LocationRepositoryDb implements LocationRepository
         $this->db = $db;
     }
 
-    public function find(UuidInterface $id): ?Location
+    public function findInGame(UuidInterface $id, UuidInterface $gameId): ?Location
     {
-        $row = $this->db->fetchAssoc("SELECT * FROM locations WHERE id = :id", [
-            'id' => $id,
+        $row = $this->db->fetchAssoc("SELECT * FROM locations WHERE id = :id AND game_id = :game_id", [
+            'id'      => $id,
+            'game_id' => $gameId,
         ]);
 
         if ($row === false) {
@@ -49,10 +50,29 @@ final class LocationRepositoryDb implements LocationRepository
         return $this->reconstituteLocation($row);
     }
 
+    public function findByCoordinates(Coordinates $coordinates, UuidInterface $gameId): ?Location
+    {
+        $row = $this->db->fetchAssoc(
+            "SELECT * FROM locations WHERE x_coordinate = :x AND y_coordinate = :y AND game_id = :game_id",
+            [
+                'x'       => $coordinates->getX(),
+                'y'       => $coordinates->getY(),
+                'game_id' => $gameId,
+            ]
+        );
+
+        if ($row === false) {
+            return null;
+        }
+
+        return $this->reconstituteLocation($row);
+    }
+
     private function reconstituteLocation(array $row): Location
     {
         return new Location(
             Uuid::fromString($row['id']),
+            Uuid::fromString($row['game_id']),
             new Coordinates(
                 intval($row['x_coordinate']),
                 intval($row['y_coordinate'])
@@ -70,6 +90,7 @@ final class LocationRepositoryDb implements LocationRepository
         if ($row === false ) {
             $this->db->insert("locations", [
                 'id'               => $location->getId(),
+                'game_id'          => $location->getGameId(),
                 'x_coordinate'     => $location->getCoordinates()->getX(),
                 'y_coordinate'     => $location->getCoordinates()->getY(),
                 'scavenging_level' => $location->getScavengingLevel(),
