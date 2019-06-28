@@ -354,25 +354,6 @@ final class Entity
         }
     }
 
-    public function scavenge(Scavenge $scavenge): ScavengingHaul
-    {
-        for ($i = 0; $i < $scavenge->getLength(); $i++) {
-            $this->beforeAction();
-
-            if ($i + 1 === $scavenge->getLength()) {
-                $haul = $scavenge->roll();
-            }
-
-            $this->afterAction();
-        }
-
-        if (!$this->isIntact) {
-            return ScavengingHaul::empty();
-        }
-
-        return $haul;
-    }
-
     public function wait(): void
     {
         $this->beforeAction();

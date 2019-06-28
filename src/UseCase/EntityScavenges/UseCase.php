@@ -10,8 +10,7 @@ use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\LocationRepository;
 use ConorSmith\Hoarde\Domain\Resource;
-use ConorSmith\Hoarde\Domain\RollTable;
-use ConorSmith\Hoarde\Domain\Scavenge;
+use ConorSmith\Hoarde\Domain\RollTableFactory;
 use ConorSmith\Hoarde\Domain\ScavengingHaul;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Ramsey\Uuid\UuidInterface;
@@ -47,12 +46,8 @@ final class UseCase
         $this->unitOfWorkProcessor = $unitOfWorkProcessor;
     }
 
-    public function __invoke(UuidInterface $gameId, UuidInterface $entityId, int $length): Result
+    public function __invoke(UuidInterface $gameId, UuidInterface $entityId): Result
     {
-        if (!in_array($length, [1, 3])) {
-            return Result::failed("Invalid scavenge length");
-        }
-
         $game = $this->gameRepository->find($gameId);
         $entity = $this->entityRepository->findInGame($entityId, $gameId);
 
@@ -74,16 +69,22 @@ final class UseCase
             return Result::failedBecause(GeneralResult::failed("This location has been scavenged clean."));
         }
 
-        $location->scavenge();
+        $haul = $location
+            ->scavenge(
+                new RollTableFactory($this->varietyRepository),
+                $entity
+            )
+            ->roll();
 
-        $rollTable = (new RollTable($this->varietyRepository))->forEntity($entity, $length);
-        $haul = $entity->scavenge(new Scavenge($rollTable, $length));
+        $entity->wait();
+
+        if (!$entity->isIntact()) {
+            $haul = ScavengingHaul::empty();
+        }
 
         $unitOfWork = new UnitOfWork;
 
-        for ($i = 0; $i < $length; $i++) {
-            $gameEntities = $game->proceedToNextTurn($this->entityRepository);
-        }
+        $gameEntities = $game->proceedToNextTurn($this->entityRepository);
 
         foreach ($gameEntities as $gameEntity) {
             $unitOfWork->save($gameEntity);

@@ -640,8 +640,6 @@ for (var i = 0; i < scavengeButtons.length; i++) {
         };
 
         xhr.open("POST", "/" + gameId + "/" + button.dataset.entityId + "/scavenge");
-        xhr.send(JSON.stringify({
-            length: button.dataset.length
-        }));
+        xhr.send();
     }
 }

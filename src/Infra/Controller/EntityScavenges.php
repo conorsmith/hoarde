@@ -30,9 +30,8 @@ final class EntityScavenges
     {
         $gameId = Uuid::fromString($args['gameId']);
         $entityId = Uuid::fromString($args['entityId']);
-        $length = intval(json_decode($request->getBody()->getContents(), true)['length']);
 
-        $result = $this->useCase->__invoke($gameId, $entityId, $length);
+        $result = $this->useCase->__invoke($gameId, $entityId);
 
         if (!$result->isSuccessful()) {
             $response = new Response;

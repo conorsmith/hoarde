@@ -18,44 +18,13 @@
 
             <div class="actions">
 
-              <div class="btn-group btn-flex">
-                <button type="button"
-                        class="btn btn-light btn-block js-scavenge"
-                        data-length="1"
-                        data-entity-id="<?=$entity->id?>"
-                    <?=(!$isIntact ? "disabled" : "")?>
-                >
-                  Scavenge
-                </button>
-
-                <button type="button"
-                        class="btn btn-light dropdown-toggle"
-                        data-toggle="dropdown"
-                    <?=(!$isIntact ? "disabled" : "")?>
-                ></button>
-
-                <div class="dropdown-menu dropdown-menu-right w-100">
-
-                  <a href="#"
-                     class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
-                     data-length="1"
-                     data-entity-id="<?=$entity->id?>"
-                  >
-                    Short Scavenge
-                    <span class="badge">1 turn</span>
-                  </a>
-
-                  <a href="#"
-                     class="dropdown-item d-flex align-items-baseline justify-content-between js-scavenge"
-                     data-length="3"
-                     data-entity-id="<?=$entity->id?>"
-                  >
-                    Long Scavenge
-                    <span class="badge">3 turns</span>
-                  </a>
-
-                </div>
-              </div>
+              <button type="button"
+                      class="btn btn-light btn-block js-scavenge"
+                      data-entity-id="<?=$entity->id?>"
+                  <?=(!$isIntact ? "disabled" : "")?>
+              >
+                Scavenge
+              </button>
 
               <div class="btn-group w-100">
                 <a href="#"

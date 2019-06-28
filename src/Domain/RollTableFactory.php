@@ -8,7 +8,7 @@ use Ramsey\Uuid\Uuid;
 use RandomLib\Factory;
 use RandomLib\Generator;
 
-class RollTable
+class RollTableFactory
 {
     /** @var VarietyRepository */
     private $varietyRepository;
@@ -22,9 +22,9 @@ class RollTable
         $this->generator = (new Factory)->getLowStrengthGenerator();
     }
 
-    public function forEntity(Entity $entity, int $length): iterable
+    public function forEntity(Entity $entity, int $scavengingLevel): iterable
     {
-        if ($length === 3) {
+        if ($scavengingLevel > 2) {
             $rollTable = $this->getLongTable();
         } else {
             $rollTable = $this->getShortTable();
