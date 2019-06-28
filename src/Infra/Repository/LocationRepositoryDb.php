@@ -31,10 +31,6 @@ final class LocationRepositoryDb implements LocationRepository
             $yCoordinates[] = $coordinates->getY();
         }
 
-        dd($xCoordinates, $yCoordinates, $this->db->fetchAssoc("SELECT * FROM locations WHERE game_id = :game_id", [
-            'game_id' => $gameId,
-        ]));
-
         $rows = $this->db->executeQuery(
             "
                 SELECT * FROM locations
