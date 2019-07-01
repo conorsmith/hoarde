@@ -52,6 +52,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
     public const RADISH_SEED = "ce821bc9-0ee2-4ea9-abe8-7ee67efb5d39";
     public const RADISH_PLANT = "3ce976fd-88cd-481f-bd94-17c88dac3d0e";
     public const RADISH = "24bc9c41-6894-42d0-81b1-18a3e849d262";
+    public const JOELS_NOTE = "11c284d2-c4e0-46a5-ac41-cc25c46aa10c";
 
     private const DESCRIPTION_TEMPLATE_DRIL_FIGURINE = "A commemorative figurine of Twitter user @dril. Part of a set"
         . " of 13. The base is engraved with a tweet:\n\n";
@@ -480,6 +481,16 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'description' => "An edible root vegetable with a sharp flavour.",
             'actions'     => [
                 ActionRepositoryConfig::CONSUME,
+            ],
+        ],
+        self::JOELS_NOTE => [
+            'label'       => "Joel's Note",
+            'resources'   => [],
+            'weight'      => 5,
+            'icon'        => "book",
+            'description' => "A tattered note written by somebody named Joel.",
+            'actions'     => [
+                ActionRepositoryConfig::READ,
             ],
         ],
     ];

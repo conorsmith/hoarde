@@ -15,6 +15,7 @@ final class ActionRepositoryConfig implements ActionRepository
     public const DIG = "0e2bb910-26fa-4832-8fb0-5cb4efb69aba";
     public const HARVEST = "75f64f5e-0ac8-45cb-9514-2071b28f37e6";
     public const PLACE = "2afdf3f4-b77e-4391-a857-fab631a8c2be";
+    public const READ = "a5acf215-c719-40af-ac15-c38917735875";
     public const SOW = "99b65213-9cee-42ec-9dfe-8a04a790469e";
 
     private const CONFIG = [
@@ -49,6 +50,13 @@ final class ActionRepositoryConfig implements ActionRepository
         self::PLACE     => [
             'label'               => "Place",
             'icon'                => "people-carry",
+            'performingVarieties' => [
+                VarietyRepositoryConfig::HUMAN,
+            ],
+        ],
+        self::READ      => [
+            'label'               => "Read",
+            'icon'                => "book",
             'performingVarieties' => [
                 VarietyRepositoryConfig::HUMAN,
             ],

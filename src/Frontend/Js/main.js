@@ -436,6 +436,52 @@ document.querySelectorAll(".js-travel").forEach(function (button) {
     });
 });
 
+document.querySelectorAll(".js-read").forEach(function (button) {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        document.getElementById("readModal").dataset.actorId = e.currentTarget.dataset.actorId;
+        document.getElementById("readModal").dataset.itemId = e.currentTarget.dataset.itemId;
+
+        $("#readModal").modal();
+    });
+});
+
+$("#readModal").on("show.bs.modal", function (e) {
+    let itemId = this.dataset.itemId;
+
+    let item = JSON.parse(document.getElementById("inventoryItems").value).find(function (item) {
+        return itemId === item.id;
+    });
+
+    this.querySelector(".modal-title").innerText = item.label;
+
+    let xhr = new XMLHttpRequest();
+    let modalBody = this.querySelector(".modal-body");
+
+    xhr.onload = function () {
+        let response = JSON.parse(this.response);
+
+        if (response.message !== undefined) {
+            let container = document.querySelector(".alert-container");
+            container.innerHTML = "";
+
+            let alert = document.createElement("div");
+            alert.classList.add("alert", "alert-danger");
+            alert.innerText = response.message;
+
+            container.appendChild(alert);
+
+            return;
+        }
+
+        modalBody.innerText = response.body;
+    };
+
+    xhr.open("POST", "/" + gameId + "/" + this.dataset.actorId + "/read/" + itemId);
+    xhr.send();
+});
+
 var eventBus = new EventBus();
 
 import {MainController as TransferController, ModalView as TransferModalView} from "./transfer.js";

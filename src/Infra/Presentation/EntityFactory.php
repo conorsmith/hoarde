@@ -59,6 +59,9 @@ final class EntityFactory
                             case ActionRepositoryConfig::DIG:
                                 $jsClass = "js-construct";
                                 break;
+                            case ActionRepositoryConfig::READ:
+                                $jsClass = "js-read";
+                                break;
                             default:
                                 $jsClass = "";
                         }
@@ -315,6 +318,8 @@ final class EntityFactory
                 return "js-construct";
             case ActionRepositoryConfig::HARVEST:
                 return "js-harvest";
+            case ActionRepositoryConfig::READ:
+                return "js-read";
             default:
                 return "";
         }

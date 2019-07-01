@@ -26,6 +26,14 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
                             'varietyId' => VarietyRepositoryConfig::DRIL_FIGURINE_4,
                             'quantity'  => 1,
                         ],
+                        [
+                            'varietyId' => VarietyRepositoryConfig::JOELS_NOTE,
+                            'quantity'  => 1,
+                        ],
+                        [
+                            'varietyId' => VarietyRepositoryConfig::TINNED_SOUP,
+                            'quantity'  => 1,
+                        ],
                     ],
                 ],
             ],

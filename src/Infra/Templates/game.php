@@ -103,6 +103,7 @@
     <?=$this->render("Game/modal-settings.php")?>
     <?=$this->render("Game/modal-sow.php")?>
     <?=$this->render("Game/modal-harvest.php")?>
+    <?=$this->render("Game/modal-read.php")?>
     <?=$this->render("Game/modal-repair.php")?>
     <?=$this->render("Game/modal-map.php", [
         'map' => $map,
@@ -123,10 +124,10 @@
     ])?>
 
     <input type="hidden" id="gameId" value="<?=$game->id?>" />
-    <input type="hidden" id="inventoryItems" value='<?=json_encode($human->inventory->items)?>' />
-    <input type="hidden" id="entities" value='<?=json_encode($entities)?>' />
-    <input type="hidden" id="constructions" value='<?=json_encode($constructions)?>' />
-    <input type="hidden" id="actions" value='<?=json_encode($actions)?>' />
+    <input type="hidden" id="inventoryItems" value='<?=$this->e(json_encode($human->inventory->items))?>' />
+    <input type="hidden" id="entities" value='<?=$this->e(json_encode($entities))?>' />
+    <input type="hidden" id="constructions" value='<?=$this->e(json_encode($constructions))?>' />
+    <input type="hidden" id="actions" value='<?=$this->e(json_encode($actions))?>' />
 
     <?=$this->render("Game/template-scavenge-item-slider.php")?>
     <?=$this->render("Game/template-spinner.php")?>

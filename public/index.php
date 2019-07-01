@@ -286,6 +286,13 @@ $router->post("/{gameId}/sort", new ConorSmith\Hoarde\Infra\Controller\PlayerSor
     $findActorLocation
 ));
 
+$router->post("/{gameId}/{actorId}/read/{varietyId}", new ConorSmith\Hoarde\Infra\Controller\PlayerReadsWrittenWork(
+    new ConorSmith\Hoarde\UseCase\PlayerReadsWrittenWork\UseCase(
+        $entityRepository,
+        new ConorSmith\Hoarde\Infra\Repository\WrittenWorkRepositoryConfig($varietyRepository)
+    )
+));
+
 /**
  * DISPATCH REQUEST
  */

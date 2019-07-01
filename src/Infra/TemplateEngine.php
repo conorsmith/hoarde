@@ -19,4 +19,9 @@ final class TemplateEngine
 
         return $body;
     }
+
+    private function e(string $valueToEscape): string
+    {
+        return htmlspecialchars($valueToEscape, ENT_QUOTES | ENT_HTML5);
+    }
 }
