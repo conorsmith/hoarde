@@ -148,16 +148,25 @@ final class EntityFactory
         if (isset($presentation->inventory)) {
 
             if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
-                $crate = $this->getFirstEntityOfVariety(
+                $storage = $this->getFirstEntityOfVariety(
                     $entities,
                     Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE)
                 );
 
-                if (!is_null($crate)) {
-                    $presentation->inventory->initialTransferEntityId = $crate->getId();
+                if (is_null($storage)) {
+                    $storage = $this->getFirstEntityOfVariety(
+                        $entities,
+                        Uuid::fromString(VarietyRepositoryConfig::TOOLBOX)
+                    );
                 }
 
-            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))) {
+                if (!is_null($storage)) {
+                    $presentation->inventory->initialTransferEntityId = $storage->getId();
+                }
+
+            } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))
+                || $entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::TOOLBOX))
+            ) {
                 $presentation->inventory->initialTransferEntityId = $this->getFirstEntityOfVariety(
                     $entities,
                     Uuid::fromString(VarietyRepositoryConfig::HUMAN)
