@@ -109,6 +109,15 @@
     border-bottom-right-radius: 0;
 }
 
+.map-row {
+    line-height: 0;
+}
+
+.map-row .btn {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.36rem;
+}
+
 @keyframes rotating {
     from {
         -ms-transform: rotate(0deg);
