@@ -105,6 +105,7 @@ $router->post("/{gameId}/restart", new ConorSmith\Hoarde\Infra\Controller\GameRe
     new \ConorSmith\Hoarde\UseCase\GameRestarts\UseCase(
         $gameRepository,
         $entityRepository,
+        $locationRepository,
         $varietyRepository,
         $resourceRepository,
         $unitOfWorkProcessor

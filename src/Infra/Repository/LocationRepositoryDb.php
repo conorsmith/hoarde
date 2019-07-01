@@ -21,6 +21,25 @@ final class LocationRepositoryDb implements LocationRepository
         $this->db = $db;
     }
 
+    public function allInGame(UuidInterface $gameId): iterable
+    {
+        $rows = $this->db->executeQuery(
+            "SELECT * FROM locations WHERE game_id = :game_id",
+            [
+                'game_id'       => $gameId,
+            ]
+        )
+            ->fetchAll();
+
+        $locations = [];
+
+        foreach ($rows as $row) {
+            $locations[] = $this->reconstituteLocation($row);
+        }
+
+        return $locations;
+    }
+
     public function allWithCoordinates(iterable $setOfCoordinates, UuidInterface $gameId): iterable
     {
         $xCoordinates = [];
@@ -142,5 +161,12 @@ final class LocationRepositoryDb implements LocationRepository
                 'id' => $location->getId(),
             ]);
         }
+    }
+
+    public function delete(Location $location): void
+    {
+        $this->db->delete("locations", [
+            'id' => $location->getId(),
+        ]);
     }
 }
