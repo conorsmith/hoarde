@@ -117,6 +117,7 @@ $router->post("/{gameId}/{actorId}/travel", new ConorSmith\Hoarde\Infra\Controll
         $gameRepository,
         $entityRepository,
         $locationRepository,
+        new ConorSmith\Hoarde\Infra\Repository\LocationTemplateRepositoryConfig($varietyRepository),
         $unitOfWorkProcessor
     ),
     $findActorLocation

@@ -9,9 +9,8 @@ use ConorSmith\Hoarde\App\UnitOfWorkProcessor;
 use ConorSmith\Hoarde\Domain\Direction;
 use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
-use ConorSmith\Hoarde\Domain\Location;
 use ConorSmith\Hoarde\Domain\LocationRepository;
-use Ramsey\Uuid\Uuid;
+use ConorSmith\Hoarde\Domain\LocationTemplateRepository;
 use Ramsey\Uuid\UuidInterface;
 
 final class UseCase
@@ -25,6 +24,9 @@ final class UseCase
     /** @var LocationRepository */
     private $locationRepository;
 
+    /** @var LocationTemplateRepository */
+    private $locationTemplateRepository;
+
     /** @var UnitOfWorkProcessor */
     private $unitOfWorkProcessor;
 
@@ -32,11 +34,13 @@ final class UseCase
         GameRepository $gameRepository,
         EntityRepository $entityRepository,
         LocationRepository $locationRepository,
+        LocationTemplateRepository $locationTemplateRepository,
         UnitOfWorkProcessor $unitOfWorkProcessor
     ) {
         $this->gameRepository = $gameRepository;
         $this->entityRepository = $entityRepository;
         $this->locationRepository = $locationRepository;
+        $this->locationTemplateRepository = $locationTemplateRepository;
         $this->unitOfWorkProcessor = $unitOfWorkProcessor;
     }
 
@@ -64,12 +68,8 @@ final class UseCase
         $newLocation = $this->locationRepository->findByCoordinates($newCoordinates, $gameId);
 
         if (is_null($newLocation)) {
-            $newLocation = new Location(
-                Uuid::uuid4(),
-                $gameId,
-                $newCoordinates,
-                5
-            );
+            $generatedLocation = $this->locationTemplateRepository->generateNewLocation($newCoordinates, $gameId);
+            $newLocation = $generatedLocation->getLocation();
         }
 
         $actor->travelTo($newLocation);
@@ -82,6 +82,12 @@ final class UseCase
         }
 
         $unitOfWork->save($newLocation);
+
+        if (isset($generatedLocation)) {
+            foreach ($generatedLocation->getEntities() as $generatedEntity) {
+                $unitOfWork->save($generatedEntity);
+            }
+        }
 
         $unitOfWork->commit($this->unitOfWorkProcessor);
 
