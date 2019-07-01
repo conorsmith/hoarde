@@ -20,7 +20,7 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
         "0,2" => [
             'entities' => [
                 [
-                    'varietyId' => VarietyRepositoryConfig::WOODEN_CRATE,
+                    'varietyId' => VarietyRepositoryConfig::TOOLBOX,
                     'inventory' => [
                         [
                             'varietyId' => VarietyRepositoryConfig::DRIL_FIGURINE_4,

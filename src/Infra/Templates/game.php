@@ -77,7 +77,8 @@
                   'entity'                => $entity,
                   'isIntact'              => $isIntact,
               ])?>
-          <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::WOODEN_CRATE) : ?>
+          <?php elseif ($entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::WOODEN_CRATE
+            || $entity->varietyId == \ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig::TOOLBOX) : ?>
               <?=$this->render("Game/entity-crate.php", [
                   'entity'                => $entity,
                   'isIntact'              => $isIntact,

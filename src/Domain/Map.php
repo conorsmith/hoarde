@@ -97,6 +97,7 @@ final class Map
             VarietyRepositoryConfig::GARDEN_PLOT  => 25,
             VarietyRepositoryConfig::WELL         => 50,
             VarietyRepositoryConfig::WOODEN_CRATE => 100,
+            VarietyRepositoryConfig::TOOLBOX      => 100,
         ];
 
         foreach ($this->entitiesByLocation[self::createKey($coordinates)] as $entity) {

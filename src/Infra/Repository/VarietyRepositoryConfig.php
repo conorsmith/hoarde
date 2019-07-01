@@ -28,6 +28,7 @@ final class VarietyRepositoryConfig implements VarietyRepository
     public const TINNED_SOUP = "fb793da2-cff9-4e88-9f9c-84278c6662ca";
     public const PRINGLE = "275d6f62-16ff-4f5f-8ac6-149ec4cde1e2";
     public const WOODEN_CRATE = "59593b72-3845-491e-9721-4452a337019b";
+    public const TOOLBOX = "7ed48ffd-0b82-44ee-ab53-89949bf61aa0";
     public const SHOVEL = "75d861d5-b6b7-4cd2-ad4a-a56db4db1fcf";
     public const HAMMER = "328a1e58-ab91-4b35-87e9-527f4d7d130e";
     public const HAND_SAW = "d38a3e6a-d508-4bf0-ae79-34d2a425dc47";
@@ -253,6 +254,19 @@ final class VarietyRepositoryConfig implements VarietyRepository
             ],
             'inventory'   => [
                 'capacity' => 50000,
+            ],
+        ],
+        self::TOOLBOX => [
+            'label'       => "Toolbox",
+            'resources'   => [],
+            'weight'      => 3100,
+            'icon'        => "box",
+            'description' => "A plastic and steel toolbox, ideal for for storing and transporting equipment such as hand tools.",
+            'actions'     => [
+                ActionRepositoryConfig::PLACE,
+            ],
+            'inventory'   => [
+                'capacity' => 15000,
             ],
         ],
         self::SHOVEL => [

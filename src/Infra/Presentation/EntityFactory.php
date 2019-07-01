@@ -128,6 +128,7 @@ final class EntityFactory
             'isPlaced'                   => in_array(strval($entity->getVarietyId()), [
                 VarietyRepositoryConfig::HUMAN,
                 VarietyRepositoryConfig::WOODEN_CRATE,
+                VarietyRepositoryConfig::TOOLBOX,
                 VarietyRepositoryConfig::WELL,
                 VarietyRepositoryConfig::GARDEN_PLOT,
             ]),
