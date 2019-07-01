@@ -48,13 +48,19 @@
       <div class="card-body d-flex align-items-center justify-content-between"
            style="padding: 0.75rem;"
       >
-        <a href="#"
-           class="btn btn-sm btn-secondary"
-           data-toggle="modal"
-           data-target="#mapModal"
-        >
-          <i class="fas fa-fw fa-map-marker-alt"></i> <?=$location->coordinates?>
-        </a>
+        <div>
+          <a href="#"
+             class="btn btn-sm btn-secondary"
+             data-toggle="modal"
+             data-target="#mapModal"
+          >
+            <i class="fas fa-fw fa-map-marker-alt"></i> <?=$location->coordinates?>
+          </a>
+          <small style="color: #666; margin-left: 0.5rem;">
+            <i class="fas fa-fw fa-users"></i>
+            <?=$location->entitiesCount?>
+          </small>
+        </div>
         <div class="progress w-50">
           <div class="progress-bar"
                style="width: <?=$location->remainingScavengingLevel?>%"

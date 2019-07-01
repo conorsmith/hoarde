@@ -69,7 +69,7 @@ final class PlayerViewsLocation
             'game'          => new Game(
                 $gameState->getGame()
             ),
-            'location'      => new Location($gameState->getLocation()),
+            'location'      => new Location($gameState->getLocation(), $gameState->getMap()),
             'map'           => new Map($gameState->getMap()),
             'human'         => $this->entityPresentationFactory->createEntity(
                 $gameState->getHuman(),
