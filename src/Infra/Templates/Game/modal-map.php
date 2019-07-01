@@ -11,16 +11,19 @@
 
                 <div class="map" style="text-align: center;">
                     <?php foreach ($map->rows as $row): ?>
-                        <div class="btn-group">
-                            <?php foreach ($row as $location): ?>
-                                <a href="#"
-                                   class="btn <?=$location->isKnown ? "btn-outline-secondary" : "btn-secondary"?>"
-                                   data-x="<?=$location->x?>"
-                                   data-y="<?=$location->y?>"
-                                >
-                                    <i class="fas fa-fw <?=$location->icon?>"></i>
-                                </a>
-                            <?php endforeach ?>
+                        <div class="map-row">
+                            <div class="btn-group">
+                                <?php foreach ($row as $location): ?>
+                                    <a href="#"
+                                       class="btn btn-sm <?=$location->isKnown ? "btn-outline-secondary" : "btn-secondary"?>"
+                                       data-x="<?=$location->x?>"
+                                       data-y="<?=$location->y?>"
+                                       style="font-size: 0.6rem; line-height: 2.1; padding: 0.15rem 0.4rem;"
+                                    >
+                                        <i class="fas fa-fw <?=$location->icon?>"></i>
+                                    </a>
+                                <?php endforeach ?>
+                            </div>
                         </div>
                     <?php endforeach ?>
                 </div>
