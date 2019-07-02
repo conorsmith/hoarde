@@ -475,7 +475,7 @@ $("#readModal").on("show.bs.modal", function (e) {
             return;
         }
 
-        modalBody.innerText = response.body;
+        modalBody.innerHTML = response.body;
     };
 
     xhr.open("POST", "/" + gameId + "/" + this.dataset.actorId + "/read/" + itemId);

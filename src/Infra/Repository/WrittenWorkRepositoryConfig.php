@@ -12,7 +12,7 @@ final class WrittenWorkRepositoryConfig implements WrittenWorkRepository
 {
     private const CONFIGS = [
         VarietyRepositoryConfig::JOELS_NOTE => [
-            'body' => "This is it...",
+            'body' => __DIR__ . "/WrittenWorks/joels-note.md",
         ],
     ];
 
@@ -38,7 +38,7 @@ final class WrittenWorkRepositoryConfig implements WrittenWorkRepository
 
         return new WrittenWork(
             $variety->getLabel(),
-            self::CONFIGS[strval($varietyId)]['body']
+            nl2br(file_get_contents(self::CONFIGS[strval($varietyId)]['body']))
         );
     }
 }
