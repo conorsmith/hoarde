@@ -9,8 +9,14 @@
             </div>
             <div class="modal-body">
 
-                <div style="text-align: center;">
-                    <i class="fas fa-spinner rotating"></i>
+                <div class="alert alert-secondary js-read-description"
+                     style="font-size: 0.8rem; padding: 0.5rem 1rem; margin-bottom: 1rem;"
+                ></div>
+
+                <div class="js-read-body">
+                    <div style="text-align: center;">
+                        <i class="fas fa-spinner rotating"></i>
+                    </div>
                 </div>
 
             </div>

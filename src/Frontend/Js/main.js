@@ -455,9 +455,10 @@ $("#readModal").on("show.bs.modal", function (e) {
     });
 
     this.querySelector(".modal-title").innerText = item.label;
+    this.querySelector(".js-read-description").innerText = item.description;
 
     let xhr = new XMLHttpRequest();
-    let modalBody = this.querySelector(".modal-body");
+    let readBody = this.querySelector(".js-read-body");
 
     xhr.onload = function () {
         let response = JSON.parse(this.response);
@@ -475,7 +476,7 @@ $("#readModal").on("show.bs.modal", function (e) {
             return;
         }
 
-        modalBody.innerHTML = response.body;
+        readBody.innerHTML = response.body;
     };
 
     xhr.open("POST", "/" + gameId + "/" + this.dataset.actorId + "/read/" + itemId);
