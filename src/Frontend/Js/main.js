@@ -571,7 +571,8 @@ if (scavengeModal) {
     var scavengeModalView = new ScavengeModal(
         scavengeModal,
         inventory,
-        document.getElementById("scavange-item-slider")
+        document.getElementById("scavange-item-slider"),
+        document.getElementById("item-popover")
     );
 
     var haul;

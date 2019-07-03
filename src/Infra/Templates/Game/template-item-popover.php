@@ -1,11 +1,11 @@
 <template id="item-popover">
-    <p class="tmpl-description"></p>
-    <div>
+    <p class="popover-description tmpl-description"></p>
+    <div class="popover-weight">
         <span class="popover-label">Weight:</span>
-        <span class="tmpl-weight"></span>
+        <span class="popover-value tmpl-weight"></span>
     </div>
-    <div>
-        <span class="popover-label">Resource:</span>
-        <span class="tmpl-resources"></span>
+    <div class="popover-resources">
+        <span class="popover-label">Resource (T):</span>
+        <span class="popover-value tmpl-resources"></span>
     </div>
 </template>

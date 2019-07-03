@@ -124,9 +124,10 @@ class Haul {
 }
 
 class ScavengeHaul {
-    constructor(el, itemTemplate) {
+    constructor(el, itemTemplate, itemPopoverTemplate) {
         this.el = el;
         this.itemTemplate = itemTemplate;
+        this.itemPopoverTemplate = itemPopoverTemplate;
     }
 
     attachHaul(haul) {
@@ -145,14 +146,21 @@ class ScavengeHaul {
 
             const datalistId = "scavange-tickmarks-" + item.varietyId;
 
+            const popoverTemplate = this.itemPopoverTemplate.content.cloneNode(true);
+            const popoverRenderer = document.createElement("div");
+
+            popoverTemplate.querySelector(".popover-description").innerHTML = item.description;
+            popoverTemplate.querySelector(".popover-weight .popover-value").innerText = item.weight >= 1000
+                ? (item.weight / 1000) + " kg"
+                : item.weight + " g";
+            popoverTemplate.querySelector(".popover-resources .popover-value").innerText = item.resourceLabel;
+            popoverRenderer.appendChild(popoverTemplate);
+
             const template = this.itemTemplate.content.cloneNode(true);
 
             template.querySelector(".tmpl-icon").classList.add("fa-" + item.icon);
             template.querySelector(".tmpl-icon").title = item.label;
-            template.querySelector(".tmpl-icon").dataset.content = '<p>' + item.description + '</p>'
-                + '<div><span class="popover-label">Weight:</span> '
-                + (item.weight >= 1000 ? (item.weight / 1000) + " kg" : item.weight + " g") + '</div>'
-                + '<div><span class="popover-label">Resource:</span> ' + item.resourceLabel + '</div>';
+            template.querySelector(".tmpl-icon").dataset.content = popoverRenderer.innerHTML;
 
             template.querySelector(".tmpl-label").innerText = item.label;
 
@@ -431,12 +439,13 @@ class ScavengeError {
 }
 
 class ScavengeModal {
-    constructor(el, inventory, itemTemplate) {
+    constructor(el, inventory, itemTemplate, itemPopoverTemplate) {
         this.el = el;
 
         this.haulItems = new ScavengeHaul(
             this.el.querySelector(".js-scavenge-haul"),
-            itemTemplate
+            itemTemplate,
+            itemPopoverTemplate
         );
 
         this.inventoryItems = new ScavengeInventory(
