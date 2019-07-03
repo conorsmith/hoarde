@@ -155,6 +155,9 @@ class ScavengeHaul {
                 : item.weight + " g";
             popoverTemplate.querySelector(".popover-resources .popover-value").innerText = item.resourceLabel;
             popoverRenderer.appendChild(popoverTemplate);
+            if (item.resourceLabel === "") {
+                popoverRenderer.removeChild(popoverRenderer.querySelector(".popover-resources"));
+            }
 
             const template = this.itemTemplate.content.cloneNode(true);
 

@@ -9,6 +9,9 @@ class ItemSliderView {
             : transferItem.item.weight + " g";
         popoverTemplate.querySelector(".popover-resources .popover-value").innerText = transferItem.item.resourceLabel;
         popoverRenderer.appendChild(popoverTemplate);
+        if (transferItem.item.resourceLabel === "") {
+            popoverRenderer.removeChild(popoverRenderer.querySelector(".popover-resources"));
+        }
 
         template.querySelector(".tmpl-label").innerText = transferItem.item.label;
 
