@@ -23,10 +23,6 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
                     'varietyId' => VarietyRepositoryConfig::TOOLBOX,
                     'inventory' => [
                         [
-                            'varietyId' => VarietyRepositoryConfig::DRIL_FIGURINE_4,
-                            'quantity'  => 1,
-                        ],
-                        [
                             'varietyId' => VarietyRepositoryConfig::JOELS_NOTE,
                             'quantity'  => 1,
                         ],
