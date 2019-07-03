@@ -81,6 +81,7 @@ final class UseCase
             $unitOfWork->save($gameEntity);
         }
 
+        $unitOfWork->save($game);
         $unitOfWork->save($newLocation);
 
         if (isset($generatedLocation)) {
