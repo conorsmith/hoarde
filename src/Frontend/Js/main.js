@@ -557,135 +557,142 @@ var scavengeModal = document.getElementById("scavengeModal");
 var scavengeButtons = document.getElementsByClassName("js-scavenge");
 
 var inventory = new Inventory(
-    JSON.parse(document.getElementById("inventoryItems").value),
-    parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryCapacity, 10)
+    document.getElementById("inventoryItems")
+        ? JSON.parse(document.getElementById("inventoryItems").value)
+        : [],
+    scavengeModal
+        ? parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryCapacity, 10)
+        : 0
 );
 
-var scavengeModalView = new ScavengeModal(
-    scavengeModal,
-    inventory,
-    document.getElementById("scavange-item-slider")
-);
+if (scavengeModal) {
 
-var haul;
-
-scavengeModal.querySelector(".js-scavenge-discard").onclick = function (e) {
-    e.preventDefault();
-
-    var haulInputs = scavengeModalView.findHaulInputs();
-    var inventoryInputs = scavengeModalView.findInventoryInputs();
-
-    for (var i = 0; i < haulInputs.length; i++) {
-        haulInputs[i].value = 0;
-        haul.modifyItemQuantity(haulInputs[i].dataset.varietyId, 0);
-    }
-
-    api.addHaul(
-        scavengeModal.querySelector(".js-scavenge-submit").dataset.entityId,
-        scavengeModal.querySelector(".js-scavenge-submit").dataset.haulId,
-        haulInputs,
-        inventoryInputs
+    var scavengeModalView = new ScavengeModal(
+        scavengeModal,
+        inventory,
+        document.getElementById("scavange-item-slider")
     );
-};
 
-scavengeModal.querySelector(".js-scavenge-submit").onclick = function (e) {
-    if (this.dataset.isEmpty === "true") {
-        window.location.reload();
-        return;
-    }
+    var haul;
 
-    const template = document.getElementById("spinner").content.cloneNode(true);
-    this.innerText = "";
-    this.appendChild(template);
+    scavengeModal.querySelector(".js-scavenge-discard").onclick = function (e) {
+        e.preventDefault();
 
-    var haulInputs = scavengeModalView.findHaulInputs();
-    var inventoryInputs = scavengeModalView.findInventoryInputs();
-
-    api.addHaul(this.dataset.entityId, this.dataset.haulId, haulInputs, inventoryInputs);
-};
-
-var api = {
-    addHaul: function (entityId, haulId, haulInputs, inventoryInputs) {
-        var body = {};
-        body.selectedItems = {};
-        body.modifiedInventory = {};
+        var haulInputs = scavengeModalView.findHaulInputs();
+        var inventoryInputs = scavengeModalView.findInventoryInputs();
 
         for (var i = 0; i < haulInputs.length; i++) {
-            body.selectedItems[haulInputs[i].dataset.varietyId] = parseInt(haulInputs[i].value, 10);
+            haulInputs[i].value = 0;
+            haul.modifyItemQuantity(haulInputs[i].dataset.varietyId, 0);
         }
 
-        for (i = 0; i < inventoryInputs.length; i++) {
-            body.modifiedInventory[inventoryInputs[i].dataset.varietyId] = parseInt(inventoryInputs[i].value, 10);
+        api.addHaul(
+            scavengeModal.querySelector(".js-scavenge-submit").dataset.entityId,
+            scavengeModal.querySelector(".js-scavenge-submit").dataset.haulId,
+            haulInputs,
+            inventoryInputs
+        );
+    };
+
+    scavengeModal.querySelector(".js-scavenge-submit").onclick = function (e) {
+        if (this.dataset.isEmpty === "true") {
+            window.location.reload();
+            return;
         }
-
-        var xhr = new XMLHttpRequest();
-
-        xhr.onload = function () {
-            if (this.responseText === "") {
-                window.location.reload();
-            } else {
-                scavengeModal.dispatchEvent(new CustomEvent("haul.notAdded", {
-                    detail: {
-                        message: this.responseText
-                    }
-                }));
-            }
-        };
-
-        xhr.open("POST", "/" + gameId + "/" + entityId + "/scavenge/" + haulId);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(body));
-
-        scavengeModal.dispatchEvent(new CustomEvent("haul.add"));
-    }
-};
-
-for (var i = 0; i < scavengeButtons.length; i++) {
-    scavengeButtons[i].onclick = function (e) {
-        e.preventDefault();
-        const button = this;
 
         const template = document.getElementById("spinner").content.cloneNode(true);
-        this.dataset.buttonText = this.innerText;
         this.innerText = "";
         this.appendChild(template);
 
-        var xhr = new XMLHttpRequest();
+        var haulInputs = scavengeModalView.findHaulInputs();
+        var inventoryInputs = scavengeModalView.findInventoryInputs();
 
-        xhr.onload = function () {
-            var response = JSON.parse(this.response);
+        api.addHaul(this.dataset.entityId, this.dataset.haulId, haulInputs, inventoryInputs);
+    };
 
-            if (response.message !== undefined) {
-                let container = document.querySelector(".alert-container");
-                container.innerHTML = "";
+    var api = {
+        addHaul: function (entityId, haulId, haulInputs, inventoryInputs) {
+            var body = {};
+            body.selectedItems = {};
+            body.modifiedInventory = {};
 
-                let alert = document.createElement("div");
-                alert.classList.add("alert", "alert-danger");
-                alert.innerText = response.message;
+            for (var i = 0; i < haulInputs.length; i++) {
+                body.selectedItems[haulInputs[i].dataset.varietyId] = parseInt(haulInputs[i].value, 10);
+            }
 
-                container.appendChild(alert);
+            for (i = 0; i < inventoryInputs.length; i++) {
+                body.modifiedInventory[inventoryInputs[i].dataset.varietyId] = parseInt(inventoryInputs[i].value, 10);
+            }
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.onload = function () {
+                if (this.responseText === "") {
+                    window.location.reload();
+                } else {
+                    scavengeModal.dispatchEvent(new CustomEvent("haul.notAdded", {
+                        detail: {
+                            message: this.responseText
+                        }
+                    }));
+                }
+            };
+
+            xhr.open("POST", "/" + gameId + "/" + entityId + "/scavenge/" + haulId);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify(body));
+
+            scavengeModal.dispatchEvent(new CustomEvent("haul.add"));
+        }
+    };
+
+    for (var i = 0; i < scavengeButtons.length; i++) {
+        scavengeButtons[i].onclick = function (e) {
+            e.preventDefault();
+            const button = this;
+
+            const template = document.getElementById("spinner").content.cloneNode(true);
+            this.dataset.buttonText = this.innerText;
+            this.innerText = "";
+            this.appendChild(template);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.onload = function () {
+                var response = JSON.parse(this.response);
+
+                if (response.message !== undefined) {
+                    let container = document.querySelector(".alert-container");
+                    container.innerHTML = "";
+
+                    let alert = document.createElement("div");
+                    alert.classList.add("alert", "alert-danger");
+                    alert.innerText = response.message;
+
+                    container.appendChild(alert);
+
+                    button.innerText = button.dataset.buttonText;
+
+                    return;
+                }
+
+                haul = new Haul(response.haul.id, response.haul.items, inventory);
+
+                if (haul.isEmpty()) {
+                    window.location.reload();
+                    return;
+                }
+
+                document.getElementById("scavengeModal")
+                    .querySelector(".js-scavenge-submit").dataset.entityId = button.dataset.entityId;
+
+                $("#scavengeModal").modal('show');
 
                 button.innerText = button.dataset.buttonText;
+            };
 
-                return;
-            }
-
-            haul = new Haul(response.haul.id, response.haul.items, inventory);
-
-            if (haul.isEmpty()) {
-                window.location.reload();
-                return;
-            }
-
-            document.getElementById("scavengeModal")
-                .querySelector(".js-scavenge-submit").dataset.entityId = button.dataset.entityId;
-
-            $("#scavengeModal").modal('show');
-
-            button.innerText = button.dataset.buttonText;
-        };
-
-        xhr.open("POST", "/" + gameId + "/" + button.dataset.entityId + "/scavenge");
-        xhr.send();
+            xhr.open("POST", "/" + gameId + "/" + button.dataset.entityId + "/scavenge");
+            xhr.send();
+        }
     }
 }

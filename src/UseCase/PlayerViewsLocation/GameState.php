@@ -16,7 +16,7 @@ final class GameState
     /** @var Location */
     private $location;
 
-    /** @var Entity */
+    /** @var ?Entity */
     private $human;
 
     /** @var iterable */
@@ -34,7 +34,7 @@ final class GameState
     public function __construct(
         Game $game,
         Location $location,
-        Entity $human,
+        ?Entity $human,
         iterable $entities,
         iterable $actions,
         iterable $varietiesWithBlueprints,
@@ -59,7 +59,12 @@ final class GameState
         return $this->location;
     }
 
-    public function getHuman(): Entity
+    public function hasActors(): bool
+    {
+        return !is_null($this->human);
+    }
+
+    public function getHuman(): ?Entity
     {
         return $this->human;
     }

@@ -84,6 +84,11 @@ final class Map
         return array_key_exists(self::createKey($coordinates), $this->locations);
     }
 
+    public function findLocation(Coordinates $coordinates): Location
+    {
+        return $this->locations[self::createKey($coordinates)];
+    }
+
     public function findNotableEntities(Coordinates $coordinates): iterable
     {
         $entities = [];

@@ -61,18 +61,12 @@ final class UseCase
             return Result::failed(GeneralResult::failed("Location {$locationId} was not found."));
         }
 
-        $human = $this->findHuman($localEntities);
-
-        if (is_null($human)) {
-            return Result::failed(GeneralResult::failed("Location {$locationId} has no human entity"));
-        }
-
         $setOfCoordinates = $location->getCoordinates()->allCoordinatesInSquare(11);
 
         return Result::succeeded(new GameState(
             $game,
             $location,
-            $human,
+            $this->findHuman($localEntities),
             $localEntities,
             $this->actionRepository->all(),
             $this->varietyRepository->allWithBlueprints(),

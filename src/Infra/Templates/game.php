@@ -106,12 +106,15 @@
     <?=$this->render("Game/modal-read.php")?>
     <?=$this->render("Game/modal-repair.php")?>
     <?=$this->render("Game/modal-map.php", [
-        'map' => $map,
+        'game' => $game,
+        'map'  => $map,
     ])?>
 
-    <?=$this->render("Game/modal-scavenge.php", [
-        'entity' => $human,
-    ])?>
+    <?php if (isset($human)) : ?>
+        <?=$this->render("Game/modal-scavenge.php", [
+            'entity' => $human,
+        ])?>
+    <?php endif ?>
 
     <?=$this->render("Game/modal-construct.php", [
         'constructions' => $constructions,
@@ -124,10 +127,13 @@
     ])?>
 
     <input type="hidden" id="gameId" value="<?=$game->id?>" />
-    <input type="hidden" id="inventoryItems" value='<?=$this->e(json_encode($human->inventory->items))?>' />
     <input type="hidden" id="entities" value='<?=$this->e(json_encode($entities))?>' />
     <input type="hidden" id="constructions" value='<?=$this->e(json_encode($constructions))?>' />
     <input type="hidden" id="actions" value='<?=$this->e(json_encode($actions))?>' />
+
+    <?php if (isset($human)) : ?>
+      <input type="hidden" id="inventoryItems" value='<?=$this->e(json_encode($human->inventory->items))?>' />
+    <?php endif ?>
 
     <?=$this->render("Game/template-scavenge-item-slider.php")?>
     <?=$this->render("Game/template-spinner.php")?>

@@ -27,6 +27,9 @@ final class Map
     private function presentLocation(Coordinates $coordinates, DomainModel $map): stdClass
     {
         return (object) [
+            'id'      => $map->hasLocation($coordinates)
+                ? strval($map->findLocation($coordinates)->getId())
+                : null,
             'x'       => $coordinates->getX(),
             'y'       => $coordinates->getY(),
             'isKnown' => $map->hasLocation($coordinates),

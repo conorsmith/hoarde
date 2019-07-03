@@ -31,9 +31,13 @@ final class EntityFactory
         $this->resourceRepository = $resourceRepository;
     }
 
-    public function createEntity(DomainModel $entity, UuidInterface $actorId, iterable $entities): stdClass
+    public function createEntity(DomainModel $entity, ?UuidInterface $actorId, iterable $entities): stdClass
     {
-        $actor = $this->findActor($actorId, $entities);
+        if (is_null($actorId)) {
+            $actor = null;
+        } else {
+            $actor = $this->findActor($actorId, $entities);
+        }
 
         $resourceNeeds = [];
 
@@ -68,7 +72,7 @@ final class EntityFactory
 
                         $presentedItem->performableActions[] = (object)[
                             'id'      => $action->getId(),
-                            'actorId' => $actor->getId(),
+                            'actorId' => is_null($actor) ? null : $actor->getId(),
                             'label'   => $action->getLabel(),
                             'icon'    => $action->getIcon(),
                             'jsClass' => $jsClass,
@@ -170,10 +174,11 @@ final class EntityFactory
             } elseif ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE))
                 || $entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::TOOLBOX))
             ) {
-                $presentation->inventory->initialTransferEntityId = $this->getFirstEntityOfVariety(
+                $firstHuman = $this->getFirstEntityOfVariety(
                     $entities,
                     Uuid::fromString(VarietyRepositoryConfig::HUMAN)
-                )->getId();
+                );
+                $presentation->inventory->initialTransferEntityId = is_null($firstHuman) ? null : $firstHuman->getId();
 
             } else {
                 $presentation->inventory->initialTransferEntityId = null;
@@ -245,7 +250,7 @@ final class EntityFactory
         return $presentation;
     }
 
-    private function presentResourceNeed(DomainModel $actor, ResourceNeed $resourceNeed): stdClass
+    private function presentResourceNeed(?DomainModel $actor, ResourceNeed $resourceNeed): stdClass
     {
         $resource = $this->resourceRepository->find($resourceNeed->getResource()->getId());
 
@@ -254,27 +259,29 @@ final class EntityFactory
         $lastConsumedVarietyId = $resourceNeed->getLastConsumedVarietyId();
         $lastConsumedItem = null;
 
-        if (!is_null($lastConsumedVarietyId)) {
-            foreach ($actor->getInventory()->getItems() as $item) {
-                if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
-                    $lastConsumedItem = $this->presentItem($item);
+        if (!is_null($actor)) {
+            if (!is_null($lastConsumedVarietyId)) {
+                foreach ($actor->getInventory()->getItems() as $item) {
+                    if ($item->getVariety()->getId()->equals($lastConsumedVarietyId)) {
+                        $lastConsumedItem = $this->presentItem($item);
+                    }
                 }
             }
-        }
 
-        foreach ($actor->getInventory()->getItems() as $item) {
-            foreach ($item->getVariety()->getResources() as $itemResource) {
-                if ($itemResource->getId()->equals($resource->getId())
-                    && !$item->getVariety()->getId()->equals($lastConsumedVarietyId)
-                ) {
-                    $items[] = $this->presentItem($item);
+            foreach ($actor->getInventory()->getItems() as $item) {
+                foreach ($item->getVariety()->getResources() as $itemResource) {
+                    if ($itemResource->getId()->equals($resource->getId())
+                        && !$item->getVariety()->getId()->equals($lastConsumedVarietyId)
+                    ) {
+                        $items[] = $this->presentItem($item);
+                    }
                 }
             }
         }
 
         return (object) [
             'id'               => $resource->getId(),
-            'actorId'          => $actor->getId(),
+            'actorId'          => is_null($actor) ? null : $actor->getId(),
             'label'            => $resource->getLabel(),
             'level'            => $resourceNeed->getCurrentLevel(),
             'segmentWidth'     => 100 / $resourceNeed->getMaximumLevel(),
@@ -325,12 +332,12 @@ final class EntityFactory
         }
     }
 
-    private function presentConstruction(DomainModel $entity, DomainModel $actor): stdClass
+    private function presentConstruction(DomainModel $entity, ?DomainModel $actor): stdClass
     {
         $actorPresentation = null;
         $entityVariety = $this->varietyRepository->find($entity->getVarietyId());
 
-        if ($entityVariety->hasBlueprint()) {
+        if (!is_null($actor) && $entityVariety->hasBlueprint()) {
             $actorPresentation = (object) [
                 'id'       => $actor->getId(),
                 'label'    => $actor->getLabel(),

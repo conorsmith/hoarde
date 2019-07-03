@@ -71,18 +71,20 @@ final class PlayerViewsLocation
             ),
             'location'      => new Location($gameState->getLocation(), $gameState->getMap()),
             'map'           => new Map($gameState->getMap()),
-            'human'         => $this->entityPresentationFactory->createEntity(
-                $gameState->getHuman(),
-                $gameState->getHuman()->getId(),
-                $gameState->getEntities()
-            ),
-            'isIntact'      => $gameState->getHuman()->isIntact(),
+            'human'         => $gameState->hasActors()
+                ? $this->entityPresentationFactory->createEntity(
+                    $gameState->getHuman(),
+                    $gameState->getHuman()->getId(),
+                    $gameState->getEntities()
+                )
+                : null,
+            'isIntact'      => $gameState->hasActors() && $gameState->getHuman()->isIntact(),
             'alert'         => Alert::fromSession($this->session),
             'entities'      => array_map(
                 function (Entity $entity) use ($gameState) {
                     return $this->entityPresentationFactory->createEntity(
                         $entity,
-                        $gameState->getHuman()->getId(),
+                        $gameState->hasActors() ? $gameState->getHuman()->getId() : null,
                         $gameState->getEntities()
                     );
                 },

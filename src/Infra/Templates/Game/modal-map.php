@@ -14,7 +14,7 @@
                         <div class="map-row">
                             <div class="btn-group">
                                 <?php foreach ($row as $location): ?>
-                                    <a href="#"
+                                    <a href="/<?=$location->isKnown ? "{$game->id}/{$location->id}" : "#"?>"
                                        class="btn <?=$location->isKnown ? "btn-outline-secondary" : "btn-secondary"?>"
                                        data-x="<?=$location->x?>"
                                        data-y="<?=$location->y?>"
