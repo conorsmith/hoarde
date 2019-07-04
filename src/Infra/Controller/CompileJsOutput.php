@@ -3,127 +3,107 @@ declare(strict_types=1);
 
 namespace ConorSmith\Hoarde\Infra\Controller;
 
+use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\HtmlResponse;
 
 final class CompileJsOutput
 {
+    private const MODULE_WHITELIST = [
+        "construct",
+        "harvest",
+        "repair",
+        "scavenge",
+        "sort",
+        "sow",
+        "transfer",
+    ];
+
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $response = new Response;
-
         if ($args['fileName'] === "main") {
-            $output = $this->renderMainJsFiles();
+            $responseBody = $this->renderMainJsFiles();
 
         } elseif ($args['fileName'] === "utility") {
-            $output = $this->renderUtilityJsFiles();
+            $responseBody = $this->renderUtilityJsFiles();
 
-        } elseif ($args['fileName'] === "transfer") {
-            $output = $this->renderJsFiles("Transfer");
-
-        } elseif ($args['fileName'] === "construct") {
-            $output = $this->renderJsFiles("Construct");
-
-        } elseif ($args['fileName'] === "sow") {
-            $output = $this->renderJsFiles("Sow");
-
-        } elseif ($args['fileName'] === "harvest") {
-            $output = $this->renderJsFiles("Harvest");
-
-        } elseif ($args['fileName'] === "repair") {
-            $output = $this->renderJsFiles("Repair");
-
-        } elseif ($args['fileName'] === "sort") {
-            $output = $this->renderJsFiles("Sort");
-
-        } elseif ($args['fileName'] === "scavenge") {
-            $output = $this->renderJsFiles("Scavenge");
+        } elseif (in_array($args['fileName'], self::MODULE_WHITELIST)) {
+            $responseBody = $this->renderJsFiles(ucfirst($args['fileName']));
 
         } else {
 
-            ob_start();
+            $responseBody = $this->render(function () {
 
-            include __DIR__ . "/../Templates/not-found.php";
+                include __DIR__ . "/../Templates/not-found.php";
 
-            $body = ob_get_contents();
+            });
 
-            ob_end_clean();
-
-            $response = $response->withStatus(404);
-            $response->getBody()->write($body);
-
-            return $response;
+            return new HtmlResponse($responseBody, 404);
         }
 
-        $response->getBody()->write($output);
+        $response = (new Response)->withHeader("Content-Type", "text/javascript");
 
-        $response = $response->withHeader("Content-Type", "text/javascript");
+        $response->getBody()->write($responseBody);
 
         return $response;
     }
 
-    private function renderJsFiles(string $namespace): string
+    private function renderJsFiles(string $module): string
     {
-        ob_start();
+        return $this->render(function () use ($module) {
 
-        $controllers = scandir(__DIR__ . "/../../Frontend/Js/{$namespace}/Controller");
+            $modulePaths = [
+                __DIR__ . "/../../Frontend/Js/{$module}/Controller",
+                __DIR__ . "/../../Frontend/Js/{$module}/Model",
+                __DIR__ . "/../../Frontend/Js/{$module}/View",
+            ];
 
-        foreach ($controllers as $controller) {
-            if (!in_array($controller, [".", ".."])) {
-                include __DIR__ . "/../../Frontend/Js/{$namespace}/Controller/{$controller}";
+            foreach ($modulePaths as $modulePath) {
+                $moduleFiles = scandir($modulePath);
+
+                foreach ($moduleFiles as $moduleFile) {
+                    if (!in_array($moduleFile, [".", ".."])) {
+                        include "{$modulePath}/{$moduleFile}";
+                    }
+                }
             }
-        }
 
-        $models = scandir(__DIR__ . "/../../Frontend/Js/{$namespace}/Model");
+            include __DIR__ . "/../../Frontend/Js/{$module}/exports.js";
 
-        foreach ($models as $model) {
-            if (!in_array($model, [".", ".."])) {
-                include __DIR__ . "/../../Frontend/Js/{$namespace}/Model/{$model}";
-            }
-        }
-
-        $views = scandir(__DIR__ . "/../../Frontend/Js/{$namespace}/View");
-
-        foreach ($views as $view) {
-            if (!in_array($view, [".", ".."])) {
-                include __DIR__ . "/../../Frontend/Js/{$namespace}/View/{$view}";
-            }
-        }
-
-        include __DIR__ . "/../../Frontend/Js/{$namespace}/exports.js";
-
-        $output = ob_get_contents();
-
-        ob_end_clean();
-
-        return $output;
+        });
     }
 
     private function renderMainJsFiles(): string
     {
-        ob_start();
+        return $this->render(function () {
 
-        include __DIR__ . "/../../Frontend/Js/main.js";
+            include __DIR__ . "/../../Frontend/Js/main.js";
 
-        $output = ob_get_contents();
-
-        ob_end_clean();
-
-        return $output;
+        });
     }
 
     private function renderUtilityJsFiles(): string
     {
+        return $this->render(function () {
+
+            $views = scandir(__DIR__ . "/../../Frontend/Js/Utility");
+
+            foreach ($views as $view) {
+                if (!in_array($view, [".", ".."])) {
+                    include __DIR__ . "/../../Frontend/Js/Utility/{$view}";
+                }
+            }
+
+        });
+    }
+
+    private function render(Closure $callback): string
+    {
         ob_start();
 
-        $views = scandir(__DIR__ . "/../../Frontend/Js/Utility");
-
-        foreach ($views as $view) {
-            if (!in_array($view, [".", ".."])) {
-                include __DIR__ . "/../../Frontend/Js/Utility/{$view}";
-            }
-        }
+        $callback();
 
         $output = ob_get_contents();
 
