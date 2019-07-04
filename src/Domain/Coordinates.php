@@ -75,7 +75,10 @@ final class Coordinates
 
     public function generateRouteTo(self $other): iterable
     {
-        $translatedOther = new self($other->x - $this->x, $other->y - $this->y);
+        $translatedOther = new self(
+            $other->x - $this->x,
+            $other->y - $this->y
+        );
 
         $longDistance = max(abs($translatedOther->x), abs($translatedOther->y));
         $shortDistance = min(abs($translatedOther->x), abs($translatedOther->y));
