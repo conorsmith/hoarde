@@ -1,4 +1,13 @@
 
+import {EventBus, Form} from "./utility.js";
+import {MainController as TransferController, ModalView as TransferModalView} from "./transfer.js";
+import {MainController as ConstructController, ModalView as ConstructModalView} from "./construct.js";
+import {MainController as SowController, ModalView as SowModalView} from "./sow.js";
+import {MainController as HarvestController, ModalView as HarvestModalView} from "./harvest.js";
+import {MainController as RepairController, ModalView as RepairModalView} from "./repair.js";
+import {MainController as SortController, ModalView as SortModalView} from "./sort.js";
+import {ScavengeModal, Haul, Inventory} from "./scavenge.js";
+
 let gameId = document.getElementById("gameId").value;
 let entities = JSON.parse(document.getElementById("entities").value);
 
@@ -56,36 +65,14 @@ document.getElementById("js-drop-slider").addEventListener("input", function (e)
 document.getElementById("dropModal").querySelector(".js-drop-submit").onclick = function (e) {
     e.preventDefault();
 
-    var itemId = document.getElementById("dropModal").dataset.itemId;
-    var entityId = document.getElementById("dropModal").dataset.entityId;
-    var itemQuantity = e.currentTarget.dataset.itemQuantity;
-
-    var form = document.createElement("form");
-    form.setAttribute("action", "/" + gameId + "/drop");
-    form.setAttribute("method", "POST");
-    form.setAttribute("hidden", true);
-
-    var itemInput = document.createElement("input");
-    itemInput.setAttribute("type", "hidden");
-    itemInput.setAttribute("name", "item");
-    itemInput.setAttribute("value", itemId);
-    form.appendChild(itemInput);
-
-    var itemInput = document.createElement("input");
-    itemInput.setAttribute("type", "hidden");
-    itemInput.setAttribute("name", "quantity");
-    itemInput.setAttribute("value", itemQuantity);
-    form.appendChild(itemInput);
-
-    var itemInput = document.createElement("input");
-    itemInput.setAttribute("type", "hidden");
-    itemInput.setAttribute("name", "entityId");
-    itemInput.setAttribute("value", entityId);
-    form.appendChild(itemInput);
-
-    document.body.appendChild(form);
-
-    form.submit();
+    Form.post(
+        "/" + gameId + "/drop",
+        {
+            item: document.getElementById("dropModal").dataset.itemId,
+            quantity: e.currentTarget.dataset.itemQuantity,
+            entityId: document.getElementById("dropModal").dataset.entityId
+        }
+    );
 };
 
 $("#discardIncubationModal").on("show.bs.modal", function (e) {
@@ -124,37 +111,16 @@ document.getElementById("discardIncubationModal").querySelector(".js-drop-slider
 document.getElementById("discardIncubationModal").querySelector(".js-drop-submit").onclick = function (e) {
     e.preventDefault();
 
-    var varietyId = document.getElementById("discardIncubationModal").dataset.varietyId;
-    var entityId = document.getElementById("discardIncubationModal").dataset.entityId;
-    var remainingSteps = document.getElementById("discardIncubationModal").dataset.remainingSteps;
-    var quantity = e.currentTarget.dataset.quantity;
+    const discardIncubationModal = document.getElementById("discardIncubationModal");
 
-    var form = document.createElement("form");
-    form.setAttribute("action", "/" + gameId + "/" + entityId + "/discard-from-incubator");
-    form.setAttribute("method", "POST");
-    form.setAttribute("hidden", true);
-
-    var varietyIdInput = document.createElement("input");
-    varietyIdInput.setAttribute("type", "hidden");
-    varietyIdInput.setAttribute("name", "varietyId");
-    varietyIdInput.setAttribute("value", varietyId);
-    form.appendChild(varietyIdInput);
-
-    var remainingStepsInput = document.createElement("input");
-    remainingStepsInput.setAttribute("type", "hidden");
-    remainingStepsInput.setAttribute("name", "remainingSteps");
-    remainingStepsInput.setAttribute("value", remainingSteps);
-    form.appendChild(remainingStepsInput);
-
-    var quantityInput = document.createElement("input");
-    quantityInput.setAttribute("type", "hidden");
-    quantityInput.setAttribute("name", "quantity");
-    quantityInput.setAttribute("value", quantity);
-    form.appendChild(quantityInput);
-
-    document.body.appendChild(form);
-
-    form.submit();
+    Form.post(
+        "/" + gameId + "/" + discardIncubationModal.dataset.entityId + "/discard-from-incubator",
+        {
+            varietyId: discardIncubationModal.dataset.varietyId,
+            remainingSteps: discardIncubationModal.dataset.remainingSteps,
+            quantity: e.currentTarget.dataset.quantity
+        }
+    );
 };
 
 $("#settingsModal").on("show.bs.modal", function (e) {
@@ -171,16 +137,12 @@ $("#settingsModal").on("show.bs.modal", function (e) {
     labelInput.value = entity.label;
 
     e.target.querySelector(".js-settings-submit").addEventListener("click", function (e) {
-        var form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/" + entity.id + "/settings");
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        form.appendChild(labelInput);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + gameId + "/" + entity.id + "/settings",
+            {
+                label: entity.label
+            }
+        );
     });
 });
 
@@ -192,37 +154,14 @@ document.querySelectorAll(".js-use").forEach(function (button) {
         this.innerText = "";
         this.appendChild(template);
 
-        var itemId = e.currentTarget.dataset.itemId;
-        var entityId = e.currentTarget.dataset.entityId;
-        var actorId = e.currentTarget.dataset.actorId;
-        var actionId = e.currentTarget.dataset.actionId;
-
-        var form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/" + entityId + "/use");
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        var actorIdInput = document.createElement("input");
-        actorIdInput.setAttribute("type", "hidden");
-        actorIdInput.setAttribute("name", "actorId");
-        actorIdInput.setAttribute("value", actorId);
-        form.appendChild(actorIdInput);
-
-        var itemInput = document.createElement("input");
-        itemInput.setAttribute("type", "hidden");
-        itemInput.setAttribute("name", "item");
-        itemInput.setAttribute("value", itemId);
-        form.appendChild(itemInput);
-
-        var actionIdInput = document.createElement("input");
-        actionIdInput.setAttribute("type", "hidden");
-        actionIdInput.setAttribute("name", "actionId");
-        actionIdInput.setAttribute("value", actionId);
-        form.appendChild(actionIdInput);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + gameId + "/" + e.currentTarget.dataset.entityId + "/use",
+            {
+                actorId: e.currentTarget.dataset.actorId,
+                item: e.currentTarget.dataset.itemId,
+                actionId: e.currentTarget.dataset.actionId
+            }
+        );
     });
 });
 
@@ -234,36 +173,14 @@ document.querySelectorAll(".js-consume").forEach(function (button) {
         this.innerText = "";
         this.appendChild(template);
 
-        var resourceId = e.currentTarget.dataset.resourceId;
-        var entityId = e.currentTarget.dataset.entityId;
-        var actorId = e.currentTarget.dataset.actorId;
-
-        var form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/consume");
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        var resourceIdInput = document.createElement("input");
-        resourceIdInput.setAttribute("type", "hidden");
-        resourceIdInput.setAttribute("name", "resourceId");
-        resourceIdInput.setAttribute("value", resourceId);
-        form.appendChild(resourceIdInput);
-
-        var entityIdInput = document.createElement("input");
-        entityIdInput.setAttribute("type", "hidden");
-        entityIdInput.setAttribute("name", "entityId");
-        entityIdInput.setAttribute("value", entityId);
-        form.appendChild(entityIdInput);
-
-        var actorIdInput = document.createElement("input");
-        actorIdInput.setAttribute("type", "hidden");
-        actorIdInput.setAttribute("name", "actorId");
-        actorIdInput.setAttribute("value", actorId);
-        form.appendChild(actorIdInput);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + gameId + "/consume",
+            {
+                resourceId: e.currentTarget.dataset.resourceId,
+                entityId: e.currentTarget.dataset.entityId,
+                actorId: e.currentTarget.dataset.actorId
+            }
+        );
     });
 });
 
@@ -282,23 +199,12 @@ document.querySelectorAll(".js-fetch").forEach(function (button) {
         this.innerText = "";
         this.appendChild(template);
 
-        var wellId = e.currentTarget.dataset.wellId;
-        var entityId = e.currentTarget.dataset.entityId;
-
-        var form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/" + entityId + "/fetch-water");
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        var wellIdInput = document.createElement("input");
-        wellIdInput.setAttribute("type", "hidden");
-        wellIdInput.setAttribute("name", "wellId");
-        wellIdInput.setAttribute("value", wellId);
-        form.appendChild(wellIdInput);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + gameId + "/" + e.currentTarget.dataset.entityId + "/fetch-water",
+            {
+                wellId: e.currentTarget.dataset.wellId
+            }
+        );
     });
 });
 
@@ -333,24 +239,12 @@ document.querySelectorAll(".js-construct-continue").forEach(function (button) {
         this.innerText = "";
         this.appendChild(template);
 
-        var targetId = e.currentTarget.dataset.targetId;
-        var actorId = e.currentTarget.dataset.actorId;
-        var constructionVarietyId = e.currentTarget.dataset.constructionVarietyId;
-
-        var form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/" + actorId + "/construct/" + targetId);
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        var constructionVarietyIdInput = document.createElement("input");
-        constructionVarietyIdInput.setAttribute("type", "hidden");
-        constructionVarietyIdInput.setAttribute("name", "constructionVarietyId");
-        constructionVarietyIdInput.setAttribute("value", constructionVarietyId);
-        form.appendChild(constructionVarietyIdInput);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + gameId + "/" + e.currentTarget.dataset.actorId + "/construct/" + e.currentTarget.dataset.targetId,
+            {
+                constructionVarietyId: e.currentTarget.dataset.constructionVarietyId
+            }
+        );
     });
 });
 
@@ -391,14 +285,10 @@ document.querySelectorAll(".js-restart").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
 
-        let form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/restart");
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + gameId + "/restart",
+            {}
+        );
     });
 });
 
@@ -406,23 +296,12 @@ document.querySelectorAll(".js-travel").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
 
-        let actorId = this.dataset.actorId;
-        let direction = this.dataset.direction;
-
-        let form = document.createElement("form");
-        form.setAttribute("action", "/" + gameId + "/" + actorId + "/travel");
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        let input = document.createElement("input");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("name", "direction");
-        input.setAttribute("value", direction);
-        form.appendChild(input);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + gameId + "/" + this.dataset.actorId + "/travel",
+            {
+                direction: this.dataset.direction
+            }
+        );
     });
 });
 
@@ -520,15 +399,6 @@ $("#readModal").on("show.bs.modal", function (e) {
     xhr.open("POST", "/" + gameId + "/" + this.dataset.actorId + "/read/" + itemId);
     xhr.send();
 });
-
-import {EventBus} from "./utility.js";
-import {MainController as TransferController, ModalView as TransferModalView} from "./transfer.js";
-import {MainController as ConstructController, ModalView as ConstructModalView} from "./construct.js";
-import {MainController as SowController, ModalView as SowModalView} from "./sow.js";
-import {MainController as HarvestController, ModalView as HarvestModalView} from "./harvest.js";
-import {MainController as RepairController, ModalView as RepairModalView} from "./repair.js";
-import {MainController as SortController, ModalView as SortModalView} from "./sort.js";
-import {ScavengeModal, Haul, Inventory} from "./scavenge.js";
 
 var eventBus = new EventBus();
 

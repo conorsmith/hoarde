@@ -14,13 +14,9 @@ class ConstructionController {
     }
 
     onSubmit(e) {
-        let form = document.createElement("form");
-        form.setAttribute("action", "/" + this.model.gameId + "/" + this.model.entityId + "/repair/" + this.model.targetId);
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + this.model.gameId + "/" + this.model.entityId + "/repair/" + this.model.targetId,
+            {}
+        );
     }
 }

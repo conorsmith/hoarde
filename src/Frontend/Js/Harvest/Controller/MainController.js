@@ -87,31 +87,13 @@ class MainController {
     }
 
     onSubmit(e) {
-        const form = document.createElement("form");
-        form.setAttribute("action", "/" + this.gameId + "/" + this.actorId + "/harvest/" + this.entityId);
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        const inventoryEntityIdInput = document.createElement("input");
-        inventoryEntityIdInput.setAttribute("type", "hidden");
-        inventoryEntityIdInput.setAttribute("name", "inventoryEntityId");
-        inventoryEntityIdInput.setAttribute("value", this.capacityBar.entity.id);
-        form.appendChild(inventoryEntityIdInput);
-
-        const varietyIdInput = document.createElement("input");
-        varietyIdInput.setAttribute("type", "hidden");
-        varietyIdInput.setAttribute("name", "varietyId");
-        varietyIdInput.setAttribute("value", this.harvest.id);
-        form.appendChild(varietyIdInput);
-
-        const quantityInput = document.createElement("input");
-        quantityInput.setAttribute("type", "hidden");
-        quantityInput.setAttribute("name", "quantity");
-        quantityInput.setAttribute("value", this.harvest.quantity);
-        form.appendChild(quantityInput);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + this.gameId + "/" + this.actorId + "/harvest/" + this.entityId,
+            {
+                inventoryEntityId: this.capacityBar.entity.id,
+                varietyId: this.harvest.id,
+                quantity: this.harvest.quantity
+            }
+        );
     }
 }

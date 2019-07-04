@@ -14,19 +14,11 @@ class ConstructionController {
     }
 
     onSubmit(e) {
-        let form = document.createElement("form");
-        form.setAttribute("action", "/" + this.model.gameId + "/" + this.model.entityId + "/construct");
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        let constructionVarietyId = document.createElement("input");
-        constructionVarietyId.setAttribute("type", "hidden");
-        constructionVarietyId.setAttribute("name", "constructionVarietyId");
-        constructionVarietyId.setAttribute("value", this.model.id);
-        form.appendChild(constructionVarietyId);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + this.model.gameId + "/" + this.model.entityId + "/construct",
+            {
+                constructionVarietyId: this.model.id
+            }
+        );
     }
 }

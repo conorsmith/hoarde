@@ -65,19 +65,11 @@ class MainController {
     }
 
     onSubmit(e) {
-        let form = document.createElement("form");
-        form.setAttribute("action", "/" + this.gameId + "/" + this.actorId + "/sow/" + this.entityId);
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        let plotInput = document.createElement("input");
-        plotInput.setAttribute("type", "hidden");
-        plotInput.setAttribute("name", "plot");
-        plotInput.setAttribute("value", JSON.stringify(this.plot.getContents()));
-        form.appendChild(plotInput);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + this.gameId + "/" + this.actorId + "/sow/" + this.entityId,
+            {
+                plot: JSON.stringify(this.plot.getContents())
+            }
+        );
     }
 }

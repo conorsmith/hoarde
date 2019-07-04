@@ -24,19 +24,11 @@ class MainController {
     }
 
     onSubmit(e) {
-        let form = document.createElement("form");
-        form.setAttribute("action", "/" + this.gameId + "/sort");
-        form.setAttribute("method", "POST");
-        form.setAttribute("hidden", true);
-
-        let input = document.createElement("input");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("name", "orderedEntityIds");
-        input.setAttribute("value", JSON.stringify(this.orderManifest.orderedEntityIds));
-        form.appendChild(input);
-
-        document.body.appendChild(form);
-
-        form.submit();
+        Form.post(
+            "/" + this.gameId + "/sort",
+            {
+                orderedEntityIds: JSON.stringify(this.orderManifest.orderedEntityIds)
+            }
+        );
     }
 }
