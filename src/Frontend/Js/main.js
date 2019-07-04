@@ -1,17 +1,6 @@
 
-var gameId = document.getElementById("gameId").value;
-var entities = JSON.parse(document.getElementById("entities").value);
-var constructions = JSON.parse(document.getElementById("constructions").value);
-
-var useButtons = document.getElementsByClassName("js-use");
-var consumeButtons = document.getElementsByClassName("js-consume");
-var infoButtons = document.getElementsByClassName("js-info");
-var fetchButtons = document.getElementsByClassName("js-fetch");
-var constructButtons = document.getElementsByClassName("js-construct");
-var constructContinueButtons = document.getElementsByClassName("js-construct-continue");
-var sowButtons = document.getElementsByClassName("js-sow");
-var harvestButtons = document.getElementsByClassName("js-harvest");
-var repairButtons = document.getElementsByClassName("js-repair");
+let gameId = document.getElementById("gameId").value;
+let entities = JSON.parse(document.getElementById("entities").value);
 
 $(function () {
     $('[data-toggle="popover"]').popover({
@@ -195,8 +184,8 @@ $("#settingsModal").on("show.bs.modal", function (e) {
     });
 });
 
-for (var i = 0; i < useButtons.length; i++) {
-    useButtons[i].onclick = function (e) {
+document.querySelectorAll(".js-use").forEach(function (button) {
+    button.addEventListener("click", function (e) {
         e.preventDefault();
 
         const template = document.getElementById("spinner").content.cloneNode(true);
@@ -234,11 +223,11 @@ for (var i = 0; i < useButtons.length; i++) {
         document.body.appendChild(form);
 
         form.submit();
-    }
-}
+    });
+});
 
-for (var i = 0; i < consumeButtons.length; i++) {
-    consumeButtons[i].onclick = function (e) {
+document.querySelectorAll(".js-consume").forEach(function (button) {
+    button.addEventListener("click", function (e) {
         e.preventDefault();
 
         const template = document.getElementById("spinner").content.cloneNode(true);
@@ -275,18 +264,18 @@ for (var i = 0; i < consumeButtons.length; i++) {
         document.body.appendChild(form);
 
         form.submit();
-    }
-}
+    });
+});
 
-for (var i = 0; i < infoButtons.length; i++) {
-    infoButtons[i].onclick = function (e) {
+document.querySelectorAll(".js-info").forEach(function (button) {
+    button.addEventListener("click", function (e) {
         e.preventDefault();
         this.parentNode.parentNode.querySelector("i[data-toggle='popover']").focus();
-    }
-}
+    });
+});
 
-for (var i = 0; i < fetchButtons.length; i++) {
-    fetchButtons[i].onclick = function (e) {
+document.querySelectorAll(".js-fetch").forEach(function (button) {
+    button.addEventListener("click", function (e) {
         e.preventDefault();
 
         const template = document.getElementById("spinner").content.cloneNode(true);
@@ -310,11 +299,11 @@ for (var i = 0; i < fetchButtons.length; i++) {
         document.body.appendChild(form);
 
         form.submit();
-    }
-}
+    });
+});
 
-for (var i = 0; i < constructButtons.length; i++) {
-    constructButtons[i].onclick = function (e) {
+document.querySelectorAll(".js-construct").forEach(function (button) {
+    button.addEventListener("click", function (e) {
         e.preventDefault();
 
         document.getElementById("constructModal").dataset.entityId = e.currentTarget.dataset.entityId;
@@ -322,22 +311,22 @@ for (var i = 0; i < constructButtons.length; i++) {
         document.getElementById("constructModal").dataset.actionId = e.currentTarget.dataset.actionId;
 
         $("#constructModal").modal();
-    }
-}
+    });
+});
 
-for (var i = 0; i < repairButtons.length; i++) {
-    repairButtons[i].onclick = function (e) {
+document.querySelectorAll(".js-repair").forEach(function (button) {
+    button.addEventListener("click", function (e) {
         e.preventDefault();
 
         document.getElementById("repairModal").dataset.actorId = e.currentTarget.dataset.actorId;
         document.getElementById("repairModal").dataset.entityId = e.currentTarget.dataset.entityId;
 
         $("#repairModal").modal();
-    }
-}
+    });
+});
 
-for (var i = 0; i < constructContinueButtons.length; i++) {
-    constructContinueButtons[i].onclick = function (e) {
+document.querySelectorAll(".js-construct-continue").forEach(function (button) {
+    button.addEventListener("click", function (e) {
         e.preventDefault();
 
         const template = document.getElementById("spinner").content.cloneNode(true);
@@ -362,11 +351,11 @@ for (var i = 0; i < constructContinueButtons.length; i++) {
         document.body.appendChild(form);
 
         form.submit();
-    }
-}
+    });
+});
 
-for (var i = 0; i < sowButtons.length; i++) {
-    sowButtons[i].onclick = function (e) {
+document.querySelectorAll(".js-sow").forEach(function (button) {
+    button.addEventListener("click", function (e) {
         e.preventDefault();
 
         document.getElementById("sowModal").dataset.entityId = e.currentTarget.dataset.entityId;
@@ -375,11 +364,11 @@ for (var i = 0; i < sowButtons.length; i++) {
         document.getElementById("sowModal").dataset.capacityUsed = e.currentTarget.dataset.capacityUsed;
 
         $("#sowModal").modal();
-    }
-}
+    });
+});
 
-for (var i = 0; i < harvestButtons.length; i++) {
-    harvestButtons[i].onclick = function (e) {
+document.querySelectorAll(".js-harvest").forEach(function (button) {
+    button.addEventListener("click", function (e) {
         e.preventDefault();
 
         document.getElementById("harvestModal").dataset.entityId = e.currentTarget.dataset.entityId;
@@ -387,8 +376,8 @@ for (var i = 0; i < harvestButtons.length; i++) {
         document.getElementById("harvestModal").dataset.varietyId = e.currentTarget.dataset.varietyId;
 
         $("#harvestModal").modal();
-    }
-}
+    });
+});
 
 document.querySelectorAll(".js-sort").forEach(function (button) {
     button.addEventListener("click", function (e) {
