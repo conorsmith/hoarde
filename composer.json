@@ -12,7 +12,9 @@
         "zendframework/zend-diactoros": "^2.1",
         "zendframework/zend-httphandlerrunner": "^1.1",
         "robmorgan/phinx": "^0.10.7",
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^7.5",
+        "symfony/dom-crawler": "^4.3",
+        "symfony/css-selector": "^4.3"
     },
     "autoload": {
         "psr-4": {
