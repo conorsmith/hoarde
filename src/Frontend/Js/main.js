@@ -532,8 +532,7 @@ $("#readModal").on("show.bs.modal", function (e) {
     xhr.send();
 });
 
-var eventBus = new EventBus();
-
+import {EventBus} from "./utility.js";
 import {MainController as TransferController, ModalView as TransferModalView} from "./transfer.js";
 import {MainController as ConstructController, ModalView as ConstructModalView} from "./construct.js";
 import {MainController as SowController, ModalView as SowModalView} from "./sow.js";
@@ -541,6 +540,8 @@ import {MainController as HarvestController, ModalView as HarvestModalView} from
 import {MainController as RepairController, ModalView as RepairModalView} from "./repair.js";
 import {MainController as SortController, ModalView as SortModalView} from "./sort.js";
 import {ScavengeModal, Haul, Inventory} from "./scavenge.js";
+
+var eventBus = new EventBus();
 
 new TransferController(
     eventBus,

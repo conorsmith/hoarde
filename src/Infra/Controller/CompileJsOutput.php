@@ -16,6 +16,9 @@ final class CompileJsOutput
         if ($args['fileName'] === "main") {
             $output = $this->renderMainJsFiles();
 
+        } elseif ($args['fileName'] === "utility") {
+            $output = $this->renderUtilityJsFiles();
+
         } elseif ($args['fileName'] === "transfer") {
             $output = $this->renderJsFiles("Transfer");
 
@@ -101,8 +104,26 @@ final class CompileJsOutput
     {
         ob_start();
 
-        include __DIR__ . "/../../Frontend/Js/classes.js";
         include __DIR__ . "/../../Frontend/Js/main.js";
+
+        $output = ob_get_contents();
+
+        ob_end_clean();
+
+        return $output;
+    }
+
+    private function renderUtilityJsFiles(): string
+    {
+        ob_start();
+
+        $views = scandir(__DIR__ . "/../../Frontend/Js/Utility");
+
+        foreach ($views as $view) {
+            if (!in_array($view, [".", ".."])) {
+                include __DIR__ . "/../../Frontend/Js/Utility/{$view}";
+            }
+        }
 
         $output = ob_get_contents();
 
