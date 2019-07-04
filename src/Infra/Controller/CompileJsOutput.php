@@ -34,6 +34,9 @@ final class CompileJsOutput
         } elseif ($args['fileName'] === "sort") {
             $output = $this->renderJsFiles("Sort");
 
+        } elseif ($args['fileName'] === "scavenge") {
+            $output = $this->renderJsFiles("Scavenge");
+
         } else {
 
             ob_start();

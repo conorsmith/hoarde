@@ -540,6 +540,7 @@ import {MainController as SowController, ModalView as SowModalView} from "./sow.
 import {MainController as HarvestController, ModalView as HarvestModalView} from "./harvest.js";
 import {MainController as RepairController, ModalView as RepairModalView} from "./repair.js";
 import {MainController as SortController, ModalView as SortModalView} from "./sort.js";
+import {ScavengeModal, Haul, Inventory} from "./scavenge.js";
 
 new TransferController(
     eventBus,
@@ -612,7 +613,8 @@ var inventory = new Inventory(
         : [],
     scavengeModal
         ? parseInt(scavengeModal.querySelector(".js-scavenge-inventory").dataset.inventoryCapacity, 10)
-        : 0
+        : 0,
+    scavengeModal
 );
 
 if (scavengeModal) {
@@ -727,7 +729,7 @@ if (scavengeModal) {
                     return;
                 }
 
-                haul = new Haul(response.haul.id, response.haul.items, inventory);
+                haul = new Haul(response.haul.id, response.haul.items, inventory, scavengeModalView);
 
                 if (haul.isEmpty()) {
                     window.location.reload();
