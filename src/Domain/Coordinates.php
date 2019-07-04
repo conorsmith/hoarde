@@ -39,13 +39,15 @@ final class Coordinates
         $xTranslation = 0;
         $yTranslation = 0;
 
-        if ($direction->isNorth()) {
+        if ($direction->isNortherly()) {
             $yTranslation = 1;
-        } elseif ($direction->isSouth()) {
+        } elseif ($direction->isSoutherly()) {
             $yTranslation = -1;
-        } elseif ($direction->isEast()) {
+        }
+
+        if ($direction->isEasterly()) {
             $xTranslation = 1;
-        } elseif ($direction->isWest()) {
+        } elseif ($direction->isWesterly()) {
             $xTranslation = -1;
         }
 

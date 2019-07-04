@@ -26,35 +26,87 @@
                 Scavenge
               </button>
 
-              <div class="btn-group w-100">
-                <a href="#"
-                   class="btn btn-light js-travel"
-                   data-direction="west"
-                   data-actor-id="<?=$entity->id?>"
-                >
-                  <i class="fas fa-fw fa-arrow-left"></i>
-                </a>
-                <a href="#"
-                   class="btn btn-light js-travel"
-                   data-direction="north"
-                   data-actor-id="<?=$entity->id?>"
-                >
-                  <i class="fas fa-fw fa-arrow-up"></i>
-                </a>
-                <a href="#"
-                   class="btn btn-light js-travel"
-                   data-direction="south"
-                   data-actor-id="<?=$entity->id?>"
-                >
-                  <i class="fas fa-fw fa-arrow-down"></i>
-                </a>
-                <a href="#"
-                   class="btn btn-light js-travel"
-                   data-direction="east"
-                   data-actor-id="<?=$entity->id?>"
-                >
-                  <i class="fas fa-fw fa-arrow-right"></i>
-                </a>
+              <div class="travel-btn-group">
+
+                <div class="btn-group w-100">
+                  <a href="#"
+                     class="btn btn-light js-travel"
+                     data-direction="north-west"
+                     data-actor-id="<?=$entity->id?>"
+                  >
+                    <i class="fas fa-fw fa-arrow-up"
+                       style="transform: rotateY(0deg) rotate(-45deg);"
+                    ></i>
+                  </a>
+                  <a href="#"
+                     class="btn btn-light js-travel"
+                     data-direction="north"
+                     data-actor-id="<?=$entity->id?>"
+                  >
+                    <i class="fas fa-fw fa-arrow-up"></i>
+                  </a>
+                  <a href="#"
+                     class="btn btn-light js-travel"
+                     data-direction="north-east"
+                     data-actor-id="<?=$entity->id?>"
+                  >
+                    <i class="fas fa-fw fa-arrow-up"
+                       style="transform: rotateY(0deg) rotate(45deg);"
+                    ></i>
+                  </a>
+                </div>
+
+                <div class="btn-group w-100">
+                  <a href="#"
+                     class="btn btn-light js-travel"
+                     data-direction="west"
+                     data-actor-id="<?=$entity->id?>"
+                  >
+                    <i class="fas fa-fw fa-arrow-left"></i>
+                  </a>
+                  <a href="#"
+                     class="btn btn-light js-travel-map disabled"
+                     data-actor-id="<?=$entity->id?>"
+                  >
+                    <i class="fas fa-fw fa-map"></i>
+                  </a>
+                  <a href="#"
+                     class="btn btn-light js-travel"
+                     data-direction="east"
+                     data-actor-id="<?=$entity->id?>"
+                  >
+                    <i class="fas fa-fw fa-arrow-right"></i>
+                  </a>
+                </div>
+
+                <div class="btn-group w-100">
+                  <a href="#"
+                     class="btn btn-light js-travel"
+                     data-direction="south-west"
+                     data-actor-id="<?=$entity->id?>"
+                  >
+                    <i class="fas fa-fw fa-arrow-down"
+                       style="transform: rotateY(0deg) rotate(45deg);"
+                    ></i>
+                  </a>
+                  <a href="#"
+                     class="btn btn-light js-travel"
+                     data-direction="south"
+                     data-actor-id="<?=$entity->id?>"
+                  >
+                    <i class="fas fa-fw fa-arrow-down"></i>
+                  </a>
+                  <a href="#"
+                     class="btn btn-light js-travel"
+                     data-direction="south-east"
+                     data-actor-id="<?=$entity->id?>"
+                  >
+                    <i class="fas fa-fw fa-arrow-down"
+                       style="transform: rotateY(0deg) rotate(-45deg);"
+                    ></i>
+                  </a>
+                </div>
+
               </div>
 
             </div>
