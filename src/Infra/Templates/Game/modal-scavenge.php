@@ -64,13 +64,13 @@
                                 <i class="fas fa-fw fa-<?=$item->icon?>"
                                    data-toggle="popover"
                                    title="<?=$item->label?>"
-                                   data-content='<?=$this->renderHtml5Template("Game/template-item-popover.php", [
+                                   data-content='<?=$this->e($this->renderHtml5Template("Game/template-item-popover.php", [
                                        'description' => $item->description,
                                        'weight'      => $item->weight >= 1000
                                            ? ($item->weight / 1000) . " kg"
                                            : $item->weight . " g",
                                        'resources'   => $item->resourceLabel,
-                                   ])?>'
+                                   ]))?>'
                                    data-placement="top"
                                    tabindex="0"
                                 ></i>
