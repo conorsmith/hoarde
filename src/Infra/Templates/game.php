@@ -50,9 +50,7 @@
       >
         <div>
           <a href="#"
-             class="btn btn-sm btn-secondary"
-             data-toggle="modal"
-             data-target="#mapModal"
+             class="btn btn-sm btn-secondary js-view-map"
           >
             <i class="fas fa-fw fa-map-marker-alt"></i> <?=$location->coordinates?>
           </a>

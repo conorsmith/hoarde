@@ -437,6 +437,54 @@ document.querySelectorAll(".js-travel").forEach(function (button) {
     });
 });
 
+document.querySelectorAll(".js-view-map").forEach(function (button) {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        document.getElementById("mapModal").dataset.isViewing = 1;
+        document.getElementById("mapModal").dataset.title = "Map";
+        document.getElementById("mapModal").dataset.dismissLabel = "Close";
+
+        $("#mapModal").modal();
+    });
+});
+
+document.querySelectorAll(".js-travel-map").forEach(function (button) {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        document.getElementById("mapModal").dataset.actorId = this.dataset.actorId;
+        document.getElementById("mapModal").dataset.isTravelling = 1;
+        document.getElementById("mapModal").dataset.title = "Travel";
+        document.getElementById("mapModal").dataset.dismissLabel = "Cancel";
+
+        $("#mapModal").modal();
+    });
+});
+
+$("#mapModal").on("show.bs.modal", function (e) {
+    let modal = this;
+
+    this.querySelector(".modal-title").innerText = this.dataset.title;
+    this.querySelector(".modal-footer button").innerText = this.dataset.dismissLabel;
+
+    if (this.dataset.isViewing === "1") {
+        this.querySelectorAll(".map a").forEach(function (el) {
+            if (el.dataset.isKnown) {
+                el.href = "/" + gameId + "/" + el.dataset.locationId;
+            }
+        });
+    }
+
+    if (this.dataset.isTravelling === "1") {
+        this.querySelectorAll(".map a").forEach(function (el) {
+            if (el.dataset.isKnown) {
+                el.href = "/" + gameId + "/" + modal.dataset.actorId + "/travel/" + el.dataset.locationId;
+            }
+        });
+    }
+});
+
 document.querySelectorAll(".js-read").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();

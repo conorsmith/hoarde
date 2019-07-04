@@ -65,7 +65,7 @@
                     <i class="fas fa-fw fa-arrow-left"></i>
                   </a>
                   <a href="#"
-                     class="btn btn-light js-travel-map disabled"
+                     class="btn btn-light js-travel-map"
                      data-actor-id="<?=$entity->id?>"
                   >
                     <i class="fas fa-fw fa-map"></i>

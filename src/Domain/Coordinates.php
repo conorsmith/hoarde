@@ -72,4 +72,33 @@ final class Coordinates
 
         return $coordinates;
     }
+
+    public function generateRouteTo(self $other): iterable
+    {
+        $translatedOther = new self($other->x - $this->x, $other->y - $this->y);
+
+        $longDistance = max(abs($translatedOther->x), abs($translatedOther->y));
+        $shortDistance = min(abs($translatedOther->x), abs($translatedOther->y));
+
+        $xDirection = $translatedOther->x < 0 ? -1 : 1;
+        $yDirection = $translatedOther->y < 0 ? -1 : 1;
+
+        $route = [];
+
+        for ($i = 1, $j = 1; $i <= $longDistance; $i++, $j++) {
+            if (abs($translatedOther->x) > abs($translatedOther->y)) {
+                $route[] = new self(
+                    $this->x + ($i * $xDirection),
+                    $this->y + (min($j, $shortDistance) * $yDirection)
+                );
+            } else {
+                $route[] = new self(
+                    $this->x + (min($j, $shortDistance) * $xDirection),
+                    $this->y + ($i * $yDirection)
+                );
+            }
+        }
+
+        return $route;
+    }
 }

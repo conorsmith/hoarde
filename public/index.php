@@ -124,6 +124,18 @@ $router->post("/{gameId}/{actorId}/travel", new ConorSmith\Hoarde\Infra\Controll
     $findActorLocation
 ));
 
+$router->get("/{gameId}/{actorId}/travel/{locationId}", new ConorSmith\Hoarde\Infra\Controller\EntityTravelsToLocation(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityTravelsToLocation\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $locationRepository,
+        new ConorSmith\Hoarde\Infra\Repository\LocationTemplateRepositoryConfig($varietyRepository),
+        $unitOfWorkProcessor
+    ),
+    $findActorLocation
+));
+
 $router->post("/{gameId}/{entityId}/wait", new ConorSmith\Hoarde\Infra\Controller\EntityWaits(
     $sessionSegment,
     new ConorSmith\Hoarde\UseCase\EntityWaits\UseCase(
