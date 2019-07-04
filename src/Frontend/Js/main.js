@@ -16,7 +16,8 @@ var repairButtons = document.getElementsByClassName("js-repair");
 $(function () {
     $('[data-toggle="popover"]').popover({
         trigger: 'focus',
-        html: true
+        html: true,
+        boundary: 'viewport'
     });
 
     document.body.addEventListener("click", function (e) {

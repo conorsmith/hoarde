@@ -67,7 +67,8 @@ class EntityController {
 
             $(itemSliderView.el).find("[data-toggle='popover']").popover({
                 trigger: "focus",
-                html: true
+                html: true,
+                boundary: 'viewport'
             });
         });
     }

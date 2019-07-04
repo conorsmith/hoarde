@@ -197,7 +197,8 @@ class ScavengeHaul {
 
         $(this.el).find(".tmpl-icon").popover({
             trigger: 'focus',
-            html: true
+            html: true,
+            boundary: 'viewport'
         });
     }
 }
