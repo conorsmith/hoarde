@@ -1,1 +1,1 @@
-export { EventBus, Form };
+export { EventBus, Form, Spinner };

@@ -1,5 +1,4 @@
-
-import {EventBus, Form} from "./utility.js";
+import {EventBus, Form, Spinner} from "./utility.js";
 import {MainController as TransferController, ModalView as TransferModalView} from "./transfer.js";
 import {MainController as ConstructController, ModalView as ConstructModalView} from "./construct.js";
 import {MainController as SowController, ModalView as SowModalView} from "./sow.js";
@@ -150,9 +149,7 @@ document.querySelectorAll(".js-use").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
 
-        const template = document.getElementById("spinner").content.cloneNode(true);
-        this.innerText = "";
-        this.appendChild(template);
+        Spinner.renderIn(this);
 
         Form.post(
             "/" + gameId + "/" + e.currentTarget.dataset.entityId + "/use",
@@ -169,9 +166,7 @@ document.querySelectorAll(".js-consume").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
 
-        const template = document.getElementById("spinner").content.cloneNode(true);
-        this.innerText = "";
-        this.appendChild(template);
+        Spinner.renderIn(this);
 
         Form.post(
             "/" + gameId + "/consume",
@@ -195,9 +190,7 @@ document.querySelectorAll(".js-fetch").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
 
-        const template = document.getElementById("spinner").content.cloneNode(true);
-        this.innerText = "";
-        this.appendChild(template);
+        Spinner.renderIn(this);
 
         Form.post(
             "/" + gameId + "/" + e.currentTarget.dataset.entityId + "/fetch-water",
@@ -235,9 +228,7 @@ document.querySelectorAll(".js-construct-continue").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
 
-        const template = document.getElementById("spinner").content.cloneNode(true);
-        this.innerText = "";
-        this.appendChild(template);
+        Spinner.renderIn(this);
 
         Form.post(
             "/" + gameId + "/" + e.currentTarget.dataset.actorId + "/construct/" + e.currentTarget.dataset.targetId,
@@ -295,6 +286,8 @@ document.querySelectorAll(".js-restart").forEach(function (button) {
 document.querySelectorAll(".js-travel").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
+
+        Spinner.renderIn(this);
 
         Form.post(
             "/" + gameId + "/" + this.dataset.actorId + "/travel",
@@ -513,9 +506,7 @@ if (scavengeModal) {
             return;
         }
 
-        const template = document.getElementById("spinner").content.cloneNode(true);
-        this.innerText = "";
-        this.appendChild(template);
+        Spinner.renderIn(this);
 
         var haulInputs = scavengeModalView.findHaulInputs();
         var inventoryInputs = scavengeModalView.findInventoryInputs();
@@ -564,10 +555,9 @@ if (scavengeModal) {
             e.preventDefault();
             const button = this;
 
-            const template = document.getElementById("spinner").content.cloneNode(true);
             this.dataset.buttonText = this.innerText;
-            this.innerText = "";
-            this.appendChild(template);
+
+            Spinner.renderIn(this);
 
             var xhr = new XMLHttpRequest();
 
