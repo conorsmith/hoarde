@@ -57,6 +57,10 @@ final class UseCase
             return Result::failed(GeneralResult::entityNotFound($actorId, $gameId));
         }
 
+        if (!$actor->isIntact()) {
+            return Result::failed(GeneralResult::actorExpired($actor));
+        }
+
         if (is_null($targetLocation)) {
             return Result::failed(GeneralResult::failed("Location {$targetLocationId} was not found."));
         }
