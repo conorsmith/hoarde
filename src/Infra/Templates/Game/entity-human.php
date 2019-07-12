@@ -18,93 +18,119 @@
 
             <div class="actions">
 
-              <button type="button"
-                      class="btn btn-light btn-block js-scavenge"
-                      data-entity-id="<?=$entity->id?>"
-                  <?=(!$isIntact ? "disabled" : "")?>
-              >
-                Scavenge
-              </button>
+              <div class="row">
 
-              <div class="travel-btn-group">
+                <div class="travel-btn-group col">
 
-                <div class="btn-group w-100">
-                  <a href="#"
-                     class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
-                     data-direction="north-west"
-                     data-actor-id="<?=$entity->id?>"
-                  >
-                    <i class="fas fa-fw fa-arrow-up"
-                       style="transform: rotateY(0deg) rotate(-45deg);"
-                    ></i>
-                  </a>
-                  <a href="#"
-                     class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
-                     data-direction="north"
-                     data-actor-id="<?=$entity->id?>"
-                  >
-                    <i class="fas fa-fw fa-arrow-up"></i>
-                  </a>
-                  <a href="#"
-                     class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
-                     data-direction="north-east"
-                     data-actor-id="<?=$entity->id?>"
-                  >
-                    <i class="fas fa-fw fa-arrow-up"
-                       style="transform: rotateY(0deg) rotate(45deg);"
-                    ></i>
-                  </a>
+                  <div class="btn-group w-100">
+                    <a href="#"
+                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       data-direction="north-west"
+                       data-actor-id="<?=$entity->id?>"
+                    >
+                      <i class="fas fa-fw fa-arrow-up"
+                         style="transform: rotateY(0deg) rotate(-45deg);"
+                      ></i>
+                    </a>
+                    <a href="#"
+                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       data-direction="north"
+                       data-actor-id="<?=$entity->id?>"
+                    >
+                      <i class="fas fa-fw fa-arrow-up"></i>
+                    </a>
+                    <a href="#"
+                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       data-direction="north-east"
+                       data-actor-id="<?=$entity->id?>"
+                    >
+                      <i class="fas fa-fw fa-arrow-up"
+                         style="transform: rotateY(0deg) rotate(45deg);"
+                      ></i>
+                    </a>
+                  </div>
+
+                  <div class="btn-group w-100">
+                    <a href="#"
+                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       data-direction="west"
+                       data-actor-id="<?=$entity->id?>"
+                    >
+                      <i class="fas fa-fw fa-arrow-left"></i>
+                    </a>
+                    <a href="#"
+                       class="btn btn-light js-travel-map <?=(!$isIntact ? "disabled" : "")?>"
+                       data-actor-id="<?=$entity->id?>"
+                    >
+                      <i class="fas fa-fw fa-map"></i>
+                    </a>
+                    <a href="#"
+                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       data-direction="east"
+                       data-actor-id="<?=$entity->id?>"
+                    >
+                      <i class="fas fa-fw fa-arrow-right"></i>
+                    </a>
+                  </div>
+
+                  <div class="btn-group w-100">
+                    <a href="#"
+                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       data-direction="south-west"
+                       data-actor-id="<?=$entity->id?>"
+                    >
+                      <i class="fas fa-fw fa-arrow-down"
+                         style="transform: rotateY(0deg) rotate(45deg);"
+                      ></i>
+                    </a>
+                    <a href="#"
+                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       data-direction="south"
+                       data-actor-id="<?=$entity->id?>"
+                    >
+                      <i class="fas fa-fw fa-arrow-down"></i>
+                    </a>
+                    <a href="#"
+                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       data-direction="south-east"
+                       data-actor-id="<?=$entity->id?>"
+                    >
+                      <i class="fas fa-fw fa-arrow-down"
+                         style="transform: rotateY(0deg) rotate(-45deg);"
+                      ></i>
+                    </a>
+                  </div>
+
                 </div>
 
-                <div class="btn-group w-100">
-                  <a href="#"
-                     class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
-                     data-direction="west"
-                     data-actor-id="<?=$entity->id?>"
-                  >
-                    <i class="fas fa-fw fa-arrow-left"></i>
-                  </a>
-                  <a href="#"
-                     class="btn btn-light js-travel-map <?=(!$isIntact ? "disabled" : "")?>"
-                     data-actor-id="<?=$entity->id?>"
-                  >
-                    <i class="fas fa-fw fa-map"></i>
-                  </a>
-                  <a href="#"
-                     class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
-                     data-direction="east"
-                     data-actor-id="<?=$entity->id?>"
-                  >
-                    <i class="fas fa-fw fa-arrow-right"></i>
-                  </a>
-                </div>
+                <div class="col">
 
-                <div class="btn-group w-100">
-                  <a href="#"
-                     class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
-                     data-direction="south-west"
-                     data-actor-id="<?=$entity->id?>"
+                  <button type="button"
+                          class="btn btn-light btn-block js-scavenge"
+                          data-entity-id="<?=$entity->id?>"
+                          style="margin-bottom: 0;"
+                      <?=(!$isIntact ? "disabled" : "")?>
                   >
-                    <i class="fas fa-fw fa-arrow-down"
-                       style="transform: rotateY(0deg) rotate(45deg);"
-                    ></i>
-                  </a>
-                  <a href="#"
-                     class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
-                     data-direction="south"
-                     data-actor-id="<?=$entity->id?>"
+                    Scavenge
+                  </button>
+
+                  <button type="button"
+                          class="btn btn-light btn-block"
+                          style="margin-top: 0; margin-bottom: 0; background-color: #fff; border-color: #fff;"
+                          disabled
                   >
-                    <i class="fas fa-fw fa-arrow-down"></i>
-                  </a>
-                  <a href="#"
-                     class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
-                     data-direction="south-east"
-                     data-actor-id="<?=$entity->id?>"
+                    &nbsp;
+                  </button>
+
+                  <button type="button"
+                          class="btn btn-light btn-block js-wait"
+                          data-entity-id="<?=$entity->id?>"
+                          style="margin-top: 0;"
+                      <?=(!$isIntact ? "disabled" : "")?>
                   >
-                    <i class="fas fa-fw fa-arrow-down"
-                       style="transform: rotateY(0deg) rotate(-45deg);"
-                    ></i>
-                  </a>
+                    Wait
+                  </button>
+
                 </div>
 
               </div>

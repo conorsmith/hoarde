@@ -252,7 +252,7 @@ document.querySelectorAll(".js-sow").forEach(function (button) {
     });
 });
 
-document.querySelectorAll(".js-harvest").forEach(function (button) {
+document.querySelectorAll(".js-harvest-food").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
 
@@ -278,6 +278,17 @@ document.querySelectorAll(".js-restart").forEach(function (button) {
 
         Form.post(
             "/" + gameId + "/restart",
+            {}
+        );
+    });
+});
+
+document.querySelectorAll(".js-wait").forEach(function (button) {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        Form.post(
+            "/" + gameId + "/" + this.dataset.entityId + "/wait",
             {}
         );
     });
