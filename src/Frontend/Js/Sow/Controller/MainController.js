@@ -1,3 +1,5 @@
+import {Form} from "./utility.js";
+
 class MainController {
     constructor(eventBus, view, entities, gameId) {
         this.eventBus = eventBus;

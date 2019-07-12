@@ -1,3 +1,5 @@
+import {Form} from "./utility.js";
+
 class ConstructionController {
     constructor(eventBus, view, model) {
         this.eventBus = eventBus;
