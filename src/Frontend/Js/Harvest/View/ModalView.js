@@ -37,6 +37,8 @@ class ModalView {
     }
 
     createSliderView(harvest) {
+        this.el.querySelector(".js-item-sliders").innerHTML = "";
+
         this.el.querySelector(".js-item-sliders").appendChild(
             this.sliderTemplate.content.cloneNode(true)
         );
