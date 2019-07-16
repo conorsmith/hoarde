@@ -21,6 +21,9 @@ class MainController {
 
     onShow(e) {
 
+        this.harvestFood = e.currentTarget.dataset.harvestFood === "1";
+        this.harvestSeeds = e.currentTarget.dataset.harvestSeeds === "1";
+
         let initialEntity = this.entities.find(function (entity) {
             return entity.isHuman;
         });
@@ -47,13 +50,15 @@ class MainController {
             harvestableEntities.varietyId,
             harvestableEntities.label,
             harvestableEntities.icon,
-            harvestableEntities.harvestedVarietyWeight,
+            this.harvestFood
+                ? harvestableEntities.harvestedFoodVarietyWeight
+                : harvestableEntities.harvestedSeedVarietyWeight * harvestableEntities.harvestedSeedVarietyQuantity,
             0,
             harvestableEntities.quantity
         );
         this.capacityBar = new CapacityBar(initialEntity, this.harvest);
 
-        this.view.repaint();
+        this.view.repaint(this.harvestFood, this.harvestSeeds);
 
         new EntitySelectorController(
             this.eventBus,
@@ -89,8 +94,10 @@ class MainController {
     }
 
     onSubmit(e) {
+        const endpointSegment = this.harvestFood ? "harvest-food" : "harvest-seeds";
+
         Form.post(
-            "/" + this.gameId + "/" + this.actorId + "/harvest/" + this.entityId,
+            "/" + this.gameId + "/" + this.actorId + "/" + endpointSegment + "/" + this.entityId,
             {
                 inventoryEntityId: this.capacityBar.entity.id,
                 varietyId: this.harvest.id,

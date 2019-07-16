@@ -196,7 +196,12 @@ final class EntityFactory
                     $variety = $this->varietyRepository->find($inventoryEntity->getVarietyId());
 
                     if ($variety->getId()->equals(Uuid::fromString(VarietyRepositoryConfig::RADISH_PLANT))) {
-                        $harvestedVariety = $this->varietyRepository->find(Uuid::fromString(VarietyRepositoryConfig::RADISH));
+                        $harvestedFoodVariety = $this->varietyRepository->find(
+                            Uuid::fromString(VarietyRepositoryConfig::RADISH)
+                        );
+                        $harvestedSeedVariety = $this->varietyRepository->find(
+                            Uuid::fromString(VarietyRepositoryConfig::RADISH_SEED)
+                        );
                     } else {
                         throw new DomainException;
                     }
@@ -204,20 +209,22 @@ final class EntityFactory
                     $construction = $inventoryEntity->getConstruction();
 
                     $presentation->incubator[$key] = (object) [
-                        'varietyId'              => $inventoryEntity->getVarietyId(),
-                        'label'                  => $variety->getLabel(),
-                        'icon'                   => $variety->getIcon(),
-                        'isIntact'               => $inventoryEntity->isIntact(),
-                        'description'            => $variety->getDescription(),
-                        'construction'           => (object)[
+                        'varietyId'                    => $inventoryEntity->getVarietyId(),
+                        'label'                        => $variety->getLabel(),
+                        'icon'                         => $variety->getIcon(),
+                        'isIntact'                     => $inventoryEntity->isIntact(),
+                        'description'                  => $variety->getDescription(),
+                        'construction'                 => (object)[
                             'percentage'     => ($construction->getRequiredSteps() - $construction->getRemainingSteps())
                                 / $construction->getRequiredSteps() * 100,
                             'remainingSteps' => $construction->getRemainingSteps(),
                             'requiredSteps'  => $construction->getRequiredSteps(),
                         ],
-                        'performableActions'     => [],
-                        'quantity'               => 1,
-                        'harvestedVarietyWeight' => $harvestedVariety->getWeight(),
+                        'performableActions'           => [],
+                        'quantity'                     => 1,
+                        'harvestedFoodVarietyWeight'   => $harvestedFoodVariety->getWeight(),
+                        'harvestedSeedVarietyWeight'   => $harvestedSeedVariety->getWeight(),
+                        'harvestedSeedVarietyQuantity' => 2,
                     ];
 
                     foreach ($variety->getActions() as $action) {
@@ -323,8 +330,10 @@ final class EntityFactory
             case ActionRepositoryConfig::CONSTRUCT:
             case ActionRepositoryConfig::DIG:
                 return "js-construct";
-            case ActionRepositoryConfig::HARVEST:
-                return "js-harvest";
+            case ActionRepositoryConfig::HARVEST_FOOD:
+                return "js-harvest-food";
+            case ActionRepositoryConfig::HARVEST_SEEDS:
+                return "js-harvest-seeds";
             case ActionRepositoryConfig::READ:
                 return "js-read";
             default:

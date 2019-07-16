@@ -270,9 +270,20 @@ $router->post("/{gameId}/{actorId}/sow/{targetId}", new ConorSmith\Hoarde\Infra\
     $findActorLocation
 ));
 
-$router->post("/{gameId}/{actorId}/harvest/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityHarvestsPlot(
+$router->post("/{gameId}/{actorId}/harvest-food/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityHarvestsFoodFromPlot(
     $sessionSegment,
-    new ConorSmith\Hoarde\UseCase\EntityHarvestsPlot\UseCase(
+    new ConorSmith\Hoarde\UseCase\EntityHarvestsFoodFromPlot\UseCase(
+        $gameRepository,
+        $entityRepository,
+        $varietyRepository,
+        $unitOfWorkProcessor
+    ),
+    $findActorLocation
+));
+
+$router->post("/{gameId}/{actorId}/harvest-seeds/{targetId}", new ConorSmith\Hoarde\Infra\Controller\EntityHarvestsSeedsFromPlot(
+    $sessionSegment,
+    new ConorSmith\Hoarde\UseCase\EntityHarvestsSeedsFromPlot\UseCase(
         $gameRepository,
         $entityRepository,
         $varietyRepository,

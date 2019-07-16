@@ -5,13 +5,13 @@ namespace ConorSmith\Hoarde\Infra\Controller;
 
 use Aura\Session\Segment;
 use ConorSmith\Hoarde\App\FindActorLocation;
-use ConorSmith\Hoarde\UseCase\EntityHarvestsPlot\UseCase;
+use ConorSmith\Hoarde\UseCase\EntityHarvestsSeedsFromPlot\UseCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 
-final class EntityHarvestsPlot
+final class EntityHarvestsSeedsFromPlot
 {
     /** @var Segment */
     private $session;

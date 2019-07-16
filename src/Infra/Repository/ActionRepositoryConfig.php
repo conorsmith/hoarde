@@ -13,7 +13,8 @@ final class ActionRepositoryConfig implements ActionRepository
     public const CONSTRUCT = "26105a98-d85e-4ecc-9c08-d9027174ab63";
     public const CONSUME = "427d031d-ee80-4452-bbb3-5d2d96ca554b";
     public const DIG = "0e2bb910-26fa-4832-8fb0-5cb4efb69aba";
-    public const HARVEST = "75f64f5e-0ac8-45cb-9514-2071b28f37e6";
+    public const HARVEST_FOOD = "75f64f5e-0ac8-45cb-9514-2071b28f37e6";
+    public const HARVEST_SEEDS = "24e9dd2d-04f2-4bef-b235-17e6731376bd";
     public const PLACE = "2afdf3f4-b77e-4391-a857-fab631a8c2be";
     public const READ = "a5acf215-c719-40af-ac15-c38917735875";
     public const SOW = "99b65213-9cee-42ec-9dfe-8a04a790469e";
@@ -40,8 +41,15 @@ final class ActionRepositoryConfig implements ActionRepository
                 VarietyRepositoryConfig::HUMAN,
             ],
         ],
-        self::HARVEST   => [
-            'label'               => "Harvest",
+        self::HARVEST_FOOD   => [
+            'label'               => "Harvest Food",
+            'icon'                => "seedling",
+            'performingVarieties' => [
+                VarietyRepositoryConfig::HUMAN,
+            ],
+        ],
+        self::HARVEST_SEEDS   => [
+            'label'               => "Harvest Seeds",
             'icon'                => "seedling",
             'performingVarieties' => [
                 VarietyRepositoryConfig::HUMAN,

@@ -259,6 +259,22 @@ document.querySelectorAll(".js-harvest-food").forEach(function (button) {
         document.getElementById("harvestModal").dataset.entityId = e.currentTarget.dataset.entityId;
         document.getElementById("harvestModal").dataset.actorId = e.currentTarget.dataset.actorId;
         document.getElementById("harvestModal").dataset.varietyId = e.currentTarget.dataset.varietyId;
+        document.getElementById("harvestModal").dataset.harvestFood = "1";
+        document.getElementById("harvestModal").dataset.harvestSeeds = "0";
+
+        $("#harvestModal").modal();
+    });
+});
+
+document.querySelectorAll(".js-harvest-seeds").forEach(function (button) {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        document.getElementById("harvestModal").dataset.entityId = e.currentTarget.dataset.entityId;
+        document.getElementById("harvestModal").dataset.actorId = e.currentTarget.dataset.actorId;
+        document.getElementById("harvestModal").dataset.varietyId = e.currentTarget.dataset.varietyId;
+        document.getElementById("harvestModal").dataset.harvestFood = "0";
+        document.getElementById("harvestModal").dataset.harvestSeeds = "1";
 
         $("#harvestModal").modal();
     });

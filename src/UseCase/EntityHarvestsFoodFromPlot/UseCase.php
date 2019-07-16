@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ConorSmith\Hoarde\UseCase\EntityHarvestsPlot;
+namespace ConorSmith\Hoarde\UseCase\EntityHarvestsFoodFromPlot;
 
 use ConorSmith\Hoarde\App\Result;
 use ConorSmith\Hoarde\App\UnitOfWork;

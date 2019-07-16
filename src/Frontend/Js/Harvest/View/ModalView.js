@@ -8,8 +8,12 @@ class ModalView {
         return this.el.querySelector(".js-harvest-submit");
     }
 
-    repaint() {
-        //
+    repaint(harvestFood, harvestSeeds) {
+        if (harvestFood === true) {
+            this.el.querySelector(".modal-title").innerText = "Harvest Food";
+        } else if (harvestSeeds === true) {
+            this.el.querySelector(".modal-title").innerText = "Harvest Seeds";
+        }
     }
 
     createEntitySelectorView(entitySelector) {

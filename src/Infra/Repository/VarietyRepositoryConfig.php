@@ -463,7 +463,8 @@ final class VarietyRepositoryConfig implements VarietyRepository
             'icon'        => "seedling",
             'description' => "A plant that will yield an edible root vegetable with a sharp flavour.",
             'actions'     => [
-                ActionRepositoryConfig::HARVEST,
+                ActionRepositoryConfig::HARVEST_FOOD,
+                ActionRepositoryConfig::HARVEST_SEEDS,
             ],
             'blueprint'   => [
                 'tools'     => [],
