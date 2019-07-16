@@ -12,6 +12,7 @@ use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\Location;
 use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
+use ConorSmith\Hoarde\Infra\Repository\BiomeRepositoryConfig;
 use ConorSmith\Hoarde\Infra\Repository\VarietyRepositoryConfig;
 use Ramsey\Uuid\Uuid;
 
@@ -58,6 +59,7 @@ final class UseCase
         $beginningLocation = new Location(
             $beginningLocationId = Uuid::uuid4(),
             $newGameId,
+            Uuid::fromString(BiomeRepositoryConfig::ARABLE),
             Coordinates::origin(),
             5
         );

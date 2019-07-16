@@ -14,6 +14,9 @@ final class Location
     /** @var UuidInterface */
     private $gameId;
 
+    /** @var UuidInterface */
+    private $biomeId;
+
     /** @var Coordinates */
     private $coordinates;
 
@@ -23,11 +26,13 @@ final class Location
     public function __construct(
         UuidInterface $id,
         UuidInterface $gameId,
+        UuidInterface $biomeId,
         Coordinates $coordinates,
         int $scavengingLevel
     ) {
         $this->id = $id;
         $this->gameId = $gameId;
+        $this->biomeId = $biomeId;
         $this->coordinates = $coordinates;
         $this->scavengingLevel = $scavengingLevel;
     }
@@ -40,6 +45,11 @@ final class Location
     public function getGameId(): UuidInterface
     {
         return $this->gameId;
+    }
+
+    public function getBiomeId(): UuidInterface
+    {
+        return $this->biomeId;
     }
 
     public function getCoordinates(): Coordinates

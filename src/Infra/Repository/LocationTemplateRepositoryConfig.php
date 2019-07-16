@@ -53,6 +53,7 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
                 new Location(
                     Uuid::uuid4(),
                     $gameId,
+                    Uuid::fromString(BiomeRepositoryConfig::ARABLE),
                     $coordinates,
                     5
                 ),
@@ -97,6 +98,7 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
             new Location(
                 $locationId,
                 $gameId,
+                Uuid::fromString(BiomeRepositoryConfig::ARABLE),
                 $coordinates,
                 5
             ),

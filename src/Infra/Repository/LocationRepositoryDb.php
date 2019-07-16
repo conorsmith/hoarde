@@ -132,6 +132,7 @@ final class LocationRepositoryDb implements LocationRepository
         return new Location(
             Uuid::fromString($row['id']),
             Uuid::fromString($row['game_id']),
+            Uuid::fromString($row['biome_id']),
             new Coordinates(
                 intval($row['x_coordinate']),
                 intval($row['y_coordinate'])
