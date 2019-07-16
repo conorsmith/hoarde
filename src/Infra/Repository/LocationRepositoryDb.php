@@ -151,6 +151,7 @@ final class LocationRepositoryDb implements LocationRepository
             $this->db->insert("locations", [
                 'id'               => $location->getId(),
                 'game_id'          => $location->getGameId(),
+                'biome_id'         => $location->getBiomeId(),
                 'x_coordinate'     => $location->getCoordinates()->getX(),
                 'y_coordinate'     => $location->getCoordinates()->getY(),
                 'scavenging_level' => $location->getScavengingLevel(),
