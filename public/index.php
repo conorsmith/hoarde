@@ -44,6 +44,11 @@ $scavengingHaulRepository = new \ConorSmith\Hoarde\Infra\Repository\ScavengingHa
     $varietyRepository
 );
 
+$locationTemplateRepository = new ConorSmith\Hoarde\Infra\Repository\LocationTemplateRepositoryConfig(
+    $varietyRepository,
+    $resourceRepository
+);
+
 $unitOfWorkProcessor = new ConorSmith\Hoarde\Infra\UnitOfWorkProcessorDb(
     $db,
     $gameRepository,
@@ -118,7 +123,7 @@ $router->post("/{gameId}/{actorId}/travel", new ConorSmith\Hoarde\Infra\Controll
         $gameRepository,
         $entityRepository,
         $locationRepository,
-        new ConorSmith\Hoarde\Infra\Repository\LocationTemplateRepositoryConfig($varietyRepository),
+        $locationTemplateRepository,
         $unitOfWorkProcessor
     ),
     $findActorLocation
@@ -130,7 +135,7 @@ $router->get("/{gameId}/{actorId}/travel/{locationId}", new ConorSmith\Hoarde\In
         $gameRepository,
         $entityRepository,
         $locationRepository,
-        new ConorSmith\Hoarde\Infra\Repository\LocationTemplateRepositoryConfig($varietyRepository),
+        $locationTemplateRepository,
         $unitOfWorkProcessor
     ),
     $findActorLocation

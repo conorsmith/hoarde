@@ -10,6 +10,8 @@ use ConorSmith\Hoarde\Domain\Inventory;
 use ConorSmith\Hoarde\Domain\Location;
 use ConorSmith\Hoarde\Domain\LocationTemplate;
 use ConorSmith\Hoarde\Domain\LocationTemplateRepository;
+use ConorSmith\Hoarde\Domain\ResourceNeed;
+use ConorSmith\Hoarde\Domain\ResourceRepository;
 use ConorSmith\Hoarde\Domain\VarietyRepository;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -588,9 +590,13 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
     /** @var VarietyRepository */
     private $varietyRepository;
 
-    public function __construct(VarietyRepository $varietyRepository)
+    /** @var ResourceRepository */
+    private $resourceRepository;
+
+    public function __construct(VarietyRepository $varietyRepository, ResourceRepository $resourceRepository)
     {
         $this->varietyRepository = $varietyRepository;
+        $this->resourceRepository = $resourceRepository;
     }
 
     public function generateNewLocation(Coordinates $coordinates, UuidInterface $gameId): LocationTemplate
@@ -619,6 +625,26 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
         if (array_key_exists('entities', $config)) {
             foreach ($config['entities'] as $entityConfig) {
                 $variety = $this->varietyRepository->find(Uuid::fromString($entityConfig['varietyId']));
+                $resourceNeeds = [];
+
+                if ($variety->getId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
+                    $resourceNeeds = [
+                        ResourceRepositoryConfig::FOOD => new ResourceNeed(
+                            $this->resourceRepository->find(Uuid::fromString(ResourceRepositoryConfig::FOOD)),
+                            0,
+                            $variety->getResourceNeedCapacities()[ResourceRepositoryConfig::FOOD],
+                            600,
+                            null
+                        ),
+                        ResourceRepositoryConfig::WATER => new ResourceNeed(
+                            $this->resourceRepository->find(Uuid::fromString(ResourceRepositoryConfig::WATER)),
+                            0,
+                            $variety->getResourceNeedCapacities()[ResourceRepositoryConfig::WATER],
+                            500,
+                            null
+                        ),
+                    ];
+                }
 
                 $entity = new Entity(
                     $entityId = Uuid::uuid4(),
@@ -630,7 +656,7 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
                     1,
                     isset($entityConfig['isIntact']) ? $entityConfig['isIntact'] : true,
                     Construction::constructed(),
-                    [],
+                    $resourceNeeds,
                     Inventory::empty($entityId, $variety)
                 );
 
