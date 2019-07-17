@@ -155,10 +155,18 @@ final class EntityFactory
         if (isset($presentation->inventory)) {
 
             if ($entity->getVarietyId()->equals(Uuid::fromString(VarietyRepositoryConfig::HUMAN))) {
-                $storage = $this->getFirstEntityOfVariety(
+                $storage = $this->getFirstEntityOfVarietyExcluding(
                     $entities,
-                    Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE)
+                    Uuid::fromString(VarietyRepositoryConfig::HUMAN),
+                    $entity
                 );
+
+                if (is_null($storage)) {
+                    $storage = $this->getFirstEntityOfVariety(
+                        $entities,
+                        Uuid::fromString(VarietyRepositoryConfig::WOODEN_CRATE)
+                    );
+                }
 
                 if (is_null($storage)) {
                     $storage = $this->getFirstEntityOfVariety(
@@ -366,6 +374,22 @@ final class EntityFactory
     {
         foreach ($entities as $entity) {
             if ($entity->getVarietyId()->equals($varietyId)) {
+                return $entity;
+            }
+        }
+
+        return null;
+    }
+
+    private function getFirstEntityOfVarietyExcluding(
+        iterable $entities,
+        UuidInterface $varietyId,
+        DomainModel $excludedEntity
+    ): ?DomainModel {
+        foreach ($entities as $entity) {
+            if ($entity->getVarietyId()->equals($varietyId)
+                && !$entity->getId()->equals($excludedEntity->getId())
+            ) {
                 return $entity;
             }
         }
