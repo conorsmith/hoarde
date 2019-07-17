@@ -99,6 +99,7 @@
 
     </div>
 
+    <?=$this->render("Game/modal-commands.php")?>
     <?=$this->render("Game/modal-drop.php")?>
     <?=$this->render("Game/modal-discard-incubation.php")?>
     <?=$this->render("Game/modal-settings.php")?>

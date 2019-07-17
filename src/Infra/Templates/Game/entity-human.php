@@ -105,31 +105,33 @@
 
                 <div class="col">
 
-                  <button type="button"
-                          class="btn btn-light btn-block js-scavenge"
-                          data-entity-id="<?=$entity->id?>"
-                          style="margin-bottom: 0;"
-                      <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>
-                  >
-                    Scavenge
-                  </button>
+                  <div class="btn-group-vertical w-100">
 
-                  <button type="button"
-                          class="btn btn-light btn-block"
-                          style="margin-top: 0; margin-bottom: 0; background-color: #fff; border-color: #fff;"
-                          disabled
-                  >
-                    &nbsp;
-                  </button>
+                    <button type="button"
+                            class="btn btn-light btn-block js-scavenge"
+                            data-entity-id="<?=$entity->id?>"
+                        <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>
+                    >
+                      Scavenge
+                    </button>
 
-                  <button type="button"
-                          class="btn btn-light btn-block js-wait"
-                          data-entity-id="<?=$entity->id?>"
-                          style="margin-top: 0;"
-                      <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>
-                  >
-                    Wait
-                  </button>
+                    <button type="button"
+                            class="btn btn-light btn-block js-wait"
+                            data-entity-id="<?=$entity->id?>"
+                        <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>
+                    >
+                      Wait
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-light btn-block js-commands"
+                            data-entity-id="<?=$entity->id?>"
+                        <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>
+                    >
+                      Commands
+                    </button>
+
+                  </div>
 
                 </div>
 

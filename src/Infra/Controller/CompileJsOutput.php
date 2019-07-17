@@ -12,6 +12,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 final class CompileJsOutput
 {
     private const MODULE_WHITELIST = [
+        "commands",
         "construct",
         "harvest",
         "repair",

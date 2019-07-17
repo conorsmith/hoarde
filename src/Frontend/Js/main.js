@@ -5,6 +5,7 @@ import {MainController as SowController, ModalView as SowModalView} from "./sow.
 import {MainController as HarvestController, ModalView as HarvestModalView} from "./harvest.js";
 import {MainController as RepairController, ModalView as RepairModalView} from "./repair.js";
 import {MainController as SortController, ModalView as SortModalView} from "./sort.js";
+import {MainController as CommandsController, ModalView as CommandsModalView} from "./commands.js";
 import {ScavengeModal, Haul, Inventory} from "./scavenge.js";
 
 let gameId = document.getElementById("gameId").value;
@@ -310,6 +311,16 @@ document.querySelectorAll(".js-wait").forEach(function (button) {
     });
 });
 
+document.querySelectorAll(".js-commands").forEach(function (button) {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        document.getElementById("commandsModal").dataset.entityId = e.currentTarget.dataset.entityId;
+
+        $("#commandsModal").modal();
+    });
+});
+
 document.querySelectorAll(".js-travel").forEach(function (button) {
     button.addEventListener("click", function (e) {
         e.preventDefault();
@@ -481,6 +492,15 @@ new SortController(
     new SortModalView(
         document.getElementById("sortModal"),
     ),
+    gameId
+);
+
+new CommandsController(
+    eventBus,
+    new CommandsModalView(
+        document.getElementById("commandsModal"),
+    ),
+    JSON.parse(document.getElementById("entities").value),
     gameId
 );
 
