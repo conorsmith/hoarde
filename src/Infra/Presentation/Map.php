@@ -6,6 +6,7 @@ namespace ConorSmith\Hoarde\Infra\Presentation;
 use ConorSmith\Hoarde\Domain\Coordinates;
 use ConorSmith\Hoarde\Domain\Map as DomainModel;
 use ConorSmith\Hoarde\Infra\Repository\BiomeRepositoryConfig;
+use Ramsey\Uuid\UuidInterface;
 use stdClass;
 
 final class Map
@@ -36,11 +37,21 @@ final class Map
             'isKnown' => $map->hasLocation($coordinates),
             'icon'    => $this->presentIcon($coordinates, $map),
             'class'   => $map->hasLocation($coordinates)
-                ? $map->findLocation($coordinates)->getBiomeId()->toString() === BiomeRepositoryConfig::OCEAN
-                    ? "btn-primary"
-                    : "btn-success"
+                ? $this->locationClassFromBiome($map->findLocation($coordinates)->getBiomeId())
                 : "btn-secondary"
         ];
+    }
+
+    private function locationClassFromBiome(UuidInterface $biomeId): string
+    {
+        switch ($biomeId->toString()) {
+            case BiomeRepositoryConfig::OCEAN:
+                return "btn-primary";
+            case BiomeRepositoryConfig::ARABLE:
+                return "btn-success";
+            case BiomeRepositoryConfig::URBAN:
+                return "btn-dark";
+        }
     }
 
     private function presentIcon(Coordinates $coordinates, DomainModel $map): string
