@@ -12,8 +12,12 @@ final class Location
 {
     public function __construct(DomainModel $location, Map $map)
     {
+        $maximumScavengingLevel = $this->getMaximumScavengingLevel($location->getBiomeId());
+
         $this->coordinates = "{$location->getCoordinates()->getX()}, {$location->getCoordinates()->getY()}";
-        $this->remainingScavengingLevel = $location->getScavengingLevel() / $this->getMaximumScavengingLevel($location->getBiomeId()) * 100;
+        $this->remainingScavengingLevel = $maximumScavengingLevel === 0
+            ? 0
+            : $location->getScavengingLevel() / $maximumScavengingLevel * 100;
         $this->entitiesCount = count($map->findNotableEntities($location->getCoordinates()));
     }
 
