@@ -18,6 +18,7 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
 {
     private const CONFIG = [
         "0,2" => [
+            'biome'    => BiomeRepositoryConfig::ARABLE,
             'entities' => [
                 [
                     'varietyId' => VarietyRepositoryConfig::TOOLBOX,
@@ -67,38 +68,46 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
 
         $generatedEntities = [];
 
-        foreach ($config['entities'] as $entityConfig) {
-            $variety = $this->varietyRepository->find(Uuid::fromString($entityConfig['varietyId']));
+        if (array_key_exists('entities', $config)) {
+            foreach ($config['entities'] as $entityConfig) {
+                $variety = $this->varietyRepository->find(Uuid::fromString($entityConfig['varietyId']));
 
-            $entity = new Entity(
-                $entityId = Uuid::uuid4(),
-                $gameId,
-                $locationId,
-                $variety->getId(),
-                $variety->getLabel(),
-                $variety->getIcon(),
-                1,
-                true,
-                Construction::constructed(),
-                [],
-                Inventory::empty($entityId, $variety)
-            );
-
-            foreach ($entityConfig['inventory'] as $itemConfig) {
-                $entity->getInventory()->addItem(
-                    $this->varietyRepository->find(Uuid::fromString($itemConfig['varietyId']))
-                        ->createItemWithQuantity($itemConfig['quantity'])
+                $entity = new Entity(
+                    $entityId = Uuid::uuid4(),
+                    $gameId,
+                    $locationId,
+                    $variety->getId(),
+                    $variety->getLabel(),
+                    $variety->getIcon(),
+                    1,
+                    true,
+                    Construction::constructed(),
+                    [],
+                    Inventory::empty($entityId, $variety)
                 );
-            }
 
-            $generatedEntities[] = $entity;
+                foreach ($entityConfig['inventory'] as $itemConfig) {
+                    $entity->getInventory()->addItem(
+                        $this->varietyRepository->find(Uuid::fromString($itemConfig['varietyId']))
+                            ->createItemWithQuantity($itemConfig['quantity'])
+                    );
+                }
+
+                $generatedEntities[] = $entity;
+            }
+        }
+
+        if (array_key_exists('biome', $config)) {
+            $biomeId = Uuid::fromString($config['biome']);
+        } else {
+            $biomeId = Uuid::fromString(BiomeRepositoryConfig::ARABLE);
         }
 
         return new LocationTemplate(
             new Location(
                 $locationId,
                 $gameId,
-                Uuid::fromString(BiomeRepositoryConfig::ARABLE),
+                $biomeId,
                 $coordinates,
                 5
             ),
