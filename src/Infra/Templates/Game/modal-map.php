@@ -15,7 +15,7 @@
                             <div class="btn-group">
                                 <?php foreach ($row as $location): ?>
                                     <a href="#"
-                                       class="btn <?=$location->isKnown ? "btn-outline-secondary" : "btn-secondary"?>"
+                                       class="btn <?=$location->class?>"
                                        data-x="<?=$location->x?>"
                                        data-y="<?=$location->y?>"
                                        data-location-id="<?=$location->id?>"

@@ -116,6 +116,7 @@
 .map-row .btn {
     font-size: 0.6rem;
     padding: 0.25rem 0.36rem;
+    border: 1px solid #aaa;
 }
 
 .travel-btn-group .btn-group:not(:first-child) .btn {

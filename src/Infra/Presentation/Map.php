@@ -5,6 +5,7 @@ namespace ConorSmith\Hoarde\Infra\Presentation;
 
 use ConorSmith\Hoarde\Domain\Coordinates;
 use ConorSmith\Hoarde\Domain\Map as DomainModel;
+use ConorSmith\Hoarde\Infra\Repository\BiomeRepositoryConfig;
 use stdClass;
 
 final class Map
@@ -34,6 +35,11 @@ final class Map
             'y'       => $coordinates->getY(),
             'isKnown' => $map->hasLocation($coordinates),
             'icon'    => $this->presentIcon($coordinates, $map),
+            'class'   => $map->hasLocation($coordinates)
+                ? $map->findLocation($coordinates)->getBiomeId()->toString() === BiomeRepositoryConfig::OCEAN
+                    ? "btn-primary"
+                    : "btn-success"
+                : "btn-secondary"
         ];
     }
 
