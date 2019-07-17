@@ -42,6 +42,8 @@ final class EntityTravelsToLocation
 
         if (!$result->isSuccessful()) {
             $this->session->setFlash("danger", $result->getMessage());
+            $locationId = $this->findActorLocation->__invoke($gameId, $actorId);
+            return new RedirectResponse("/{$gameId}/{$locationId}");
         }
 
         return new RedirectResponse("/{$gameId}/{$result->getNewLocationId()}");

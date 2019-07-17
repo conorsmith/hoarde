@@ -17,6 +17,24 @@ use Ramsey\Uuid\UuidInterface;
 final class LocationTemplateRepositoryConfig implements LocationTemplateRepository
 {
     private const CONFIG = [
+        "-2,-3" => [
+            'biome' => BiomeRepositoryConfig::OCEAN,
+        ],
+        "-1,-3" => [
+            'biome' => BiomeRepositoryConfig::OCEAN,
+        ],
+        "0,-3" => [
+            'biome' => BiomeRepositoryConfig::OCEAN,
+        ],
+        "1,-3" => [
+            'biome' => BiomeRepositoryConfig::OCEAN,
+        ],
+        "-1,-2" => [
+            'biome' => BiomeRepositoryConfig::OCEAN,
+        ],
+        "0,-2" => [
+            'biome' => BiomeRepositoryConfig::OCEAN,
+        ],
         "0,2" => [
             'biome'    => BiomeRepositoryConfig::ARABLE,
             'entities' => [

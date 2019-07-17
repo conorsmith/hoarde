@@ -11,6 +11,7 @@ use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\LocationRepository;
 use ConorSmith\Hoarde\Domain\LocationTemplateRepository;
+use ConorSmith\Hoarde\Infra\Repository\BiomeRepositoryConfig;
 use Ramsey\Uuid\UuidInterface;
 
 final class UseCase
@@ -72,6 +73,23 @@ final class UseCase
             $newLocation = $generatedLocation->getLocation();
         }
 
+        if ($newLocation->getBiomeId()->toString() === BiomeRepositoryConfig::OCEAN) {
+
+            $unitOfWork = new UnitOfWork;
+
+            $unitOfWork->save($newLocation);
+
+            if (isset($generatedLocation)) {
+                foreach ($generatedLocation->getEntities() as $generatedEntity) {
+                    $unitOfWork->save($generatedEntity);
+                }
+            }
+
+            $unitOfWork->commit($this->unitOfWorkProcessor);
+
+            return Result::failed(GeneralResult::failed("{$actor->getLabel()} cannot travel through the ocean."));
+        }
+
         $actor->travelTo($newLocation);
 
         $unitOfWork = new UnitOfWork;
@@ -80,8 +98,8 @@ final class UseCase
         foreach ($gameEntities as $gameEntity) {
             $unitOfWork->save($gameEntity);
         }
-
         $unitOfWork->save($game);
+
         $unitOfWork->save($newLocation);
 
         if (isset($generatedLocation)) {

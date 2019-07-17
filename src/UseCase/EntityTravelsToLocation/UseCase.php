@@ -10,6 +10,7 @@ use ConorSmith\Hoarde\Domain\EntityRepository;
 use ConorSmith\Hoarde\Domain\GameRepository;
 use ConorSmith\Hoarde\Domain\LocationRepository;
 use ConorSmith\Hoarde\Domain\LocationTemplateRepository;
+use ConorSmith\Hoarde\Infra\Repository\BiomeRepositoryConfig;
 use Ramsey\Uuid\UuidInterface;
 
 final class UseCase
@@ -69,6 +70,10 @@ final class UseCase
 
         if (is_null($startingLocation)) {
             return Result::failed(GeneralResult::failed("Location {$actor->getLocationId()} was not found."));
+        }
+
+        if ($targetLocation->getBiomeId()->toString() === BiomeRepositoryConfig::OCEAN) {
+            return Result::failed(GeneralResult::failed("{$actor->getLabel()} cannot travel through the ocean."));
         }
 
         $route = $startingLocation->getCoordinates()->generateRouteTo(
