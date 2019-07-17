@@ -54,6 +54,9 @@
           >
             <i class="fas fa-fw fa-map-marker-alt"></i> <?=$location->coordinates?>
           </a>
+          <small style="margin-left: 0.5rem;">
+            <i class="fas fa-fw fa-<?=$location->icon?> <?=$location->iconClass?>"></i>
+          </small>
           <small style="color: #666; margin-left: 0.5rem;">
             <i class="fas fa-fw fa-users"></i>
             <?=$location->entitiesCount?>

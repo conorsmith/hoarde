@@ -19,6 +19,8 @@ final class Location
             ? 0
             : $location->getScavengingLevel() / $maximumScavengingLevel * 100;
         $this->entitiesCount = count($map->findNotableEntities($location->getCoordinates()));
+        $this->icon = $this->getIcon($location->getBiomeId());
+        $this->iconClass = $this->getIconClass($location->getBiomeId());
     }
 
     private function getMaximumScavengingLevel(UuidInterface $biomeId): int
@@ -30,6 +32,30 @@ final class Location
                 return 5;
             case BiomeRepositoryConfig::URBAN:
                 return 25;
+        }
+    }
+
+    private function getIcon(UuidInterface $biomeId): string
+    {
+        switch ($biomeId->toString()) {
+            case BiomeRepositoryConfig::OCEAN:
+                return "water";
+            case BiomeRepositoryConfig::ARABLE:
+                return "seedling";
+            case BiomeRepositoryConfig::URBAN:
+                return "city";
+        }
+    }
+
+    private function getIconClass(UuidInterface $biomeId): string
+    {
+        switch ($biomeId->toString()) {
+            case BiomeRepositoryConfig::OCEAN:
+                return "text-primary";
+            case BiomeRepositoryConfig::ARABLE:
+                return "text-success";
+            case BiomeRepositoryConfig::URBAN:
+                return "text-dark";
         }
     }
 }
