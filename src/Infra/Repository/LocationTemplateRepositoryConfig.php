@@ -447,7 +447,22 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
         "0,1"     => ['biome' => BiomeRepositoryConfig::ARABLE,],
         "1,1"     => ['biome' => BiomeRepositoryConfig::ARABLE,],
         "2,1"     => ['biome' => BiomeRepositoryConfig::ARABLE,],
-        "3,1"     => ['biome' => BiomeRepositoryConfig::ARABLE,],
+        "3,1"     => [
+            'biome' => BiomeRepositoryConfig::ARABLE,
+            'entities' => [
+                [
+                    'varietyId' => VarietyRepositoryConfig::HUMAN,
+                    'label'     => "Joel",
+                    'isIntact'  => false,
+                    'inventory' => [
+                        [
+                            'varietyId' => VarietyRepositoryConfig::HAMMER,
+                            'quantity'  => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ],
         "4,1"     => ['biome' => BiomeRepositoryConfig::URBAN,],
         "5,1"     => ['biome' => BiomeRepositoryConfig::URBAN,],
         "-8,0"    => ['biome' => BiomeRepositoryConfig::ARABLE,],
@@ -610,10 +625,10 @@ final class LocationTemplateRepositoryConfig implements LocationTemplateReposito
                     $gameId,
                     $locationId,
                     $variety->getId(),
-                    $variety->getLabel(),
+                    isset($entityConfig['label']) ? $entityConfig['label'] : $variety->getLabel(),
                     $variety->getIcon(),
                     1,
-                    true,
+                    isset($entityConfig['isIntact']) ? $entityConfig['isIntact'] : true,
                     Construction::constructed(),
                     [],
                     Inventory::empty($entityId, $variety)

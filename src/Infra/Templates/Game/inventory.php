@@ -41,7 +41,7 @@
 
                 <?php foreach ($item->performableActions as $action) : ?>
                     <a href="#"
-                       class="dropdown-item <?=$action->jsClass?>"
+                       class="dropdown-item <?=$action->jsClass?> <?=!$entity->isIntact ? "disabled" : ""?>"
                        data-entity-id="<?=$entity->id?>"
                        data-actor-id="<?=$action->actorId?>"
                        data-item-id="<?=$item->varietyId?>"

@@ -3,7 +3,7 @@
         <div class="card-body">
 
             <h5 class="card-title">
-                <?php if ($isIntact) : ?>
+                <?php if ($isIntact && $entity->isIntact) : ?>
                     <i class="fas fa-fw fa-<?=$entity->icon?>"></i>
                 <?php else : ?>
                     <i class="fas fa-fw fa-skull-crossbones"></i>
@@ -24,7 +24,7 @@
 
                   <div class="btn-group w-100">
                     <a href="#"
-                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       class="btn btn-light js-travel <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>"
                        data-direction="north-west"
                        data-actor-id="<?=$entity->id?>"
                     >
@@ -33,14 +33,14 @@
                       ></i>
                     </a>
                     <a href="#"
-                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       class="btn btn-light js-travel <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>"
                        data-direction="north"
                        data-actor-id="<?=$entity->id?>"
                     >
                       <i class="fas fa-fw fa-arrow-up"></i>
                     </a>
                     <a href="#"
-                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       class="btn btn-light js-travel <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>"
                        data-direction="north-east"
                        data-actor-id="<?=$entity->id?>"
                     >
@@ -52,20 +52,20 @@
 
                   <div class="btn-group w-100">
                     <a href="#"
-                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       class="btn btn-light js-travel <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>"
                        data-direction="west"
                        data-actor-id="<?=$entity->id?>"
                     >
                       <i class="fas fa-fw fa-arrow-left"></i>
                     </a>
                     <a href="#"
-                       class="btn btn-light js-travel-map <?=(!$isIntact ? "disabled" : "")?>"
+                       class="btn btn-light js-travel-map <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>"
                        data-actor-id="<?=$entity->id?>"
                     >
                       <i class="fas fa-fw fa-map"></i>
                     </a>
                     <a href="#"
-                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       class="btn btn-light js-travel <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>"
                        data-direction="east"
                        data-actor-id="<?=$entity->id?>"
                     >
@@ -75,7 +75,7 @@
 
                   <div class="btn-group w-100">
                     <a href="#"
-                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       class="btn btn-light js-travel <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>"
                        data-direction="south-west"
                        data-actor-id="<?=$entity->id?>"
                     >
@@ -84,14 +84,14 @@
                       ></i>
                     </a>
                     <a href="#"
-                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       class="btn btn-light js-travel <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>"
                        data-direction="south"
                        data-actor-id="<?=$entity->id?>"
                     >
                       <i class="fas fa-fw fa-arrow-down"></i>
                     </a>
                     <a href="#"
-                       class="btn btn-light js-travel <?=(!$isIntact ? "disabled" : "")?>"
+                       class="btn btn-light js-travel <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>"
                        data-direction="south-east"
                        data-actor-id="<?=$entity->id?>"
                     >
@@ -109,7 +109,7 @@
                           class="btn btn-light btn-block js-scavenge"
                           data-entity-id="<?=$entity->id?>"
                           style="margin-bottom: 0;"
-                      <?=(!$isIntact ? "disabled" : "")?>
+                      <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>
                   >
                     Scavenge
                   </button>
@@ -126,7 +126,7 @@
                           class="btn btn-light btn-block js-wait"
                           data-entity-id="<?=$entity->id?>"
                           style="margin-top: 0;"
-                      <?=(!$isIntact ? "disabled" : "")?>
+                      <?=(!$isIntact || !$entity->isIntact ? "disabled" : "")?>
                   >
                     Wait
                   </button>
