@@ -12,7 +12,7 @@ final class Inventory
     {
         return new self(
             $entityId,
-            $variety->getInventoryCapacity(),
+            $variety->getInventoryCapacity() ?? 0,
             [],
             []
         );
