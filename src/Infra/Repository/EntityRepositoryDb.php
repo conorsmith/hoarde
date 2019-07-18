@@ -224,7 +224,7 @@ final class EntityRepositoryDb implements EntityRepository
                 'label'              => $entity->getLabel(),
                 'icon'               => $entity->getIcon(),
                 'order_index'        => $entity->getOrderIndex(),
-                'intact'             => $entity->isIntact(),
+                'intact'             => $entity->isIntact() ? "1" : "0",
                 'is_constructed'     => $entity->getConstruction()->isConstructed() ? "1" : "0",
                 'construction_level' => $entity->getConstruction()->getRemainingSteps(),
             ]);
